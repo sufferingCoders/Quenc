@@ -2,13 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quenc/providers/UserService.dart';
 
-class AllPostsScreen extends StatelessWidget {
+class MainScreen extends StatelessWidget {
   final userService = UserService();
   final FirebaseUser fbuser;
 
-  AllPostsScreen({this.fbuser});
+  MainScreen({this.fbuser});
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold();
   }
 }

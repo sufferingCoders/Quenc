@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserService.dart';
-import 'package:quenc/screens/AllPostsScreen.dart';
 import 'package:quenc/screens/AuthScreen.dart';
+import 'package:quenc/screens/MainScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -33,7 +33,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [],
+      providers: [
+        StreamProvider<FirebaseUser>.value(
+          value: FirebaseAuth.instance.onAuthStateChanged,
+        ),
+      ],
       child: Consumer<FirebaseUser>(
         builder: (ctx, fbUser, ch) {
           return StreamProvider<User>.value(
@@ -52,7 +56,7 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               home: fbUser != null
-                  ? AllPostsScreen(
+                  ? MainScreen(
                       fbuser: fbUser,
                     ) // Main Screen
                   : FutureBuilder(
@@ -63,9 +67,7 @@ class MyApp extends StatelessWidget {
                               ? Container() // SplashScreen
                               : AuthScreen(), //AuthScreen
                     ),
-              routes: {
-                
-              },
+              routes: {},
             ),
           );
         },

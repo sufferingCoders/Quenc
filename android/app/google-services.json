@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "625526528915",
+    "firebase_url": "https://quenc-hlc.firebaseio.com",
+    "project_id": "quenc-hlc",
+    "storage_bucket": "quenc-hlc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:625526528915:android:523ac033771bafd2f0e666",
+        "android_client_info": {
+          "package_name": "com.hlc.quenc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "625526528915-kpfjcr255jo74g8fatk0mgqpkitq22v5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyUKLEAEDQokcoa_3yw7ygehFpxmAR4eU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "625526528915-kpfjcr255jo74g8fatk0mgqpkitq22v5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
