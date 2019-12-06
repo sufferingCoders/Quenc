@@ -24,18 +24,21 @@ class AuthScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Icon(
-                      Icons.shopping_cart,
-                      size: 100,
-                      color: Theme.of(context).primaryColor,
-                    ),
+                    // Icon(
+                    //   Icons.shopping_cart,
+                    //   size: 100,
+                    //   color: Theme.of(context).primaryColor,
+                    // ),
                     Text(
-                      "昆客",
+                      "昆嗑",
                       style: TextStyle(
                         color: Theme.of(context).primaryColor,
-                        fontSize: 20,
+                        fontSize: 40,
                         fontWeight: FontWeight.bold,
                       ),
+                    ),
+                    SizedBox(
+                      height: 20,
                     ),
                     AuthCard(),
                   ],
@@ -48,5 +51,3 @@ class AuthScreen extends StatelessWidget {
     );
   }
 }
-
-

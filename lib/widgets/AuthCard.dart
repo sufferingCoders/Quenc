@@ -73,13 +73,13 @@ class _AuthCardState extends State<AuthCard> {
   Widget build(BuildContext context) {
     var mediaQueryData = MediaQuery.of(context);
 
-    return AnimatedContainer(
+    return Container(
       padding: EdgeInsets.symmetric(
           horizontal: mediaQueryData.size.width > 500
               ? mediaQueryData.size.width * 0.2
               : 10),
-      height: registerMode ? 295 : 235,
-      duration: Duration(milliseconds: 300),
+      // height: registerMode ? 295 : 235,
+      // duration: Duration(milliseconds: 300),
       child: Card(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 15),
@@ -109,7 +109,7 @@ class _AuthCardState extends State<AuthCard> {
                     String domain = emailParts[1];
 
                     // Check if it belong to the uni email;
-                    if (!domain.contains(".eud.")) {
+                    if (!domain.contains(".edu.")) {
                       return "必須使用學校Email";
                     }
 
@@ -158,7 +158,7 @@ class _AuthCardState extends State<AuthCard> {
                 ),
                 FlatButton(
                   child:
-                      Text("Change to ${registerMode ? "Login" : "Sing Up"}"),
+                      Text("我要${registerMode ? "登入" : "註冊"}"),
                   onPressed: () {
                     setState(() {
                       registerMode = !registerMode;
