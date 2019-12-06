@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
               ),
               home: fbUser != null
                   ? MainScreen(
-                      fbuser: fbUser,
+                      fbUser: fbUser,
                     ) // Main Screen
                   : FutureBuilder(
                       future: UserService().tryAutoLogin(),
@@ -67,7 +67,9 @@ class MyApp extends StatelessWidget {
                               ? Container() // SplashScreen
                               : AuthScreen(), //AuthScreen
                     ),
-              routes: {},
+              routes: {
+                // MainScreen.routeName: (ctx) => MainScreen(),
+              },
             ),
           );
         },

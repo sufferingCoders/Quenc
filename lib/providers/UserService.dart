@@ -84,4 +84,17 @@ class UserService {
     loginWithEmailAndPassword(email, password);
     return true;
   }
+
+  Future<String> signOut() async {
+    try {
+      await _auth.signOut();
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.remove("email");
+      prefs.remove("password");
+      return 'SignOut';
+    } catch (e) {
+      return e.toString();
+    }
+  }
 }
