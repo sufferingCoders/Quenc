@@ -10,10 +10,10 @@ A new Flutter project.
 
 
 # 待實現
-- [x] 註冊（校用Email）
-- [ ] Email認證 
-- [x] 登入 
-- [ ] 發帖功能
+- [x] 註冊（校用Email）// Richard
+- [ ] Email認證 // Richard
+- [x] 登入 // Richard
+- [ ] 發帖功能 // Richard
 - [ ] 回文功能
 - [ ] 按讚功能
 - [ ] 收藏功能
