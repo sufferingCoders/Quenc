@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>625526528915-pgn2n8ms8faf2ldcsd8og7lknf3h2cjs.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.625526528915-pgn2n8ms8faf2ldcsd8og7lknf3h2cjs</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDrRk0BzJY_-nKuOB6t2BnmCnGMmIAi1yU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>625526528915</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.hlc.quenc</string>
+	<key>PROJECT_ID</key>
+	<string>quenc-hlc</string>
+	<key>STORAGE_BUCKET</key>
+	<string>quenc-hlc.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:625526528915:ios:8acb2446893e1748f0e666</string>
+	<key>DATABASE_URL</key>
+	<string>https://quenc-hlc.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quenc/widgets/AuthCard.dart';
+import 'package:quenc/widgets/Auth/AuthCard.dart';
 
 class AuthScreen extends StatelessWidget {
   @override
