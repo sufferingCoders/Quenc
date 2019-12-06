@@ -38,9 +38,8 @@ Solution:
 
 在應用層級的build.gradle (android/app/build.gradle) 加入  “multiDexEnabled true”
 
-`
+`gradle
 defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.hlc.quenc"
         minSdkVersion 16
         targetSdkVersion 29
@@ -48,5 +47,5 @@ defaultConfig {
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true //增加這個
-    }
+        }
 `
