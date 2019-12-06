@@ -33,6 +33,27 @@ class UserService {
         .map((u) => User.fromMap(u.data));
   }
 
+  /*
+    Authorization Functions 
+  */
+
+  Future<FirebaseUser> signupWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+              email: email, password: password))
+          .user;
+
+      user.sendEmailVerification();
+      updateFirebaseUserDataToDB(user);
+
+      return user;
+    } catch (error) {
+      print("The error is ${error.toString()}");
+      return null;
+    }
+  }
+
   Future<FirebaseUser> loginWithEmailAndPassword(
       String email, String password) async {
     try {

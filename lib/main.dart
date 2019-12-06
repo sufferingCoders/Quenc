@@ -63,7 +63,9 @@ class MyApp extends StatelessWidget {
                               ? Container() // SplashScreen
                               : AuthScreen(), //AuthScreen
                     ),
-              routes: {},
+              routes: {
+                
+              },
             ),
           );
         },
