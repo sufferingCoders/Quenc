@@ -15,7 +15,7 @@ A new Flutter project.
 |完成|作物|優先級|描述|耕種人|完成時間|
 |:---:|:---:|:---:|:---:|:---:|:---:|
 |<ul><li>- [x] </li></ul>|註冊|Must Have| 提供註冊功能| Richard | 06 Dec 2019|
-|<ul><li>- [ ] </li></ul>|Email認證|Must Have|認證學校Email| Richard | |
+|<ul><li>- [x] </li></ul>|Email認證|Must Have|認證學校Email| Richard | 06 Dec 2019|
 |<ul><li>- [x] </li></ul>|登入|Must Have|Firebase 學校Email登入功能| Richard | 06 Dec 2019|
 |<ul><li>- [ ] </li></ul>|發帖|Must Have|使用者登入後能發帖| Richard | |
 |<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| 請認領 | |
