@@ -10,9 +10,9 @@ A new Flutter project.
 
 
 # 待實現
-- [ ] 註冊（校用Email）
+- [x] 註冊（校用Email）
 - [ ] Email認證 
-- [ ] 登入 
+- [x] 登入 
 - [ ] 發帖功能
 - [ ] 回文功能
 - [ ] 按讚功能
