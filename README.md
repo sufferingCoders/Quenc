@@ -26,3 +26,27 @@ A new Flutter project.
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 - [online documentation](https://flutter.dev/docs)
+
+
+
+
+## 滿地都是坑
+
+### Execution failed for task ':app:transformDexArchiveWithExternalLibsDexMergerForDebug'
+Solution:
+
+
+在應用層級的build.gradle (android/app/build.gradle) 加入  “multiDexEnabled true”
+
+`
+defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        applicationId "com.hlc.quenc"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true //增加這個
+    }
+`
