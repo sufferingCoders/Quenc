@@ -62,3 +62,21 @@ defaultConfig {
         
         }
 ```
+
+
+### A problem occurred evaluating project ':app'.
+
+Solution:
+
+更改 android/build.gradle 中的 
+
+```
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.google.gms:google-services:4.2.0' // 將 4.3.2 降為 4.2.0        
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+
+```
+
+
