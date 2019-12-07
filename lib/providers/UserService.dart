@@ -21,6 +21,15 @@ class UserService {
     }, merge: true);
   }
 
+  void updateCollectionUserData(String uid, Map user) async {
+    DocumentReference ref = _db.collection('users').document(uid);
+
+    return ref.setData({
+      ...user,
+      'lastSeen': DateTime.now(),
+    }, merge: true);
+  }
+
   Stream<User> userStream(FirebaseUser user) {
     print("User stream is called");
     if (user == null) return null;

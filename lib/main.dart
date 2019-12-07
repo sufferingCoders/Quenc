@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/AuthScreen.dart';
+import 'package:quenc/screens/EmailVerificationScreen.dart';
 import 'package:quenc/screens/MainScreen.dart';
+import 'package:quenc/screens/UserAttributeSettingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -56,9 +58,22 @@ class MyApp extends StatelessWidget {
                 ),
               ),
               home: fbUser != null
-                  ? MainScreen(
-                      fbUser: fbUser,
-                    ) // Main Screen
+                  ? fbUser.isEmailVerified
+                      ? Consumer<User>(
+                          builder: (ctx, user, ch) {
+                            if (user == null || !user.haveAttributesSet()) {
+                              return UserAttributeSettingScreen(
+                                user: user,
+                              );
+                            }
+                            return MainScreen(
+                              fbUser: fbUser,
+                            );
+                          },
+                        )
+                      : EmailVerificationScreen(
+                          fbUser: fbUser,
+                        ) // Main Screen
                   : FutureBuilder(
                       future: UserService().tryAutoLogin(),
                       builder: (ctx, authResultSnapshot) =>
