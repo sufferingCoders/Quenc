@@ -22,7 +22,7 @@ A new Flutter project.
 |<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| 請認領 | |
 |<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| 請認領 | |
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
-|<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| 請認領 | |
+|<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
 |<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| 請認領 | |
 
 
