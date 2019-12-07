@@ -27,17 +27,30 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Card(
-        child: Column(
-          children: <Widget>[
-            Text("您尚未完成Email認證"),
-            Text("我們已經寄送認證信至 ${widget.fbUser.email}"),
-            Text("請點擊認證信中的激活連結後，重新登入"),
-            Row(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text(
-                      "再次寄送${availibleForSending ? "" : "($secCounting)"}"),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("您尚未完成Email認證"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("我們已經寄送認證信至 ${widget.fbUser.email}"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("請點擊認證信中的激活連結後，重新登入"),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  child:
+                      Text("再次寄送${availibleForSending ? "" : "($secCounting)"}"),
                   onPressed: availibleForSending
                       ? () {
                           secCounting = 5;
@@ -60,16 +73,19 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
                         }
                       : null,
                 ),
-                RaisedButton(
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
                   child: Text("重新登入"),
                   onPressed: () {
                     UserService().signOut();
                   },
-                )
-              ],
-            ),
-          ],
-        ),
+                ),
+              )
+            ],
+          ),
+        ],
       ),
     );
   }

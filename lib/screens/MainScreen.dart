@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/widgets/AppDrawer.dart';
+import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 
 class MainScreen extends StatelessWidget {
   static const routeName = "/";
@@ -22,7 +23,14 @@ class MainScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
         onPressed: () {
-          
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) {
+                    final dialog = PostAddingFullScreenDialog();
+                    return dialog;
+                  },
+                  fullscreenDialog: true));
         },
       ),
     );

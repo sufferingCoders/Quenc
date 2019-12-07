@@ -31,59 +31,69 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
       child: Card(
           child: Column(
         children: <Widget>[
-          InkWell(
-            onTap: () async {
-              var picked = await showDatePicker(
-                initialDate: pickedDOB,
-                context: context,
-                firstDate: DateTime(1900, 1),
-                lastDate: DateTime.now(),
-              );
-              if (picked != null) {
-                setState(() {
-                  pickedDOB = picked;
-                });
-              }
-            },
-            child: InputDecorator(
-              decoration: InputDecoration(
-                labelText: "生日",
-              ),
-              child: Row(
-                children: <Widget>[
-                  Text(DateFormat.yMMMMd().format(pickedDOB ?? DateTime.now())),
-                ],
-              ),
-            ),
-          ),
-          InputDecorator(
-            decoration: const InputDecoration(
-              labelText: "性別",
-              hintText: "選擇你的性別",
-            ),
-            isEmpty: _gender == null || _gender.isEmpty,
-            child: DropdownButton<String>(
-              value: _gender,
-              onChanged: (v) {
-                setState(() {
-                  _gender = v;
-                });
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InkWell(
+              onTap: () async {
+                var picked = await showDatePicker(
+                  initialDate: pickedDOB,
+                  context: context,
+                  firstDate: DateTime(1900, 1),
+                  lastDate: DateTime.now(),
+                );
+                if (picked != null) {
+                  setState(() {
+                    pickedDOB = picked;
+                  });
+                }
               },
-              items: _allGenders
-                  .map(
-                    (g) => DropdownMenuItem(
-                      value: g,
-                      child: Text(g),
-                    ),
-                  )
-                  .toList(),
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText: "生日",
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Text(DateFormat.yMMMMd()
+                        .format(pickedDOB ?? DateTime.now())),
+                  ],
+                ),
+              ),
             ),
           ),
-          TextField(
-            decoration: const InputDecoration(
-              labelText: "Major",
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: InputDecorator(
+              decoration: const InputDecoration(
+                labelText: "性別",
+                hintText: "選擇你的性別",
+              ),
+              isEmpty: _gender == null || _gender.isEmpty,
+              child: DropdownButton<String>(
+                value: _gender,
+                onChanged: (v) {
+                  setState(() {
+                    _gender = v;
+                  });
+                },
+                items: _allGenders
+                    .map(
+                      (g) => DropdownMenuItem(
+                        value: g,
+                        child: Text(g),
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
-            controller: majorController,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: const InputDecoration(
+                labelText: "Major",
+              ),
+              controller: majorController,
+            ),
           ),
           RaisedButton(
             onPressed: () => UserService().updateCollectionUserData(

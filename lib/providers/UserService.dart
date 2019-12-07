@@ -2,12 +2,38 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:quenc/models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserService {
+class UserService with ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
+  // FirebaseUser _fbUser;
+  // User _user;
+
+  // FirebaseUser get fbUser {
+  //   return _fbUser;
+  // }
+
+  // User get user {
+  //   return _user;
+  // }
+
+  /*
+   * Adding Post or Comment to User
+   */
+
+  Future<void> addPostToUser(postID, userId) async {
+    await _db
+        .collection("users")
+        .document(userId)
+        .updateData({"posts": FieldValue.arrayUnion(postID)});
+  }
+
+  /*
+   * Updating the user field
+   */
 
   void updateFirebaseUserDataToDB(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
@@ -30,16 +56,39 @@ class UserService {
     }, merge: true);
   }
 
+  // Fetching the user stream
   Stream<User> userStream(FirebaseUser user) {
     print("User stream is called");
     if (user == null) return null;
     print("User stream is called and return stream");
 
-    return _db
+    var userStream = _db
         .collection("users")
         .document(user.uid)
         .snapshots()
         .map((u) => User.fromMap(u.data));
+
+    // also listen to the userStream
+
+    // userStream.listen((u) {
+    //   _user = u;
+    //   notifyListeners();
+    // });
+
+    return userStream;
+  }
+
+  void addListenerToUserStream(FirebaseUser user) {
+    var userStream = _db
+        .collection("users")
+        .document(user.uid)
+        .snapshots()
+        .map((u) => User.fromMap(u.data));
+
+    // userStream.listen((u) {
+    //   _user = u;
+    //   notifyListeners();
+    // });
   }
 
   /*
@@ -49,14 +98,14 @@ class UserService {
   Future<FirebaseUser> signupWithEmailAndPassword(
       String email, String password) async {
     try {
-      FirebaseUser user = (await _auth.createUserWithEmailAndPassword(
+      var fbUser = (await _auth.createUserWithEmailAndPassword(
               email: email, password: password))
           .user;
 
-      user.sendEmailVerification();
-      updateFirebaseUserDataToDB(user);
+      fbUser.sendEmailVerification();
+      updateFirebaseUserDataToDB(fbUser);
 
-      return user;
+      return fbUser;
     } catch (error) {
       print("The error is ${error.toString()}");
       return null;
@@ -66,16 +115,16 @@ class UserService {
   Future<FirebaseUser> loginWithEmailAndPassword(
       String email, String password) async {
     try {
-      FirebaseUser user = (await _auth.signInWithEmailAndPassword(
+      var fbUser = (await _auth.signInWithEmailAndPassword(
               email: email, password: password))
           .user;
 
-      updateFirebaseUserDataToDB(user);
+      updateFirebaseUserDataToDB(fbUser);
       final prefs = await SharedPreferences.getInstance();
       prefs.setString("email", json.encode(email));
       prefs.setString("password", password);
       // Save emeail and password in prefernece
-      return user;
+      return fbUser;
     } catch (error) {
       print("The error is ${error.toString()}");
       return null;
@@ -101,6 +150,10 @@ class UserService {
       final prefs = await SharedPreferences.getInstance();
       prefs.remove("email");
       prefs.remove("password");
+
+      // _fbUser = null;
+      // _user = null;
+
       return 'SignOut';
     } catch (e) {
       return e.toString();

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/AuthScreen.dart';
 import 'package:quenc/screens/EmailVerificationScreen.dart';
@@ -38,6 +39,12 @@ class MyApp extends StatelessWidget {
       providers: [
         StreamProvider<FirebaseUser>.value(
           value: FirebaseAuth.instance.onAuthStateChanged,
+        ),
+        //         ChangeNotifierProvider.value(
+        //   value: UserService(),
+        // ),
+        ChangeNotifierProvider.value(
+          value: PostService(),
         ),
       ],
       child: Consumer<FirebaseUser>(

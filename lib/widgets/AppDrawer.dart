@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/MainScreen.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -18,10 +20,12 @@ class AppDrawer extends StatelessWidget {
                   Icons.input,
                   textDirection: TextDirection.rtl,
                 ),
-                title: const Text("Logout"),
+                title: const Text("登出"),
                 onTap: () {
-                  Navigator.of(context)
-                      .pushReplacementNamed(MainScreen.routeName);
+                  // Navigator.of(context)
+                  //     .pushReplacementNamed(MainScreen.routeName);
+                  Navigator.popUntil(context, ModalRoute.withName("/"));
+                  Provider.of<UserService>(context).signOut();
                 }),
           ],
         ),

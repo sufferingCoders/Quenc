@@ -15,9 +15,8 @@ class EmailVerificationScreen extends StatelessWidget {
           title: Text("信箱認證"),
         ),
         drawer: AppDrawer(),
-        body: Center(
-            child: EmailCheckingNotification(
+        body: EmailCheckingNotification(
           fbUser: fbUser,
-        )));
+        ));
   }
 }

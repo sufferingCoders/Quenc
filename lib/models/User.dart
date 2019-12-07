@@ -9,6 +9,8 @@ class User {
   final String currentRoom;
   final String major;
   final DateTime dob;
+  List<String> posts;
+  List<String> comments;
 
   User({
     this.displayName,
