@@ -17,8 +17,8 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|註冊|Must Have| 提供註冊功能| Richard | 06 Dec 2019|
 |<ul><li>- [x] </li></ul>|Email認證|Must Have|認證學校Email| Richard | 06 Dec 2019|
 |<ul><li>- [x] </li></ul>|登入|Must Have|Firebase 學校Email登入功能| Richard | 06 Dec 2019|
-|<ul><li>- [ ] </li></ul>|發帖|Must Have|使用者登入後能發帖| Richard | |
-|<ul><li>- [ ] </li></ul>|顯示帖子ListView|Must Have|能使用Card的方式瀏覽貼文| 請認領 | |
+|<ul><li>- [x] </li></ul>|發帖|Must Have|使用者登入後能發帖| Richard | 08 Dec 2019 |
+|<ul><li>- [ ] </li></ul>|顯示帖子ListView|Must Have|能使用Card的方式瀏覽貼文| Richard | |
 |<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | |
 |<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| 請認領 | |
 |<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| 請認領 | |
