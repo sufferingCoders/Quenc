@@ -4,6 +4,8 @@ import 'package:quenc/widgets/AppDrawer.dart';
 import 'package:quenc/widgets/Auth/AttributeSettingCard.dart';
 
 class UserAttributeSettingScreen extends StatelessWidget {
+  static const String routeName = "/user-arttribute-setting";
+
   final User user;
 
   UserAttributeSettingScreen({this.user});

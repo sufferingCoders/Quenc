@@ -66,9 +66,12 @@ class MyApp extends StatelessWidget {
               ),
               home: fbUser != null
                   ? fbUser.isEmailVerified
+                      // ? Center(
+                      //     child: Text("Email Verified"),
+                      //   )
                       ? Consumer<User>(
                           builder: (ctx, user, ch) {
-                            if (user == null || !user.haveAttributesSet()) {
+                            if (!(user != null && user.haveAttributesSet())) {
                               return UserAttributeSettingScreen(
                                 user: user,
                               );
@@ -76,11 +79,17 @@ class MyApp extends StatelessWidget {
                             return MainScreen(
                               fbUser: fbUser,
                             );
+
+                            // return Center(
+                            //   child: Text("MainScreen"),
+                            // );
                           },
                         )
                       : EmailVerificationScreen(
                           fbUser: fbUser,
                         ) // Main Screen
+
+                  // Problem may be here, the tryAutoLogin()
                   : FutureBuilder(
                       future: UserService().tryAutoLogin(),
                       builder: (ctx, authResultSnapshot) =>

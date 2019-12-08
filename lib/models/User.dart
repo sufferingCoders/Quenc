@@ -26,6 +26,10 @@ class User {
   });
 
   factory User.fromMap(Map data) {
+    if (data == null) {
+      return null;
+    }
+
     return User(
       displayName: data["displayName"] ?? "",
       email: data["email"] ?? "",

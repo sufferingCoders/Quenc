@@ -34,9 +34,37 @@ class _PostAddingFullScreenDialogState
     addPost(context);
   }
 
+  String getDisplayNameFromEmail(String email) {
+    List<String> emailParts = email.split("@");
+    if (emailParts.length > 2) {
+      return null;
+    }
+
+    String uni = "";
+
+    switch (emailParts[1]) {
+      case "qut.edu.au":
+        uni = "Queensland University of Technology";
+        break;
+      case "uq.edu.au":
+        uni = "University of Queensland";
+        break;
+      case "griffith.edu.au":
+        uni = "Griffith University";
+        break;
+      default:
+        uni = null;
+    }
+
+    return uni;
+  }
+
   void addPost(BuildContext ctx) async {
     // Initialise the fields
-    post.author = Provider.of<User>(ctx, listen: false).uid;
+    var u = Provider.of<User>(ctx, listen: false);
+    post.author = u.uid;
+    post.authorGender = u.gender;
+    post.authorName = getDisplayNameFromEmail(u.email);
     post.createdAt = DateTime.now();
     post.updatedAt = DateTime.now();
 

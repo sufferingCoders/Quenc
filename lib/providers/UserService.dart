@@ -6,9 +6,7 @@ import 'package:quenc/models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-
   // Not storing val in this calss since its instance will not be kept
-
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
@@ -134,6 +132,8 @@ class UserService {
   }
 
   Future<bool> tryAutoLogin() async {
+    // signOut();
+
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey("email") || !prefs.containsKey("password")) {
       return false;

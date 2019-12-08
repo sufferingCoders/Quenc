@@ -13,7 +13,7 @@ class AttributeSettingCard extends StatefulWidget {
 }
 
 class _AttributeSettingCardState extends State<AttributeSettingCard> {
-  final List<String> _allGenders = ["男", "女"];
+  final List<String> _allGenders = ["male", "female"];
   String _gender;
   DateTime pickedDOB = DateTime.now();
   TextEditingController majorController = TextEditingController();
@@ -79,7 +79,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
                     .map(
                       (g) => DropdownMenuItem(
                         value: g,
-                        child: Text(g),
+                        child: Text(g == "male" ? "男" : "女"),
                       ),
                     )
                     .toList(),
