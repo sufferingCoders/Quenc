@@ -19,7 +19,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|登入|Must Have|Firebase 學校Email登入功能| Richard | 06 Dec 2019|
 |<ul><li>- [ ] </li></ul>|發帖|Must Have|使用者登入後能發帖| Richard | |
 |<ul><li>- [ ] </li></ul>|顯示帖子ListView|Must Have|能使用Card的方式瀏覽貼文| 請認領 | |
-|<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| 請認領 | |
+|<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | |
 |<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| 請認領 | |
 |<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| 請認領 | |
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
@@ -63,3 +63,21 @@ defaultConfig {
         
         }
 ```
+
+
+### A problem occurred evaluating project ':app'.
+
+Solution:
+
+更改 android/build.gradle 中的 
+
+```
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.google.gms:google-services:4.2.0' // 將 4.3.2 降為 4.2.0        
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+
+```
+
+
