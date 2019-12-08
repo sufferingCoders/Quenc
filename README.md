@@ -20,11 +20,11 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|發帖|Must Have|使用者登入後能發帖| Richard | 08 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|顯示帖子ListView|Must Have|能使用Card的方式瀏覽貼文| Richard | |
 |<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | |
-|<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| 請認領 | |
-|<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| 請認領 | |
+|<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Fei | |
+|<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| Fei | |
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
 |<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
-|<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| 請認領 | |
+|<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| Fei | |
 
 
 ## Flutter 資源
