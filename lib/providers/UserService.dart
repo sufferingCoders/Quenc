@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:quenc/models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class UserService with ChangeNotifier {
+class UserService {
+
+  // Not storing val in this calss since its instance will not be kept
+
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
   // FirebaseUser _fbUser;
@@ -25,10 +28,9 @@ class UserService with ChangeNotifier {
    */
 
   Future<void> addPostToUser(postID, userId) async {
-    await _db
-        .collection("users")
-        .document(userId)
-        .updateData({"posts": FieldValue.arrayUnion(postID)});
+    await _db.collection("users").document(userId).updateData({
+      "posts": FieldValue.arrayUnion([postID])
+    });
   }
 
   /*
@@ -99,7 +101,7 @@ class UserService with ChangeNotifier {
       String email, String password) async {
     try {
       var fbUser = (await _auth.createUserWithEmailAndPassword(
-              email: email, password: password))
+              email: email.trim(), password: password.trim()))
           .user;
 
       fbUser.sendEmailVerification();
@@ -116,12 +118,12 @@ class UserService with ChangeNotifier {
       String email, String password) async {
     try {
       var fbUser = (await _auth.signInWithEmailAndPassword(
-              email: email, password: password))
+              email: email.trim(), password: password.trim()))
           .user;
 
       updateFirebaseUserDataToDB(fbUser);
       final prefs = await SharedPreferences.getInstance();
-      prefs.setString("email", json.encode(email));
+      prefs.setString("email", email);
       prefs.setString("password", password);
       // Save emeail and password in prefernece
       return fbUser;

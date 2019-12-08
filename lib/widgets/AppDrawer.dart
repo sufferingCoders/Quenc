@@ -25,7 +25,7 @@ class AppDrawer extends StatelessWidget {
                   // Navigator.of(context)
                   //     .pushReplacementNamed(MainScreen.routeName);
                   Navigator.popUntil(context, ModalRoute.withName("/"));
-                  Provider.of<UserService>(context).signOut();
+                  UserService().signOut();
                 }),
           ],
         ),

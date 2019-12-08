@@ -45,7 +45,7 @@ class _PostAddingFullScreenDialogState
         await Provider.of<PostService>(ctx, listen: false).addPost(post);
 
     // Add to the user collection
-    Provider.of<UserService>(ctx).addPostToUser(postID, post.author);
+    UserService().addPostToUser(postID, post.author);
 
     Navigator.of(ctx).pop();
   }
