@@ -363,8 +363,22 @@ class _PostAddingFullScreenDialogState
                                                           FontWeight.bold),
                                                 ),
                                                 onPressed: () {
-                                                  contentController.text +=
-                                                      currentUploadURL + "/n";
+                                                  var cursorPost =
+                                                      contentController
+                                                          .selection;
+                                                  var idx = cursorPost.start;
+                                                  contentController
+                                                      .text = contentController
+                                                          .text
+                                                          .substring(0, idx) +
+                                                      "\n" +
+                                                      currentUploadURL +
+                                                      "\n" +
+                                                      contentController.text
+                                                          .substring(
+                                                              idx,
+                                                              contentController
+                                                                  .text.length);
                                                   _uploadTask = null;
                                                   currentFilePath = null;
                                                   currentUploadURL = null;
