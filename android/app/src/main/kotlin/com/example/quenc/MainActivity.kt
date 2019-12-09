@@ -1,4 +1,4 @@
-package com.example.quenc
+package com.hlc.quenc
 
 import android.os.Bundle
 
