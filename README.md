@@ -83,3 +83,27 @@ Solution:
 ```
 
 
+### Execution failed for task ':app:preDebugBuild'.
+
+Solution: 
+更改 android/build.gradle 中的 
+
+
+```
+
+buildscript {
+    ext.kotlin_version = '1.3.0' // 1.2.71 => 1.3.0
+    repositories {
+        google()
+        jcenter()
+    }
+
+   dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.1' // 3.2.1 => 3.3.1
+        classpath 'com.google.gms:google-services:4.2.0'      
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+
+}
+    
+```
