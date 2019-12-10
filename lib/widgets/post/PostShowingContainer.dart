@@ -79,16 +79,19 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
                 ),
               ),
               Padding(
-                  padding: const EdgeInsets.only(left: 12.0, top: 10),
-                  child: Text("${postService?.posts[idx]?.content ?? ""}",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 15,
+                padding: const EdgeInsets.only(left: 12.0, top: 10),
+                child: Text(
+                  "${postService?.posts[idx]?.content ?? ""}",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
 
-                        //   fontWeight: FontWeight.bold,
-                        // ),
-                      )))
+                    //   fontWeight: FontWeight.bold,
+                    // ),
+                  ),
+                ),
+              )
             ],
           ),
           title: Row(
@@ -116,6 +119,18 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
               ),
             ],
           ),
+          trailing: Builder(builder: (context) {
+            String photo = postService?.posts[idx]?.previewPhoto;
+            if (photo == null) {
+              return Container();
+            }
+
+            return Image.network(postService?.posts[idx]?.previewPhoto);
+
+            // return postService?.posts[idx]?.previewPhoto != null
+            //     ? Image.network(postService?.posts[idx]?.previewPhoto)
+            //     : Container();
+          }),
         );
       },
     );

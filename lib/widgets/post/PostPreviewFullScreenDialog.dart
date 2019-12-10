@@ -1,9 +1,11 @@
+import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
 import 'package:markdown/markdown.dart' as mk;
 import 'package:quenc/models/Post.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostPreviewFullScreenDialog extends StatelessWidget {
   final Post post;
@@ -102,7 +104,6 @@ class PostPreviewFullScreenDialog extends StatelessWidget {
                     post.content.replaceAll("\n", "</br>"),
                     extensionSet: mk.ExtensionSet.gitHubWeb,
                   );
-
                   // return Html(
                   //   useRichText: true,
                   //   data: mdText,
@@ -110,6 +111,20 @@ class PostPreviewFullScreenDialog extends StatelessWidget {
                   // );
                   return HtmlWidget(
                     mdText,
+                    onTapUrl: (url) async {
+                      if (await canLaunch(url)) {
+                        await launch(url);
+                      } else {
+                        ClipboardManager.copyToClipBoard(url).then((r) {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("無法顯示此網址, 但已將此網址複製至剪貼簿"),
+                            duration: Duration(
+                              seconds: 3,
+                            ),
+                          ));
+                        });
+                      }
+                    },
                   );
                 },
               ),
