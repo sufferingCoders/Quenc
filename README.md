@@ -24,7 +24,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|儲存和顯示MarkDown|Must Have|儲存MarkDown到Firestore, 用RichText顯示| Richard | 10 Dec 2019 |
 |<ul><li>- [x] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | 13 Dec 2019|
 |<ul><li>- [x] </li></ul>|顯示回文|Must Have|在帖子下顯示回文| Richard | 13 Dec 2019|
-|<ul><li>- [x] </li></ul>|顯示熱門回文|Must Have|在帖子下顯示Top3 熱門回文| Richard | |
+|<ul><li>- [x] </li></ul>|顯示熱門回文|Must Have|在帖子下顯示Top3 熱門回文| Richard |13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|Like回文|Must Have|點擊愛心,喜歡Comment| Richard | 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Richard| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard| 13 Dec 2019 |
