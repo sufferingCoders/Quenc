@@ -27,6 +27,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|Like回文|Must Have|點擊愛心,喜歡Comment| Richard | 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Richard| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard| 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|個人資訊|Must Have|使用者能修改個人資訊| Richard| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|已收藏的頁面|Must Have|顯示已收藏的帖子| Richard | 13 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|舉報按鈕|Must Have|可以舉報回文或文章| 請認領 ||
 |<ul><li>- [x] </li></ul>|Refactor|Must Have|Refore優化使用性能| Richard| |
