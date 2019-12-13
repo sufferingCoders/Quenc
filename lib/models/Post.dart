@@ -1,43 +1,81 @@
 class Post {
   String id;
   String author;
+  String authorName; // For displaying
+  String authorGender; // For displaying
   String title;
   String content;
   DateTime createdAt;
   DateTime updatedAt;
   bool anonymous;
-  // int likeCount;
-  // int archiveCount;
-  // int commentCount;
-  List<String> likeBy;
-  List<String> archiveBy;
-  List<String> comments;
+  String previewText;
+  String previewPhoto;
+  int likeCount;
+  int archiveCount;
+  int commentCount;
+  // List<dynamic> likeBy;
+  // List<dynamic> archiveBy;
+  // List<dynamic> comments;
 
-  Post(
-      {this.author,
-      this.id,
-      this.title,
-      this.content,
-      this.createdAt,
-      this.updatedAt,
-      this.likeBy,
-      this.archiveBy,
-      this.comments,
-      this.anonymous});
+  Post({
+    this.previewPhoto,
+    this.author,
+    this.id,
+    this.title,
+    this.content,
+    this.createdAt,
+    this.updatedAt,
+    // this.likeBy,
+    // this.archiveBy,
+    // this.comments,
+    this.anonymous,
+    this.authorGender,
+    this.authorName,
+    this.previewText,
+    this.likeCount,
+    this.archiveCount,
+    this.commentCount,
+  });
 
   factory Post.fromMap(Map data) {
     return Post(
       id: data["id"] ?? "",
+      authorName: data["authorName"] ?? "",
+      authorGender: data["authorGender"] ?? "",
       author: data["author"] ?? "",
       title: data["title"] ?? "",
       content: data["content"] ?? "",
-      createdAt: data["createdAt"] ?? DateTime.now(),
-      updatedAt: data["updatedAt"] ?? DateTime.now(),
-      likeBy: data["likeBy"] ?? [],
-      archiveBy: data["archiveBy"] ?? [],
-      comments: data["comments"] ?? [],
+      createdAt: data["createdAt"]?.toDate() ?? DateTime.now(),
+      updatedAt: data["updatedAt"]?.toDate() ?? DateTime.now(),
+      // likeBy: data["likeBy"]?.cast<List<String>>() ?? [],
+      // archiveBy: data["archiveBy"]?.cast<List<String>>() ?? [],
+      // comments: data["comments"]?.cast<List<String>>() ?? [],
       anonymous: data["anonymous"] ?? true,
+      previewPhoto: data["previewPhoto"],
+      previewText: data["previewText"] ?? "",
+      likeCount: data["likeCount"] ?? 0,
+      archiveCount: data["archiveCount"] ?? 0,
     );
+  }
+
+  Map<String, dynamic> toMapWithoutId() {
+    return {
+      "author": author,
+      "title": title,
+      "content": content,
+      "createdAt": createdAt,
+      "updatedAt": updatedAt,
+      // "likeBy": likeBy,
+      // "archiveBy": archiveBy,
+      // "comments": comments,
+      "authorName": authorName,
+      "authorGender": authorGender,
+      "anonymous": anonymous,
+      "previewPhoto": previewPhoto,
+      "previewText": previewText,
+      "likeCount": likeCount,
+      "archiveCount": archiveCount,
+    };
   }
 
   Map<String, dynamic> toMap() {
@@ -48,10 +86,15 @@ class Post {
       "content": content,
       "createdAt": createdAt,
       "updatedAt": updatedAt,
-      "likeBy": likeBy,
-      "archiveBy": archiveBy,
-      "comments": comments,
+      // "likeBy": likeBy,
+      // "archiveBy": archiveBy,
+      // "comments": comments,
+      "authorName": authorName,
+      "authorGender": authorGender,
       "anonymous": anonymous,
+      "previewPhoto": previewPhoto,
+      "previewText": previewText,
+      "likeCount": likeCount,
     };
   }
 }

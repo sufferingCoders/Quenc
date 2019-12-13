@@ -1,9 +1,17 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostService.dart';
-import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/utils/index.dart';
+import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
+import 'package:quenc/widgets/common/ScrollHideSliverAppBar.dart';
+import 'package:quenc/widgets/post/PostEditingForm.dart';
+import 'package:quenc/widgets/post/PostPreviewFullScreenDialog.dart';
 
 // This one should be able for editing and addding
 class PostAddingFullScreenDialog extends StatefulWidget {
@@ -15,15 +23,49 @@ class PostAddingFullScreenDialog extends StatefulWidget {
 class _PostAddingFullScreenDialogState
     extends State<PostAddingFullScreenDialog> {
   final _form = GlobalKey<FormState>();
+  final FirebaseStorage _storage =
+      FirebaseStorage(storageBucket: "gs://quenc-hlc.appspot.com");
+
+  StorageUploadTask _uploadTask;
+  String currentUploadURL;
+  String currentFilePath;
+
+  TextEditingController contentController = TextEditingController();
+
+  void _startUploadImage() {
+    currentFilePath = "images/${DateTime.now()}.png";
+    setState(() {
+      _uploadTask =
+          _storage.ref().child(currentFilePath).putFile(currentInsertImage);
+    });
+  }
+
+  void currentUploadURLUpdater(dynamic url) {
+    String urlString = url as String;
+
+    if (currentUploadURL == urlString) {
+      return;
+    }
+
+    setState(() {
+      currentUploadURL = url as String;
+    });
+  }
+
+  File currentInsertImage;
 
   Post post = Post(
     anonymous: false,
     title: "",
     content: "",
-    comments: [],
-    archiveBy: [],
-    likeBy: [],
   );
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    contentController.text = post.content;
+  }
 
   void _submit(BuildContext ctx) {
     if (!_form.currentState.validate()) {
@@ -34,120 +76,147 @@ class _PostAddingFullScreenDialogState
     addPost(context);
   }
 
-  void addPost(BuildContext ctx) async {
-    // Initialise the fields
-    post.author = Provider.of<User>(ctx, listen: false).uid;
+  void addingImageMarkdownToContent() {
+    String addingImageMd =
+        "\n" + "![圖片載入中...](" + currentUploadURL + ")" + "\n";
+
+    var cursorPosition = contentController.selection;
+    var idx = cursorPosition.start;
+
+    if (idx != -1) {
+      contentController.text = contentController.text.substring(0, idx) +
+          addingImageMd +
+          contentController.text.substring(idx, contentController.text.length);
+    } else {
+      contentController.text += addingImageMd;
+    }
+
+    if (cursorPosition.start > contentController.text.length) {
+      cursorPosition = TextSelection.fromPosition(
+        TextPosition(offset: contentController.text.length),
+      );
+
+      contentController.selection = cursorPosition;
+    } else {
+      contentController.selection = TextSelection.fromPosition(
+          TextPosition(offset: cursorPosition.start + addingImageMd.length));
+    }
+
+    // contentController.selection =
+    //     TextSelection.collapsed(
+    //         offset: contentController.text.length );
+    setState(() {
+      _uploadTask = null;
+      currentFilePath = null;
+      currentUploadURL = null;
+      currentInsertImage = null;
+    });
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    File selected = await ImagePicker.pickImage(source: source);
+
+    setState(() {
+      currentInsertImage = selected;
+    });
+  }
+
+  Future<void> _cropImage() async {
+    File cropped = await ImageCropper.cropImage(
+      sourcePath: currentInsertImage.path,
+      compressFormat: ImageCompressFormat.png,
+      // ratioX: 1.0,
+      // ratioY: 1.0,
+      // maxWidth: 512,
+      // maxHeight: 512,
+    );
+
+    setState(() {
+      currentInsertImage = cropped ?? currentInsertImage;
+    });
+  }
+
+  void postCompleteFields() {
+    var u = Provider.of<User>(context, listen: false);
+    post.author = u.uid;
+    post.authorGender = u.gender;
+    post.authorName = Utils.getDisplayNameFromEmail(u.email);
+    post.previewPhoto = Utils.getFirstImageURLFromMarkdown(post.content);
     post.createdAt = DateTime.now();
     post.updatedAt = DateTime.now();
+    post.previewText = Utils.getPreviewTextFromContent(post.content);
+  }
 
-    // Add to the post collection
-    String postID =
-        await Provider.of<PostService>(ctx, listen: false).addPost(post);
-
-    // Add to the user collection
-    UserService().addPostToUser(postID, post.author);
-
+  void addPost(BuildContext ctx) async {
+    postCompleteFields();
+    await Provider.of<PostService>(ctx, listen: false).addPost(post);
     Navigator.of(ctx).pop();
+  }
+
+  bool prepairPostForPreview() {
+    if (!_form.currentState.validate()) {
+      return false;
+    }
+    _form.currentState.save();
+    postCompleteFields();
+    return true;
+  }
+
+  void previewButtonPress() {
+    bool ok = prepairPostForPreview();
+    if (ok) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) {
+            final dialog = PostPreviewFullScreenDialog(
+              // inputText: contentController.text,
+              post: post,
+            );
+            return dialog;
+          },
+          fullscreenDialog: true,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("新增文章"),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: RaisedButton(
-              child: Text("發表"),
-              onPressed: () {
-                _submit(context);
-              },
-            ),
-          ),
-        ],
-      ),
-      body: Form(
-        key: _form,
-        child: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Flexible(
-                  flex: 3,
-                  fit: FlexFit.loose,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      initialValue: post.title,
-                      decoration: const InputDecoration(
-                        labelText: "標題",
-                        border: const OutlineInputBorder(),
-                      ),
-                      onSaved: (v) {
-                        post.title = v;
-                      },
-                      validator: (v) {
-                        if (v == null || v.isEmpty) {
-                          return "請輸入標題";
-                        }
-
-                        if (v.length > 20) {
-                          return "標題不可多於20個字元";
-                        }
-
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.loose,
-                  child: CheckboxListTile(
-                    secondary: Text("匿名"),
-                    // title: Text("匿名"),
-                    value: post.anonymous,
-                    onChanged: (v) {
-                      setState(() {
-                        post.anonymous = v;
-                      });
-                    },
-                  ),
+      body: NestedScrollView(
+        headerSliverBuilder: (ctx, innerBoxIsScrolled) {
+          return <Widget>[
+            ScrollHideSliverAppBar(
+              titleText: "新增文章",
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    _submit(context);
+                  },
                 )
               ],
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  initialValue: post.title,
-                  minLines: 5,
-                  maxLines: 20,
-                  decoration: const InputDecoration(
-                    labelText: "內容",
-                    border: const OutlineInputBorder(),
-                  ),
-                  onSaved: (v) {
-                    // Adding the Markdown parserr here
-                    post.content = v;
-                  },
-                  validator: (v) {
-                    if (v == null || v.isEmpty) {
-                      return "請輸入內容";
-                    }
-
-                    if (v.length < 20) {
-                      return "內容必須多餘20個字元";
-                    }
-
-                    return null;
-                  },
-                ),
-              ),
-            ),
-          ],
+          ];
+        },
+        body: PostEditingForm(
+          form: _form,
+          post: post,
+          contentController: contentController,
         ),
+      ),
+      resizeToAvoidBottomInset: true,
+      bottomNavigationBar: PostAddingBottomNavigationBar(
+        addingImageMarkdownToContent: addingImageMarkdownToContent,
+        cropImage: _cropImage,
+        currentUploadURLUpdater: currentUploadURLUpdater,
+        startUploadImage: _startUploadImage,
+        pickImage: _pickImage,
+        currentInsertImage: currentInsertImage,
+        uploadTask: _uploadTask,
+        currentFilePath: currentFilePath,
+        previewButtonPress: previewButtonPress,
       ),
     );
   }
