@@ -32,7 +32,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|已收藏的頁面|Must Have|顯示已收藏的帖子| Richard | 13 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|舉報按鈕|Must Have|可以舉報回文或文章| 請認領 ||
 |<ul><li>- [ ] </li></ul>|編輯帖子|Must Have|作者可以編輯帖子| 請認領 ||
-|<ul><li>- [] </li></ul>|Refactor|Must Have|Refore優化使用性能| Richard| |
+|<ul><li>- [ ] </li></ul>|Refactor|Must Have|Refore優化使用性能| Richard| |
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
 |<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
 |<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| 請認領 | |
