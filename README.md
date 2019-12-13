@@ -23,7 +23,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|顯示帖子Trailing圖片|Must Have|在Trailing的地方顯示PreviewImage| Richard | 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|儲存和顯示MarkDown|Must Have|儲存MarkDown到Firestore, 用RichText顯示| Richard | 10 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | 13 Dec 2019|
-|<ul><li>- [ ] </li></ul>|顯示回文在帖子下|Must Have|使用者能在帖子下回文| Richard ||
+|<ul><li>- [ ] </li></ul>|顯示回文|Must Have|在帖子下顯示回文| Richard ||
 |<ul><li>- [x] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Richard| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard| 13 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|已收藏的頁面|Must Have|顯示已收藏的帖子| 請認領 ||
