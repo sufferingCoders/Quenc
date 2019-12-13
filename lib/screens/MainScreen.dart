@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/providers/PostService.dart';
-
-import 'package:quenc/widgets/AppDrawer.dart';
+import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
@@ -37,9 +36,22 @@ class _MainScreenState extends State<MainScreen> {
     var postService = Provider.of<PostService>(context);
     return Scaffold(
       appBar: AppBar(
+        // automaticallyImplyLeading: true,
+        centerTitle: true,
         title: Text("QuenC"),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(ProfileScreen.routeName);
+            },
+            icon: Icon(
+              Icons.account_circle,
+              size: 30,
+            ),
+          )
+        ],
       ),
-      drawer: AppDrawer(),
+      // drawer: AppDrawer(),
       body: RefreshIndicator(
         onRefresh: () async {
           postService.initialisePosts();

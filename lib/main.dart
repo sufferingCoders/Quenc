@@ -5,12 +5,13 @@ import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/screens/ArchivePostsScreen.dart';
 import 'package:quenc/screens/AuthScreen.dart';
 import 'package:quenc/screens/EmailVerificationScreen.dart';
 import 'package:quenc/screens/MainScreen.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
+import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   // Brightness brightness;
@@ -65,6 +66,16 @@ class MyApp extends StatelessWidget {
                       final String postId = setting.arguments;
                       return PostDetailScreen(
                         postId: postId,
+                      );
+                    },
+                  );
+                }
+
+                if (setting.name == UserAttributeSettingScreen.routeName) {
+                  return MaterialPageRoute(
+                    builder: (context) {
+                      return UserAttributeSettingScreen(
+                        user: setting.arguments as User,
                       );
                     },
                   );
@@ -132,6 +143,8 @@ class MyApp extends StatelessWidget {
                     ),
               routes: {
                 // MainScreen.routeName: (ctx) => MainScreen(),
+                ProfileScreen.routeName: (ctx) => ProfileScreen(),
+                ArchivePostScreen.routeName: (ctx) => ArchivePostScreen(),
               },
             ),
           );

@@ -14,9 +14,17 @@ class AttributeSettingCard extends StatefulWidget {
 
 class _AttributeSettingCardState extends State<AttributeSettingCard> {
   final List<String> _allGenders = ["male", "female"];
-  String _gender;
+  String _gender = "male";
   DateTime pickedDOB = DateTime.now();
   TextEditingController majorController = TextEditingController();
+
+  @override
+  void initState() {
+    majorController.text = widget.user?.major ?? "";
+
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -36,7 +44,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
             child: InkWell(
               onTap: () async {
                 var picked = await showDatePicker(
-                  initialDate: pickedDOB,
+                  initialDate: widget.user?.dob ?? pickedDOB,
                   context: context,
                   firstDate: DateTime(1900, 1),
                   lastDate: DateTime.now(),
@@ -69,7 +77,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
               ),
               isEmpty: _gender == null || _gender.isEmpty,
               child: DropdownButton<String>(
-                value: _gender,
+                value: widget.user?.gender ?? _gender,
                 onChanged: (v) {
                   setState(() {
                     _gender = v;
@@ -88,7 +96,8 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
+            child: TextFormField(
+              // initialValue: widget.user?.major ?? "",
               decoration: const InputDecoration(
                 labelText: "Major",
               ),

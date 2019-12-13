@@ -95,6 +95,16 @@ class PostService with ChangeNotifier {
     }
   }
 
+  Future<List<Post>> getMultiplePostsByIds(List<String> ids) async {
+    List<Post> retrievedPosts = [];
+    var docs =
+        await _db.collection("posts").where("id", whereIn: ids).getDocuments();
+    for (var d in docs.documents) {
+      retrievedPosts.add(Post.fromMap(d.data));
+    }
+    return retrievedPosts;
+  }
+
   Future<void> updatePost(
       String postId, Map<String, dynamic> updateFields) async {
     DocumentReference ref = _db.collection("posts").document(postId);

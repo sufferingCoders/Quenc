@@ -123,9 +123,6 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 15,
-
-                          //   fontWeight: FontWeight.bold,
-                          // ),
                         ),
                       ),
                     )

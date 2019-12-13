@@ -11,6 +11,23 @@ class CommentService with ChangeNotifier {
   final Firestore _db = Firestore.instance;
   final int _pageSize = 50;
 
+  Future<List<Comment>> getTopLikedCommentsForPost(
+      String postId, int top) async {
+    List<Comment> retrivedComments = [];
+    var ref = _db
+        .collection("comments")
+        .where("belongPost", isEqualTo: postId)
+        .orderBy("likeCount", descending: true)
+        .limit(top);
+    var docs = await ref.getDocuments();
+
+    for (DocumentSnapshot d in docs.documents) {
+      retrivedComments.add(Comment.fromMap(d.data));
+    }
+
+    return retrivedComments;
+  }
+
   Future<List<Comment>> getCommentForPost(
     String postId, {
     CommentOrderByOptions orderBy,
