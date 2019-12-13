@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:quenc/providers/UserService.dart';
-import 'package:quenc/screens/MainScreen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override

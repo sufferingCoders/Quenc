@@ -4,6 +4,7 @@ import 'package:quenc/widgets/AppDrawer.dart';
 import 'package:quenc/widgets/Auth/EmailCheckingNotification.dart';
 
 class EmailVerificationScreen extends StatelessWidget {
+  static const String routeName = "/email-verification";
   final FirebaseUser fbUser;
 
   EmailVerificationScreen({this.fbUser});

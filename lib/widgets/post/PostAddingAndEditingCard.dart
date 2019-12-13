@@ -26,9 +26,9 @@ class PostAddingAndEditingCard extends StatefulWidget {
         anonymous: false,
         title: "",
         content: "",
-        comments: [],
-        archiveBy: [],
-        likeBy: [],
+        // comments: [],
+        // archiveBy: [],
+        // likeBy: [],
       );
     }
   }

@@ -18,10 +18,22 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|Email認證|Must Have|認證學校Email| Richard | 06 Dec 2019|
 |<ul><li>- [x] </li></ul>|登入|Must Have|Firebase 學校Email登入功能| Richard | 06 Dec 2019|
 |<ul><li>- [x] </li></ul>|發帖|Must Have|使用者登入後能發帖| Richard | 08 Dec 2019 |
-|<ul><li>- [ ] </li></ul>|顯示帖子ListView|Must Have|能使用Card的方式瀏覽貼文| Richard | |
-|<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | |
-|<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Fei | |
-|<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| Fei | |
+|<ul><li>- [x] </li></ul>|發帖時能加入圖片|Must Have|加入圖片到帖子裡面| Richard | 09 Dec 2019 |
+|<ul><li>- [x] </li></ul>|顯示帖子ListView|Must Have|能使用Card的方式瀏覽貼文| Richard | 08 Dec 2019 |
+|<ul><li>- [x] </li></ul>|顯示帖子Trailing圖片|Must Have|在Trailing的地方顯示PreviewImage| Richard | 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|儲存和顯示MarkDown|Must Have|儲存MarkDown到Firestore, 用RichText顯示| Richard | 10 Dec 2019 |
+|<ul><li>- [x] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | 13 Dec 2019|
+|<ul><li>- [x] </li></ul>|顯示回文|Must Have|在帖子下顯示回文| Richard | 13 Dec 2019|
+|<ul><li>- [x] </li></ul>|顯示熱門回文|Must Have|在帖子下顯示Top3 熱門回文| Richard |13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|Like回文|Must Have|點擊愛心,喜歡Comment| Richard | 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Richard & Fei| 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard & Fei| 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|個人資訊|Must Have|使用者能修改個人資訊| Richard| 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|已收藏的頁面|Must Have|顯示已收藏的帖子| Richard | 13 Dec 2019 |
+|<ul><li>- [ ] </li></ul>|舉報按鈕|Must Have|可以舉報回文或文章| 請認領 ||
+|<ul><li>- [ ] </li></ul>|編輯帖子|Must Have|作者可以編輯帖子| 請認領 ||
+|<ul><li>- [x] </li></ul>|Refactor|Must Have|Refore優化使用性能| Richard| 14 Dec 2019|
+|<ul><li>- [ ] </li></ul>|加註釋|Must Have|給所有Widgets和functions加上註釋| Richard||
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
 |<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
 |<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| Fei | |
@@ -81,3 +93,27 @@ Solution:
 ```
 
 
+### Execution failed for task ':app:preDebugBuild'.
+
+Solution: 
+更改 android/build.gradle 中的 
+
+
+```
+
+buildscript {
+    ext.kotlin_version = '1.3.0' // 1.2.71 => 1.3.0
+    repositories {
+        google()
+        jcenter()
+    }
+
+   dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.1' // 3.2.1 => 3.3.1
+        classpath 'com.google.gms:google-services:4.2.0'      
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+
+}
+    
+```

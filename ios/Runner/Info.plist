@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need the image for posts</string>
+	<key>NSCameraUsageDescription</key>
+	<string>User can take a photo and add it into the post</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>User can record a vedio and add it into the post</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
