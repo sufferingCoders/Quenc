@@ -26,8 +26,8 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|顯示回文|Must Have|在帖子下顯示回文| Richard | 13 Dec 2019|
 |<ul><li>- [x] </li></ul>|顯示熱門回文|Must Have|在帖子下顯示Top3 熱門回文| Richard |13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|Like回文|Must Have|點擊愛心,喜歡Comment| Richard | 13 Dec 2019 |
-|<ul><li>- [x] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Richard| 13 Dec 2019 |
-|<ul><li>- [x] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard| 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Richard & Fei| 13 Dec 2019 |
+|<ul><li>- [x] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard & Fei| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|個人資訊|Must Have|使用者能修改個人資訊| Richard| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|已收藏的頁面|Must Have|顯示已收藏的帖子| Richard | 13 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|舉報按鈕|Must Have|可以舉報回文或文章| 請認領 ||
@@ -36,7 +36,7 @@ A new Flutter project.
 |<ul><li>- [ ] </li></ul>|加註釋|Must Have|給所有Widgets和functions加上註釋| Richard||
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
 |<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
-|<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| 請認領 | |
+|<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| Fei | |
 
 
 ## Flutter 資源
