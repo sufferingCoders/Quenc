@@ -23,8 +23,8 @@ A new Flutter project.
 |<ul><li>- [ ] </li></ul>|顯示帖子Trailing圖片|Must Have|在Trailing的地方顯示PreviewImage| Richard |  |
 |<ul><li>- [x] </li></ul>|儲存和顯示MarkDown|Must Have|儲存MarkDown到Firestore, 用RichText顯示| Richard | 10 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|回文|Must Have|使用者能在帖子下回文| Richard | |
-|<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| 請認領 | |
-|<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| 請認領 | |
+|<ul><li>- [ ] </li></ul>|按讚|Must Have|使用者能對帖子按讚| Richard||
+|<ul><li>- [ ] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard||
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
 |<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
 |<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| 請認領 | |
