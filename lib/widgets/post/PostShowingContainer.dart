@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
 
 class PostShowingContainer extends StatefulWidget {
@@ -115,20 +113,22 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
                       // textAlign: TextAlign.center,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0, top: 5),
-                    child: Text(
-                      "${widget.posts[idx]?.previewText ?? ""}",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 15,
+                  if (widget.posts[idx]?.previewText != null &&
+                      widget.posts[idx]?.previewText?.isNotEmpty == true)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12.0, top: 5),
+                      child: Text(
+                        "${widget.posts[idx]?.previewText ?? ""}",
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
 
-                        //   fontWeight: FontWeight.bold,
-                        // ),
+                          //   fontWeight: FontWeight.bold,
+                          // ),
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ],
               ),
               title: Row(

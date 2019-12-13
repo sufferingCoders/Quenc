@@ -27,7 +27,7 @@ class UserService {
 
   Future<int> toggleCommentLike(String commentId, User user) async {
     if (user.likeComments.contains(commentId)) {
-      await _db.collection("usesr").document(user.uid).updateData({
+      await _db.collection("users").document(user.uid).updateData({
         "likeComments": FieldValue.arrayRemove([commentId]),
       });
 
@@ -36,7 +36,7 @@ class UserService {
       });
       return -1;
     } else {
-      await _db.collection("usesr").document(user.uid).updateData({
+      await _db.collection("users").document(user.uid).updateData({
         "likeComments": FieldValue.arrayUnion([commentId]),
       });
 

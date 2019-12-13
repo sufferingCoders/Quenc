@@ -223,10 +223,27 @@ class PostDetailScreen extends StatelessWidget {
                     height: 5,
                   ),
                 ),
+
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * .2,
+                ),
                 // Showing the comment here
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Divider(
+                    color: Colors.black,
+                    indent: 10,
+                    endIndent: 10,
+                    height: 5,
+                  ),
+                ),
                 FutureBuilder(
-                  future: Provider.of<CommentService>(context)
-                      .getCommentForPost(post.id),
+                  future:
+                      Provider.of<CommentService>(context).getCommentForPost(
+                    post.id,
+                    orderBy: CommentOrderByOptions.ByCreatedAt,
+                  ),
                   builder: (ctx, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Padding(
@@ -272,34 +289,46 @@ class PostDetailScreen extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 8.0, vertical: 4.0),
                               child: ListTile(
-                                leading: Icon(
-                                  Icons.account_circle,
-                                  color: c.authorGender == "male"
-                                      ? Colors.blue
-                                      : Colors.pink,
-                                  size: 35,
-                                ),
-                                // isThreeLine: true,
-                                title: Text(
-                                  "${c.authorName}",
-                                  style: TextStyle(
-                                    fontSize: 13,
+                                  leading: Icon(
+                                    Icons.account_circle,
+                                    color: c.authorGender == "male"
+                                        ? Colors.blue
+                                        : Colors.pink,
+                                    size: 35,
                                   ),
-                                ),
-                                // subtitle: Text("${post.authorName}"),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 30, vertical: 4.0),
-                              child: Text(
-                                "${DateFormat("h:mm a   dd, MMM, yyyy").format(c.createdAt)}",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                                  isThreeLine: true,
+                                  title: Text(
+                                    "${c.authorName}",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    "${DateFormat("h:mm a   dd, MMM, yyyy").format(c.createdAt)}",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  trailing: Consumer<User>(
+                                    builder: (ctx, user, ch) {
+                                      return IconButton(
+                                        color: user.likeComments.contains(c.id)
+                                            ? Colors.pink
+                                            : Colors.grey,
+                                        icon: Icon(Icons.favorite),
+                                        onPressed: () {
+                                          userService.toggleCommentLike(
+                                            c.id,
+                                            user,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  )
+                                  // subtitle: Text("${post.authorName}"),
+                                  ),
                             ),
                             Padding(
                                 padding: const EdgeInsets.symmetric(

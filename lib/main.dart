@@ -9,24 +9,23 @@ import 'package:quenc/screens/AuthScreen.dart';
 import 'package:quenc/screens/EmailVerificationScreen.dart';
 import 'package:quenc/screens/MainScreen.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
-import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-  Brightness brightness;
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  if (!prefs.containsKey("brightness")) {
-    brightness = Brightness.light;
-  }
+  // Brightness brightness;
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // if (!prefs.containsKey("brightness")) {
+  //   brightness = Brightness.light;
+  // }
 
-  if (prefs.getString("brightness") == "dark") {
-    brightness = Brightness.dark;
-  } else {
-    brightness = Brightness.light;
-  }
+  // if (prefs.getString("brightness") == "dark") {
+  //   brightness = Brightness.dark;
+  // } else {
+  //   brightness = Brightness.light;
+  // }
   return runApp(MyApp(
-    brightness: brightness,
+    brightness: Brightness.light,
   ));
 }
 
