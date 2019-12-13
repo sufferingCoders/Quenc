@@ -25,6 +25,84 @@ class UserService {
    * Adding Post or Comment to User
    */
 
+  Future<int> toggleCommentLike(String commentId, User user) async {
+    if (user.likeComments.contains(commentId)) {
+      await _db.collection("usesr").document(user.uid).updateData({
+        "likeComments": FieldValue.arrayRemove([commentId]),
+      });
+
+      await _db.collection("comments").document(commentId).updateData({
+        "likeCount": FieldValue.increment(-1),
+      });
+      return -1;
+    } else {
+      await _db.collection("usesr").document(user.uid).updateData({
+        "likeComments": FieldValue.arrayUnion([commentId]),
+      });
+
+      await _db.collection("comments").document(commentId).updateData({
+        "likeCount": FieldValue.increment(1),
+      });
+      return 1;
+    }
+  }
+
+  Future<int> togglePostLike(String postId, User user) async {
+    if (user.likePosts.contains(postId)) {
+      // Dislike the post
+      await _db.collection("users").document(user.uid).updateData({
+        "likePosts": FieldValue.arrayRemove([postId]),
+      });
+
+      await _db.collection("posts").document(postId).updateData(
+        {
+          "likeCount": FieldValue.increment(-1),
+        },
+      );
+
+      return -1;
+    } else {
+      await _db.collection("users").document(user.uid).updateData({
+        "likePosts": FieldValue.arrayUnion([postId]),
+      });
+
+      await _db.collection("posts").document(postId).updateData(
+        {
+          "likeCount": FieldValue.increment(1),
+        },
+      );
+
+      return 1;
+    }
+  }
+
+  Future<int> togglePostArchive(String postId, User user) async {
+    if (user.archivePosts.contains(postId)) {
+      // Dislike the post
+      await _db.collection("users").document(user.uid).updateData({
+        "archivePosts": FieldValue.arrayRemove([postId]),
+      });
+
+      await _db.collection("posts").document(postId).updateData(
+        {
+          "likeCount": FieldValue.increment(-1),
+        },
+      );
+      return -1;
+    } else {
+      await _db.collection("users").document(user.uid).updateData({
+        "archivePosts": FieldValue.arrayUnion([postId]),
+      });
+
+      await _db.collection("posts").document(postId).updateData(
+        {
+          "likeCount": FieldValue.increment(1),
+        },
+      );
+      return 1;
+    }
+  }
+
   Future<void> addPostToUser(postID, userId) async {
     await _db.collection("users").document(userId).updateData({
       "posts": FieldValue.arrayUnion([postID])

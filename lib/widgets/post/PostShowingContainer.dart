@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quenc/models/Post.dart';
 import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/screens/PostDetailScreen.dart';
 
 class PostShowingContainer extends StatefulWidget {
+  final List<Post> posts;
+  final Function infiniteScrollUpdater;
+
+  PostShowingContainer({
+    this.posts,
+    this.infiniteScrollUpdater,
+  });
+
   @override
   _PostShowingContainerState createState() => _PostShowingContainerState();
 }
@@ -15,22 +25,27 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var postService = Provider.of<PostService>(context, listen: false);
-    _controller.addListener(() {
-      var isEnd = _controller.offset == _controller.position.maxScrollExtent;
-      if (isEnd) {
-        setState(() {
-          // LoadingData Here
-          postService.getPosts();
-        });
-      }
-    });
+    // var postService = Provider.of<PostService>(context, listen: false);
+    _controller.addListener(
+      () {
+        var isEnd = _controller.offset == _controller.position.maxScrollExtent;
+        if (isEnd) {
+          // setState(() {
+          //   // LoadingData Here
+          //   postService.getPosts();
+          // });
+          widget.infiniteScrollUpdater();
+        }
+      },
+    );
 
     //Loading the initial data here
-    if (postService.posts.isEmpty || postService.posts.length == 0) {
-      // Initialise it
-      postService.initialisePosts();
-    }
+    // if (postService.posts == null ||
+    //     postService.posts.isEmpty ||
+    //     postService.posts.length == 0) {
+    //   // Initialise it
+    //   postService.initialisePosts();
+    // }
   }
 
   @override
@@ -42,17 +57,30 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
 
   @override
   Widget build(BuildContext context) {
-    var postService = Provider.of<PostService>(context);
+    // var postService = Provider.of<PostService>(context);
 
-    return ListView.separated(
-      separatorBuilder: (context, idx) {
-        return Divider(
-          color: Colors.grey,
-        );
-      },
+    // if (!postService.postIsInit) {
+    //   postService.tryInitPosts();
+    //   return Center(
+    //     child: CircularProgressIndicator(),
+    //   );
+    // }
+
+    if (widget.posts == null) {
+      return Center(
+        child: Text("無貼文"),
+      );
+    }
+
+    return ListView.builder(
+      // separatorBuilder: (context, idx) {
+      //   return Divider(
+      //     color: Colors.grey,
+      //   );
+      // },
       physics: const AlwaysScrollableScrollPhysics(),
       controller: _controller,
-      itemCount: postService.posts.length,
+      itemCount: widget.posts.length,
       itemBuilder: (ctx, idx) {
         // if (idx == 0) {
         //   return ListTile(
@@ -60,77 +88,97 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
         //   );
         // }
 
-        return ListTile(
-          isThreeLine: true,
-          subtitle: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 10),
-                child: Text(
-                  "${postService?.posts[idx]?.title ?? ""}",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
+        return Column(
+          children: <Widget>[
+            ListTile(
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  PostDetailScreen.routeName,
+                  arguments: widget.posts[idx].id,
+                );
+              },
+              isThreeLine: true,
+              subtitle: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 5),
+                    child: Text(
+                      "${widget.posts[idx]?.title ?? ""}",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      // textAlign: TextAlign.center,
+                    ),
                   ),
-                  // textAlign: TextAlign.center,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, top: 10),
-                child: Text(
-                  "${postService?.posts[idx]?.content ?? ""}",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 15,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 12.0, top: 5),
+                    child: Text(
+                      "${widget.posts[idx]?.previewText ?? ""}",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 15,
 
-                    //   fontWeight: FontWeight.bold,
-                    // ),
+                        //   fontWeight: FontWeight.bold,
+                        // ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              title: Row(
+                children: <Widget>[
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 8.0, right: 3.0, top: 8.0),
+                    child: Icon(
+                      Icons.account_circle,
+                      color: widget.posts[idx].authorGender == "male"
+                          ? Colors.blue
+                          : Colors.pink,
+                      size: 16,
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-          title: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-                child: Icon(
-                  Icons.account_circle,
-                  color: postService?.posts[idx].authorGender == "male"
-                      ? Colors.blue
-                      : Colors.pink,
-                  size: 25,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
-                child: Text(
-                  "${postService?.posts[idx]?.authorName}",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 13,
-                    // fontWeight: FontWeight.bold,
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 3.0, right: 8.0, top: 8.0),
+                      child: Text(
+                        "${widget.posts[idx]?.authorName}",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 13,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-          trailing: Builder(builder: (context) {
-            String photo = postService?.posts[idx]?.previewPhoto;
-            if (photo == null) {
-              return Container();
-            }
+              trailing: Builder(builder: (context) {
+                String photo = widget.posts[idx]?.previewPhoto;
 
-            return Image.network(postService?.posts[idx]?.previewPhoto);
+                if (photo == null) {
+                  return Container();
+                }
 
-            // return postService?.posts[idx]?.previewPhoto != null
-            //     ? Image.network(postService?.posts[idx]?.previewPhoto)
-            //     : Container();
-          }),
+                return Image.network(
+                  widget.posts[idx]?.previewPhoto,
+                  fit: BoxFit.fill,
+                );
+
+                // return postService?.posts[idx]?.previewPhoto != null
+                //     ? Image.network(postService?.posts[idx]?.previewPhoto)
+                //     : Container();
+              }),
+            ),
+            const Divider(),
+          ],
         );
       },
     );

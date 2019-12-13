@@ -5,18 +5,41 @@ import 'package:quenc/models/Post.dart';
 class PostService with ChangeNotifier {
   final Firestore _db = Firestore.instance;
   final int _pageSize = 50;
-  List<Post> _currentPosts = [];
+  List<Post> _currentPosts;
 
   List<Post> get posts {
     return _currentPosts;
   }
 
+  bool get postIsInit {
+    return _currentPosts != null;
+  }
+
   // It doesn't need the Service with WebSocket
 
+  Future<List<Post>> getPostForUser(String userId) async {
+    List<Post> retrievedPost = [];
+
+    var ref = await _db
+        .collection("posts")
+        .where("author", isEqualTo: userId)
+        .getDocuments();
+    for (var d in ref.documents) {
+      retrievedPost.add(Post.fromMap(d.data));
+    }
+
+    return retrievedPost;
+  }
+
   Future<String> addPost(Post post) async {
-    var ref = await _db.collection("posts").add(post.toMapWithoutId());
+    var ref = _db.collection("posts").document();
+    post.id = ref.documentID;
+    await ref.setData(post.toMap());
+    // var ref = await _db.collection("posts").add(post.toMapWithoutId());
     // Adding to the user data
     // Adinng in the local?
+    // await updatePost(ref.documentID, {"id": ref.documentID});
+
     return ref.documentID;
   }
 
@@ -27,6 +50,12 @@ class PostService with ChangeNotifier {
       {...(post.toMapWithoutId())},
       merge: true,
     );
+  }
+
+  Future<void> tryInitPosts() async {
+    if (!postIsInit) {
+      initialisePosts();
+    }
   }
 
   Future<void> initialisePosts() async {
@@ -48,6 +77,43 @@ class PostService with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<Post> getPostByID(String postId) async {
+    Post post;
+    try {
+      if (postId != null && postId.isNotEmpty) {
+        var postRef = await _db.collection("posts").document(postId).get();
+        if (postRef.exists) {
+          post = Post.fromMap(postRef.data);
+          return post;
+        } else {
+          return null;
+        }
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> updatePost(
+      String postId, Map<String, dynamic> updateFields) async {
+    DocumentReference ref = _db.collection("posts").document(postId);
+
+    return ref.setData(updateFields, merge: true);
+  }
+
+  // Future<void> toggleLike(Post post, String uid) async {
+  //   if (post.likeBy.contains(uid)) {
+  //     // Dislike the post
+  //     await _db.collection("posts").document(post.id).updateData({
+  //       "likedBy": FieldValue.arrayRemove([uid]),
+  //     });
+  //   } else {
+  //     await _db.collection("posts").document(post.id).updateData({
+  //       "likedBy": FieldValue.arrayRemove([uid]),
+  //     });
+  //   }
+  // }
 
   Future<void> getPosts() async {
     QuerySnapshot posts;

@@ -7,12 +7,31 @@ import 'package:quenc/widgets/AppDrawer.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   static const routeName = "/";
 
   FirebaseUser fbUser;
 
   MainScreen({this.fbUser});
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  bool isInit = false;
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+
+    if (!isInit) {
+      var postService = Provider.of<PostService>(context, listen: false);
+      postService.tryInitPosts();
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     var postService = Provider.of<PostService>(context);
@@ -25,7 +44,10 @@ class MainScreen extends StatelessWidget {
         onRefresh: () async {
           postService.initialisePosts();
         },
-        child: PostShowingContainer(),
+        child: PostShowingContainer(
+          posts: postService.posts,
+          infiniteScrollUpdater: postService.getPosts,
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),

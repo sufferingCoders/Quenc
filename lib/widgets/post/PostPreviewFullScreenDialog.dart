@@ -116,12 +116,14 @@ class PostPreviewFullScreenDialog extends StatelessWidget {
                         await launch(url);
                       } else {
                         ClipboardManager.copyToClipBoard(url).then((r) {
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            content: Text("無法顯示此網址, 但已將此網址複製至剪貼簿"),
-                            duration: Duration(
-                              seconds: 3,
+                          Scaffold.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("無法顯示此網址, 但已將此網址複製至剪貼簿"),
+                              duration: Duration(
+                                seconds: 3,
+                              ),
                             ),
-                          ));
+                          );
                         });
                       }
                     },

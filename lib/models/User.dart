@@ -9,9 +9,10 @@ class User {
   final String currentRoom;
   final String major;
   final DateTime dob;
-  List<String> posts;
-  List<String> comments;
 
+  List<String> likePosts;
+  List<String> likeComments;
+  List<String> archivePosts;
   User({
     this.displayName,
     this.email,
@@ -23,6 +24,9 @@ class User {
     this.gender,
     this.major,
     this.dob,
+    this.likePosts,
+    this.archivePosts,
+    this.likeComments,
   });
 
   factory User.fromMap(Map data) {
@@ -41,6 +45,9 @@ class User {
       gender: data["gender"] ?? "",
       major: data["major"] ?? "",
       dob: data["dob"]?.toDate() ?? DateTime.now(),
+      likePosts: data["likePosts"]?.cast<String>() ?? [],
+      likeComments: data["likeComments"]?.cast<String>() ?? [],
+      archivePosts: data["archivePosts"]?.cast<String>() ?? [],
     );
   }
 
@@ -66,6 +73,9 @@ class User {
       "gender": gender,
       "major": major,
       "dob": dob,
+      "likePosts": likePosts,
+      "archivePosts": archivePosts,
+      "likeComments": likeComments,
     };
   }
 }
