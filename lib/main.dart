@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/CommentService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/AuthScreen.dart';
@@ -48,6 +49,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: PostService(),
         ),
+
+        ChangeNotifierProvider.value(
+          value: CommentService(),
+        )
       ],
       child: Consumer<FirebaseUser>(
         builder: (ctx, fbUser, ch) {

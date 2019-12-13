@@ -4,8 +4,10 @@ import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart
 import 'package:intl/intl.dart';
 import 'package:markdown/markdown.dart' as mk;
 import 'package:provider/provider.dart';
+import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/CommentService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/widgets/comment/CommentAddingFullScreenDialog.dart';
@@ -210,6 +212,149 @@ class PostDetailScreen extends StatelessWidget {
                       );
                     },
                   ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Divider(
+                    color: Colors.black,
+                    indent: 10,
+                    endIndent: 10,
+                    height: 5,
+                  ),
+                ),
+                // Showing the comment here
+                FutureBuilder(
+                  future: Provider.of<CommentService>(context)
+                      .getCommentForPost(post.id),
+                  builder: (ctx, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Container(
+                            child: Text("載入評論中"),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Container(
+                            child: Text("評論載入錯誤"),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (snapshot.data == null || snapshot.data?.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Container(
+                            child: Text("未有評論"),
+                          ),
+                        ),
+                      );
+                    }
+
+                    List<Widget> allComments = [];
+                    List<Comment> retrievedComments = snapshot.data;
+                    for (var c in retrievedComments) {
+                      allComments.add(Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 4.0),
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.account_circle,
+                                  color: c.authorGender == "male"
+                                      ? Colors.blue
+                                      : Colors.pink,
+                                  size: 35,
+                                ),
+                                // isThreeLine: true,
+                                title: Text(
+                                  "${c.authorName}",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                // subtitle: Text("${post.authorName}"),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 4.0),
+                              child: Text(
+                                "${DateFormat("h:mm a   dd, MMM, yyyy").format(c.createdAt)}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 30, vertical: 4.0),
+                                child: Builder(
+                                  builder: (context) {
+                                    var mdText = mk.markdownToHtml(
+                                      c.content.replaceAll("\n", "</br>"),
+                                      extensionSet: mk.ExtensionSet.gitHubWeb,
+                                    );
+                                    // return Html(
+                                    //   useRichText: true,
+                                    //   data: mdText,
+                                    // );
+                                    // );
+                                    return HtmlWidget(
+                                      mdText,
+                                      onTapUrl: (url) async {
+                                        if (await canLaunch(url)) {
+                                          await launch(url);
+                                        } else {
+                                          cm.ClipboardManager.copyToClipBoard(
+                                                  url)
+                                              .then((r) {
+                                            Scaffold.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content:
+                                                  Text("無法顯示此網址, 但已將此網址複製至剪貼簿"),
+                                              duration: Duration(
+                                                seconds: 3,
+                                              ),
+                                            ));
+                                          });
+                                        }
+                                      },
+                                    );
+                                  },
+                                )),
+                            const Divider(
+                              color: Colors.black,
+                              indent: 10,
+                              endIndent: 10,
+                              height: 3,
+                            ),
+                          ],
+                        ),
+                      ));
+                    }
+
+                    return Column(
+                      children: <Widget>[
+                        ...allComments,
+                      ],
+                    );
+                  },
                 ),
               ],
             ),

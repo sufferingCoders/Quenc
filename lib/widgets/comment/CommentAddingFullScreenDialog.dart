@@ -102,6 +102,7 @@ class _CommentAddingFullScreenDialogState
     var u = Provider.of<User>(context, listen: false);
     comment.author = u.uid;
     comment.authorGender = u.gender;
+    comment.authorName = getDisplayNameFromEmail(u.email);
     comment.createdAt = DateTime.now();
     comment.updatedAt = DateTime.now();
     comment.belongPost = widget.belongPost;
@@ -169,14 +170,14 @@ class _CommentAddingFullScreenDialogState
             snap: true,
             actions: <Widget>[
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  child: Text("發表"),
-                  onPressed: () {
-                    _submit(context);
-                  },
-                ),
-              ),
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(
+                      Icons.send,
+                    ),
+                    onPressed: () => _submit(context),
+                  )),
             ],
           ),
         ];
@@ -236,7 +237,6 @@ class _CommentAddingFullScreenDialogState
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextFormField(
-              // autofocus: true,
               autofocus: true,
               minLines: 10,
               maxLines: null,
@@ -280,6 +280,17 @@ class _CommentAddingFullScreenDialogState
     return Scaffold(
       appBar: AppBar(
         title: Text("回文"),
+        actions: <Widget>[
+          Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                color: Colors.white,
+                icon: Icon(
+                  Icons.send,
+                ),
+                onPressed: () => _submit(context),
+              )),
+        ],
       ),
       body: appBarBody,
       bottomNavigationBar: Transform.translate(
