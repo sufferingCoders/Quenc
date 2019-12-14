@@ -58,7 +58,7 @@ class Post {
       previewText: data["previewText"] ?? "",
       likeCount: data["likeCount"] ?? 0,
       archiveCount: data["archiveCount"] ?? 0,
-      category: data["category"] ?? "",
+      category: data["category"],
     );
   }
 

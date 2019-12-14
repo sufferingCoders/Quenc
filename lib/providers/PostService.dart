@@ -21,6 +21,7 @@ class PostService with ChangeNotifier {
   Future<bool> deletePostCategoriesById(String cid) async {
     try {
       await _db.collection("postCategory").document(cid).delete();
+      notifyListeners();
       return true;
     } catch (e) {
       return false;
