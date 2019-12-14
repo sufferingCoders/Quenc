@@ -7,6 +7,7 @@ import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/ArchivePostsScreen.dart';
 import 'package:quenc/screens/AuthScreen.dart';
+import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/EmailVerificationScreen.dart';
 import 'package:quenc/screens/MainScreen.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
@@ -145,6 +146,8 @@ class MyApp extends StatelessWidget {
                 // MainScreen.routeName: (ctx) => MainScreen(),
                 ProfileScreen.routeName: (ctx) => ProfileScreen(),
                 ArchivePostScreen.routeName: (ctx) => ArchivePostScreen(),
+                CategoryManagementScreen.routeName: (ctx) =>
+                    CategoryManagementScreen(),
               },
             ),
           );

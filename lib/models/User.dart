@@ -9,11 +9,13 @@ class User {
   final String currentRoom;
   final String major;
   final DateTime dob;
+  final int role; // 0 -> Admin, 1 -> NormalUser
 
   List<String> likePosts;
   List<String> likeComments;
   List<String> archivePosts;
   User({
+    this.role,
     this.displayName,
     this.email,
     this.lastSeen,
@@ -48,7 +50,12 @@ class User {
       likePosts: data["likePosts"]?.cast<String>() ?? [],
       likeComments: data["likeComments"]?.cast<String>() ?? [],
       archivePosts: data["archivePosts"]?.cast<String>() ?? [],
+      role: data["role"] ?? 1,
     );
+  }
+
+  bool get isAdmin {
+    return role == 0;
   }
 
   bool haveAttributesSet() {
@@ -76,6 +83,7 @@ class User {
       "likePosts": likePosts,
       "archivePosts": archivePosts,
       "likeComments": likeComments,
+      "role": role,
     };
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
+import 'package:quenc/models/User.dart';
+import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 
 class PostDetailShowingColumn extends StatelessWidget {
   const PostDetailShowingColumn({
@@ -28,6 +31,33 @@ class PostDetailShowingColumn extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13,
               ),
+            ),
+            trailing: Consumer<User>(
+              builder: (ctx, user, ch) {
+                if (user.uid == post.author) {
+                  return IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      color: Theme.of(context).primaryColorDark,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            final dialog = PostAddingFullScreenDialog(
+                              post: post,
+                            );
+                            return dialog;
+                          },
+                          fullscreenDialog: true,
+                        ),
+                      );
+                    },
+                  );
+                }
+                return Container();
+              },
             ),
           ),
         ),

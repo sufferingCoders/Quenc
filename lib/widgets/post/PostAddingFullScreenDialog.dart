@@ -13,8 +13,24 @@ import 'package:quenc/widgets/common/ScrollHideSliverAppBar.dart';
 import 'package:quenc/widgets/post/PostEditingForm.dart';
 import 'package:quenc/widgets/post/PostPreviewFullScreenDialog.dart';
 
+enum PostMode {
+  Adding,
+  Editing,
+}
+
 // This one should be able for editing and addding
 class PostAddingFullScreenDialog extends StatefulWidget {
+  final Post post;
+  PostMode mode;
+
+  PostAddingFullScreenDialog({this.post}) {
+    if (this.post == null) {
+      mode = PostMode.Adding;
+    } else {
+      mode = PostMode.Editing;
+    }
+  }
+
   @override
   _PostAddingFullScreenDialogState createState() =>
       _PostAddingFullScreenDialogState();
@@ -54,14 +70,20 @@ class _PostAddingFullScreenDialogState
 
   File currentInsertImage;
 
-  Post post = Post(
-    anonymous: false,
-    title: "",
-    content: "",
-  );
+  Post post;
 
   @override
   void initState() {
+    if (widget.mode == PostMode.Adding) {
+      post = Post(
+        anonymous: false,
+        title: "",
+        content: "",
+      );
+    } else {
+      post = widget.post;
+    }
+
     // TODO: implement initState
     super.initState();
     contentController.text = post.content;
@@ -73,7 +95,18 @@ class _PostAddingFullScreenDialogState
     }
 
     _form.currentState.save();
-    addPost(context);
+
+    switch (widget.mode) {
+      case PostMode.Adding:
+        addPost(context);
+        break;
+      case PostMode.Editing:
+        updatePost(context);
+        break;
+      default:
+        print("Not supported mode performed");
+        break;
+    }
   }
 
   void addingImageMarkdownToContent() {
@@ -136,20 +169,32 @@ class _PostAddingFullScreenDialogState
     });
   }
 
-  void postCompleteFields() {
+  void postCompleteFields({initCreatedAt = true}) {
     var u = Provider.of<User>(context, listen: false);
     post.author = u.uid;
     post.authorGender = u.gender;
     post.authorName = Utils.getDisplayNameFromEmail(u.email);
     post.previewPhoto = Utils.getFirstImageURLFromMarkdown(post.content);
-    post.createdAt = DateTime.now();
     post.updatedAt = DateTime.now();
     post.previewText = Utils.getPreviewTextFromContent(post.content);
+
+    if (initCreatedAt) {
+      post.createdAt = DateTime.now();
+    }
   }
 
   void addPost(BuildContext ctx) async {
     postCompleteFields();
     await Provider.of<PostService>(ctx, listen: false).addPost(post);
+    Navigator.of(ctx).pop();
+  }
+
+  void updatePost(BuildContext ctx) async {
+    postCompleteFields(initCreatedAt: false);
+    await Provider.of<PostService>(ctx, listen: false).updatePost(
+      post.id,
+      post.toMap(),
+    );
     Navigator.of(ctx).pop();
   }
 
@@ -188,7 +233,7 @@ class _PostAddingFullScreenDialogState
         headerSliverBuilder: (ctx, innerBoxIsScrolled) {
           return <Widget>[
             ScrollHideSliverAppBar(
-              titleText: "新增文章",
+              titleText: widget.mode == PostMode.Adding ? "新增文章" : "編輯文章",
               actions: <Widget>[
                 IconButton(
                   icon: Icon(Icons.send),
