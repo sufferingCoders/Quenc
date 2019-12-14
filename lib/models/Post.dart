@@ -13,6 +13,8 @@ class Post {
   int likeCount;
   int archiveCount;
   int commentCount;
+  String category; // 0 為其它
+  // 文章的Category該用int還String? // int 節省存儲成本
   // List<dynamic> likeBy;
   // List<dynamic> archiveBy;
   // List<dynamic> comments;
@@ -25,6 +27,7 @@ class Post {
     this.content,
     this.createdAt,
     this.updatedAt,
+    this.category,
     // this.likeBy,
     // this.archiveBy,
     // this.comments,
@@ -55,6 +58,7 @@ class Post {
       previewText: data["previewText"] ?? "",
       likeCount: data["likeCount"] ?? 0,
       archiveCount: data["archiveCount"] ?? 0,
+      category: data["category"] ?? "",
     );
   }
 
@@ -75,6 +79,7 @@ class Post {
       "previewText": previewText,
       "likeCount": likeCount,
       "archiveCount": archiveCount,
+      "category": category,
     };
   }
 
@@ -95,6 +100,7 @@ class Post {
       "previewPhoto": previewPhoto,
       "previewText": previewText,
       "likeCount": likeCount,
+      "category": category,
     };
   }
 }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:quenc/models/Post.dart';
+import 'package:quenc/models/PostCategory.dart';
 
 class PostService with ChangeNotifier {
   final Firestore _db = Firestore.instance;
@@ -16,6 +17,39 @@ class PostService with ChangeNotifier {
   }
 
   // It doesn't need the Service with WebSocket
+
+  Future<bool> deletePostCategoriesById(String cid) async {
+    try {
+      await _db.collection("postCategory").document(cid).delete();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<List<PostCategory>> getAllPostCategories() async {
+    List<PostCategory> retrievedPostCategories = [];
+    var docs = await _db.collection("postCategory").getDocuments();
+
+    for (var d in docs.documents) {
+      if (d.exists) {
+        retrievedPostCategories.add(PostCategory.fromMap(d.data));
+      }
+    }
+
+    return retrievedPostCategories;
+  }
+
+  Future<String> addPostCategory(PostCategory postCategory) async {
+    var ref = _db.collection("postCategory").document();
+    postCategory.id = ref.documentID;
+    await ref.setData(
+      postCategory.toMap(),
+    );
+
+    notifyListeners();
+    return ref.documentID;
+  }
 
   Future<List<Post>> getPostForUser(String userId) async {
     List<Post> retrievedPost = [];
