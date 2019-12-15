@@ -38,6 +38,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|編輯帖子|Must Have|作者可以編輯帖子| Richard | 14 Dec 2019|
 |<ul><li>- [x] </li></ul>|Refactor|Must Have|Refore優化使用性能| Richard| 14 Dec 2019|
 |<ul><li>- [ ] </li></ul>|RefactorII|Must Have|Refore優化使用性能| Richard| Doing |
+|<ul><li>- [ ] </li></ul>|版區|Must Have|對不同種的貼文顯示不同區塊| Richard| |
 |<ul><li>- [x] </li></ul>|增加我的貼文區塊|Must Have|顯示所有使用者貼文| Richard| |
 |<ul><li>- [x] </li></ul>|更改Gender表示|Must Have|使用Bool代替String, 優化存儲空間| Richard| 15 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|加註釋|Must Have|給所有Widgets和functions加上註釋| Richard||
