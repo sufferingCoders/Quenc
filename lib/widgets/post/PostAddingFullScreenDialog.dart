@@ -177,7 +177,7 @@ class _PostAddingFullScreenDialogState
     post.previewPhoto = Utils.getFirstImageURLFromMarkdown(post.content);
     post.updatedAt = DateTime.now();
     post.previewText = Utils.getPreviewTextFromContent(post.content);
-
+    post.likeCount = 0;
     if (initCreatedAt) {
       post.createdAt = DateTime.now();
     }

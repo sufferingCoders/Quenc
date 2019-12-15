@@ -13,8 +13,8 @@ class Post {
   String previewText;
   String previewPhoto;
   int likeCount;
-  int archiveCount;
-  int commentCount;
+  // int archiveCount;
+  // int commentCount;
   String category; // 0 為其它
 
   Post({
@@ -31,8 +31,8 @@ class Post {
     this.authorDomain,
     this.previewText,
     this.likeCount,
-    this.archiveCount,
-    this.commentCount,
+    // this.archiveCount,
+    // this.commentCount,
   });
 
   factory Post.fromMap(Map data) {
@@ -49,7 +49,9 @@ class Post {
       previewPhoto: data["previewPhoto"],
       previewText: data["previewText"],
       likeCount: data["likeCount"] ?? 0,
-      archiveCount: data["archiveCount"] ?? 0,
+      // archiveCount: data["archiveCount"] ?? 0,
+      // commentCount: data["commentCount"] ?? 0,
+
       category: data["category"],
     );
   }
@@ -67,7 +69,8 @@ class Post {
       "previewPhoto": previewPhoto,
       "previewText": previewText,
       "likeCount": likeCount,
-      "archiveCount": archiveCount,
+      // "archiveCount": archiveCount,
+      // "commentCount": commentCount,
       "category": category,
     };
   }
