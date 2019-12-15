@@ -70,7 +70,7 @@ class PostShowingListTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 3.0, right: 8.0, top: 8.0),
               child: Text(
-                "${idToName(post.category)}  -  ${Utils.getDisplayNameFromDomain(post.authorDomain)}",
+                "${idToName(post.category)?? ""}  -  ${Utils.getDisplayNameFromDomain(post.authorDomain)}",
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 13,

@@ -57,7 +57,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  void changeCategory(PostCategory cat) {
+  void changeCategory(PostCategory cat) async {
     setToNull();
     setState(() {
       category = cat;
