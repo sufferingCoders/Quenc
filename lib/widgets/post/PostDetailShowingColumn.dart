@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 
 class PostDetailShowingColumn extends StatelessWidget {
@@ -23,11 +24,11 @@ class PostDetailShowingColumn extends StatelessWidget {
           child: ListTile(
             leading: Icon(
               Icons.account_circle,
-              color: post.authorGender == "male" ? Colors.blue : Colors.pink,
+              color: post.authorGender == 1 ? Colors.blue : Colors.pink,
               size: 35,
             ),
             title: Text(
-              "${post.authorName}",
+              Utils.getDisplayNameFromDomain(post.authorDomain),
               style: TextStyle(
                 fontSize: 13,
               ),

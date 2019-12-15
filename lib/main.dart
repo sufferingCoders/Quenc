@@ -4,15 +4,19 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentService.dart';
 import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/ReportService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/ArchivePostsScreen.dart';
 import 'package:quenc/screens/AuthScreen.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/EmailVerificationScreen.dart';
-import 'package:quenc/screens/MainScreen.dart';
+import 'package:quenc/screens/OwningPostsScreen.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
+import 'package:quenc/screens/ReportDetailShowingScreen.dart';
+import 'package:quenc/screens/ReportManagementScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
+import 'package:quenc/widgets/common/HomePage.dart';
 
 void main() async {
   // Brightness brightness;
@@ -32,7 +36,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   Brightness brightness;
 
   MyApp({this.brightness});
@@ -44,16 +47,15 @@ class MyApp extends StatelessWidget {
         StreamProvider<FirebaseUser>.value(
           value: FirebaseAuth.instance.onAuthStateChanged,
         ),
-        //         ChangeNotifierProvider.value(
-        //   value: UserService(),
-        // ),
         ChangeNotifierProvider.value(
           value: PostService(),
         ),
-
         ChangeNotifierProvider.value(
           value: CommentService(),
-        )
+        ),
+        ChangeNotifierProvider.value(
+          value: ReportService(),
+        ),
       ],
       child: Consumer<FirebaseUser>(
         builder: (ctx, fbUser, ch) {
@@ -61,34 +63,53 @@ class MyApp extends StatelessWidget {
             value: UserService().userStream(fbUser),
             child: MaterialApp(
               onGenerateRoute: (setting) {
-                if (setting.name == PostDetailScreen.routeName) {
-                  return MaterialPageRoute(
-                    builder: (context) {
-                      final String postId = setting.arguments;
-                      return PostDetailScreen(
-                        postId: postId,
-                      );
-                    },
-                  );
-                }
+                switch (setting.name) {
+                  case ReportDetailShowingScreen.routeName:
+                    return MaterialPageRoute(
+                      builder: (context) {
+                        final ReportDetailRouterArg args = setting.arguments;
 
-                if (setting.name == UserAttributeSettingScreen.routeName) {
-                  return MaterialPageRoute(
-                    builder: (context) {
-                      return UserAttributeSettingScreen(
-                        user: setting.arguments as User,
-                      );
-                    },
-                  );
-                }
+                        if (args.report != null) {
+                          return ReportDetailShowingScreen(
+                            report: args.report,
+                          );
+                        }
 
-                return MaterialPageRoute(builder: (context) {
-                  return Scaffold(
-                    body: Center(
-                      child: Text("無此頁面"),
-                    ),
-                  );
-                });
+                        return ReportDetailShowingScreen(
+                          reportId: args.reportId,
+                        );
+                      },
+                    );
+                    break;
+                  case PostDetailScreen.routeName:
+                    return MaterialPageRoute(
+                      builder: (context) {
+                        final String postId = setting.arguments;
+                        return PostDetailScreen(
+                          postId: postId,
+                        );
+                      },
+                    );
+                    break;
+                  case UserAttributeSettingScreen.routeName:
+                    return MaterialPageRoute(
+                      builder: (context) {
+                        return UserAttributeSettingScreen(
+                          user: setting.arguments as User,
+                        );
+                      },
+                    );
+                    break;
+                  default:
+                    return MaterialPageRoute(builder: (context) {
+                      return Scaffold(
+                        body: Center(
+                          child: Text("無此頁面"),
+                        ),
+                      );
+                    });
+                    break;
+                }
               },
               debugShowCheckedModeBanner: false,
               debugShowMaterialGrid: false,
@@ -104,50 +125,29 @@ class MyApp extends StatelessWidget {
               ),
               home: fbUser != null
                   ? fbUser.isEmailVerified == true
-                      // ? Center(
-                      //     child: Text("Email Verified"),
-                      //   )
-                      ? Consumer<User>(
-                          builder: (ctx, user, ch) {
-                            if (user == null) {
-                              return Scaffold(
-                                body: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            }
-
-                            if (!(user?.haveAttributesSet() == true)) {
-                              return UserAttributeSettingScreen(
-                                user: user,
-                              );
-                            }
-                            return MainScreen(
-                              fbUser: fbUser,
-                            );
-                          },
+                      ? HomePage(
+                          fbUser: fbUser,
                         )
                       : EmailVerificationScreen(
                           fbUser: fbUser,
                         ) // Main Screen
 
-                  // Problem may be here, the tryAutoLogin()
                   : FutureBuilder(
                       future: UserService().tryAutoLogin(),
                       builder: (ctx, authResultSnapshot) =>
                           authResultSnapshot.connectionState ==
                                   ConnectionState.waiting
-                              ? Center(
-                                  child: Text("Splash Screen"),
-                                ) // SplashScreen
+                              ? Container() // SplashScreen
                               : AuthScreen(), //AuthScreen
                     ),
               routes: {
-                // MainScreen.routeName: (ctx) => MainScreen(),
                 ProfileScreen.routeName: (ctx) => ProfileScreen(),
                 ArchivePostScreen.routeName: (ctx) => ArchivePostScreen(),
+                OwingPostsScreen.routeName: (ctx) => OwingPostsScreen(),
                 CategoryManagementScreen.routeName: (ctx) =>
                     CategoryManagementScreen(),
+                ReportManagementScreen.routeName: (ctx) =>
+                    ReportManagementScreen(),
               },
             ),
           );

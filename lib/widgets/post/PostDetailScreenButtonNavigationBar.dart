@@ -22,7 +22,7 @@ class PostDetailScreenBottomNavigationBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Flexible(
-              flex: 3,
+              flex: 2,
               child: WritingCommentFloatButton(post: post),
             ),
             Flexible(

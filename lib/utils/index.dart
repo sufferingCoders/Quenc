@@ -1,6 +1,35 @@
 class Utils {
   static final RegExp imageReg = RegExp(r"!\[.*?\]\(.*?\)");
 
+  static String getDisplayNameFromDomain(String domain) {
+    String uni;
+
+    switch (domain) {
+      case "qut.edu.au":
+        uni = "昆士蘭理工";
+        break;
+      case "uq.edu.au":
+        uni = "昆士蘭大學";
+        break;
+      case "griffith.edu.au":
+        uni = "格里菲斯";
+        break;
+      default:
+        uni = "UNKNOWN";
+    }
+
+    return uni;
+  }
+
+  static String getDomainFromEmail(String email) {
+    List<String> emailParts = email.split("@");
+    if (emailParts.length > 2) {
+      return null;
+    }
+
+    return emailParts[0];
+  }
+
   static String getDisplayNameFromEmail(String email) {
     List<String> emailParts = email.split("@");
     if (emailParts.length > 2) {

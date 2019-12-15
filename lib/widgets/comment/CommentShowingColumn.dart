@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
+import 'package:quenc/models/Report.dart';
+import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/CommentService.dart';
+import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/comment/CommentDetailShowingContainer.dart';
 import 'package:quenc/widgets/common/ContentShowingContainer.dart';
+import 'package:quenc/widgets/post/PostLikeAndSaveIconsRow.dart';
+import 'package:quenc/widgets/report/ReportAddingFullScreenDialog.dart';
 
 class CommentShowingColumn extends StatelessWidget {
   const CommentShowingColumn({
@@ -13,22 +20,112 @@ class CommentShowingColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        CommentDetailShowingContainer(
-          comment: comment,
-        ),
-        ContentShowingContainer(
-          content: comment.content,
-        ),
-        const Divider(
-          color: Colors.black,
-          indent: 10,
-          endIndent: 10,
-          height: 3,
-        ),
-      ],
+    return GestureDetector(
+      onLongPressStart: (detail) async {
+        User user = Provider.of<User>(context);
+        final value = await showMenu(
+          position: RelativeRect.fromLTRB(
+            detail.globalPosition.dx,
+            detail.globalPosition.dy,
+            detail.globalPosition.dx,
+            detail.globalPosition.dy,
+          ),
+          context: context,
+          items: [
+            PopupMenuItem(
+              child: ListTile(
+                leading: Icon(Icons.report),
+                title: const Text(
+                  "檢舉",
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              value: MenuOptions.Report,
+            ),
+            if (user.isAdmin)
+              PopupMenuItem(
+                child: ListTile(
+                  leading: Icon(Icons.delete_outline),
+                  title: const Text(
+                    "刪除",
+                    style: const TextStyle(
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+                value: MenuOptions.Delete,
+              ),
+          ],
+        );
+
+        switch (value) {
+          case MenuOptions.Delete:
+            // Show Delete Dialog here
+            showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                      title: Text("刪除文章"),
+                      content: Text(
+                          "是否刪除 ${Utils.getDisplayNameFromDomain(comment.authorDomain)} 的回文"),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("是"),
+                          onPressed: () {
+                            Provider.of<CommentService>(context, listen: false)
+                                .deleteComment(comment.id);
+
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                        FlatButton(
+                          child: Text("否"),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                      ],
+                    ));
+            break;
+          case MenuOptions.Report:
+            // Show Report Dialog here
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  final dialog = ReportAddingFullScreenDialog(
+                    reportId: comment.id,
+                    target: ReportTarget.Comment,
+                  );
+                  return dialog;
+                },
+                fullscreenDialog: true,
+              ),
+            );
+
+            break;
+          default:
+            break;
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          CommentDetailShowingContainer(
+            comment: comment,
+          ),
+          ContentShowingContainer(
+            content: comment.content,
+          ),
+          const Divider(
+            color: Colors.black,
+            indent: 10,
+            endIndent: 10,
+            height: 3,
+          ),
+        ],
+      ),
     );
   }
 }

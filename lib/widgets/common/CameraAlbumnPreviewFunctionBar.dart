@@ -54,26 +54,8 @@ class CameraAlbumnPreviewFunctionBar extends StatelessWidget {
               ),
             ],
           ),
-          // icon: ,
           onPressed: () {
             previewButtonPress();
-
-            // bool ok = prepairPostForPreview();
-            // if (ok) {
-            //   Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (context) {
-            //         final dialog = PostPreviewFullScreenDialog(
-            //           // inputText: contentController.text,
-            //           post: post,
-            //         );
-            //         return dialog;
-            //       },
-            //       fullscreenDialog: true,
-            //     ),
-            //   );
-            // }
           },
         )
       ],

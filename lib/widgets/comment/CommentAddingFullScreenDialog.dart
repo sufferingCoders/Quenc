@@ -96,7 +96,7 @@ class _CommentAddingFullScreenDialogState
   void commentFieldComplete() {
     var u = Provider.of<User>(context, listen: false);
     comment.author = u.uid;
-    comment.authorName = Utils.getDisplayNameFromEmail(u.email);
+    comment.authorDomain = u.domain;
     comment.authorGender = u.gender;
     comment.createdAt = DateTime.now();
     comment.updatedAt = DateTime.now();

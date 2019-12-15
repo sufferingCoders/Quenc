@@ -24,11 +24,6 @@ class AuthScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    // Icon(
-                    //   Icons.shopping_cart,
-                    //   size: 100,
-                    //   color: Theme.of(context).primaryColor,
-                    // ),
                     Text(
                       "昆嗑",
                       style: TextStyle(

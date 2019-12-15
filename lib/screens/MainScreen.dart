@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
+import 'package:quenc/widgets/AppDrawer.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
@@ -51,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           )
         ],
       ),
-      // drawer: AppDrawer(),
+      drawer: AppDrawer(),
       body: RefreshIndicator(
         onRefresh: () async {
           postService.initialisePosts();
