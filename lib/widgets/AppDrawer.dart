@@ -1,6 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:quenc/models/PostCategory.dart';
 
 class AppDrawer extends StatelessWidget {
+  final Function changeCategory;
+  final List<PostCategory> allCategories;
+
+  AppDrawer({this.changeCategory, this.allCategories});
+
+  List<Widget> allCategoriesListTile(BuildContext ctx) {
+    List<Widget> listTiles = [];
+
+    listTiles.add(ListTile(
+      leading: Icon(Icons.label),
+      title: Text("所有"),
+      onTap: () {
+        changeCategory(null);
+        Navigator.of(ctx).pop();
+      },
+    ));
+    listTiles.add(const Divider());
+
+    for (var c in allCategories) {
+      listTiles.add(ListTile(
+        leading: Icon(Icons.label),
+        title: Text(c.categoryName),
+        onTap: () {
+          changeCategory(c);
+          Navigator.of(ctx).pop();
+        },
+      ));
+      listTiles.add(const Divider());
+    }
+
+    return listTiles;
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -35,6 +69,7 @@ class AppDrawer extends StatelessWidget {
               ),
             ),
             const Divider(),
+            ...allCategoriesListTile(context),
             // ListTile(
             //     leading: const Icon(
             //       Icons.input,

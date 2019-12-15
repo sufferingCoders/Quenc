@@ -6,6 +6,8 @@ import 'package:quenc/screens/MainScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
 
 class HomePage extends StatelessWidget {
+  static const routeName = "/";
+
   final FirebaseUser fbUser;
 
   const HomePage({

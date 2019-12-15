@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
+import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/utils/index.dart';
-
 
 class PostShowingListTile extends StatelessWidget {
   const PostShowingListTile({
@@ -14,6 +15,7 @@ class PostShowingListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Function idToName = Provider.of<PostService>(context).getCategoryNameByID;
     return ListTile(
       onTap: () {
         Navigator.of(context).pushNamed(
@@ -68,7 +70,7 @@ class PostShowingListTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 3.0, right: 8.0, top: 8.0),
               child: Text(
-                Utils.getDisplayNameFromDomain(post.authorDomain),
+                "${idToName(post.category)}  -  ${Utils.getDisplayNameFromDomain(post.authorDomain)}",
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 13,

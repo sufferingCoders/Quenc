@@ -9,8 +9,8 @@ class PostService with ChangeNotifier {
    */
 
   final Firestore _db = Firestore.instance;
-  final int _pageSize = 50;
   List<Post> _currentPosts;
+  Map<String, String> categoryIdToName = {};
 
   /// Get All Current Posts
   List<Post> get posts {
@@ -50,6 +50,13 @@ class PostService with ChangeNotifier {
    *             GET
    *******************************/
 
+  String getCategoryNameByID(String id) {
+    if (categoryIdToName == null) {
+      return "";
+    }
+    return categoryIdToName[id];
+  }
+
   /// Retrieve All Post Categories
   Future<List<PostCategory>> getAllPostCategories() async {
     List<PostCategory> retrievedPostCategories = [];
@@ -57,9 +64,15 @@ class PostService with ChangeNotifier {
 
     for (var d in docs.documents) {
       if (d.exists) {
-        retrievedPostCategories.add(PostCategory.fromMap(d.data));
+        var newCat = PostCategory.fromMap(d.data);
+        retrievedPostCategories.add(newCat);
+        if (newCat != null && newCat.id != null) {
+          categoryIdToName[newCat.id] = newCat.categoryName;
+        }
       }
     }
+
+    notifyListeners();
 
     return retrievedPostCategories;
   }
@@ -81,11 +94,8 @@ class PostService with ChangeNotifier {
   Future<void> initialisePosts() async {
     _currentPosts = [];
 
-    QuerySnapshot posts = await _db
-        .collection("posts")
-        .orderBy("createdAt")
-        .limit(_pageSize)
-        .getDocuments();
+    QuerySnapshot posts =
+        await _db.collection("posts").orderBy("createdAt").getDocuments();
 
     if (posts.documents.length > 0) {
       posts.documents.forEach((d) {
@@ -95,6 +105,81 @@ class PostService with ChangeNotifier {
         _currentPosts.add(postObj);
       });
       notifyListeners();
+    }
+  }
+
+  Future<RetrievedPostsAndLastSnapshot> getAllPosts({
+    PostOrderByOption orderBy = PostOrderByOption.CreatedAt,
+    DocumentSnapshot startAfter,
+    int pageSize = 50,
+    String categoryId,
+  }) async {
+    List<Post> retrievedPosts = [];
+
+    CollectionReference coRef = _db.collection("posts");
+    Query ref;
+    if (categoryId != null) {
+      if (ref == null) {
+        ref = coRef.where("category", isEqualTo: categoryId);
+      } else {
+        ref = ref.where("category", isEqualTo: categoryId);
+      }
+    }
+
+    switch (orderBy) {
+      case PostOrderByOption.CreatedAt:
+        if (ref == null) {
+          ref = coRef.orderBy("createdAt");
+        } else {
+          ref = ref.orderBy("createdAt");
+        }
+        break;
+      case PostOrderByOption.LikeCount:
+        if (ref == null) {
+          ref = coRef.orderBy("likeCount", descending: true);
+        } else {
+          ref = ref.orderBy("likeCount", descending: true);
+        }
+        break;
+      default:
+        if (ref == null) {
+          ref = coRef.orderBy("createdAt");
+        } else {
+          ref = ref.orderBy("createdAt");
+        }
+    }
+
+    if (startAfter != null) {
+      if (ref == null) {
+        ref = coRef.startAfterDocument(startAfter);
+      } else {
+        ref = ref.startAfterDocument(startAfter);
+      }
+    }
+
+    if (pageSize != null) {
+      if (ref == null) {
+        ref = coRef.limit(pageSize);
+      } else {
+        ref = ref.limit(pageSize);
+      }
+    }
+
+    var docs = await ref.getDocuments();
+    // .orderBy("createdAt")
+    // .getDocuments();
+    if (docs.documents.length > 0) {
+      docs.documents.forEach((d) {
+        retrievedPosts.add(Post.fromMap(d.data));
+      });
+
+      RetrievedPostsAndLastSnapshot postAndSnapshot =
+          RetrievedPostsAndLastSnapshot(
+        retrievedPosts: retrievedPosts,
+        lastSnapshot: docs.documents[docs.documents.length - 1],
+      );
+
+      return postAndSnapshot;
     }
   }
 
@@ -134,19 +219,14 @@ class PostService with ChangeNotifier {
     try {
       if (_currentPosts.isEmpty || _currentPosts.length == 0) {
         // This is the initialising
-        posts = await _db
-            .collection("posts")
-            .orderBy("createdAt")
-            .limit(_pageSize)
-            .getDocuments();
+        posts =
+            await _db.collection("posts").orderBy("createdAt").getDocuments();
       } else {
         // We already have the posts
         posts = await _db
             .collection("posts")
             .orderBy("createdAt")
-            .startAfter([_currentPosts[-1].toMap()])
-            .limit(_pageSize)
-            .getDocuments();
+            .startAfter([_currentPosts[-1].toMap()]).getDocuments();
       }
 
       if (posts != null && posts.documents.length > 0) {
@@ -211,10 +291,49 @@ class PostService with ChangeNotifier {
   Future<bool> deletePost(String postId) async {
     try {
       await _db.collection("posts").document(postId).delete();
+      bool ok = await deleteCommentsForPost(postId);
+      if (!ok) {
+        return false;
+      }
       return true;
     } catch (e) {
       print("Error: ${e.toString()}");
       return false;
     }
   }
+
+  /// Delete all the comments for the post by post's id
+  Future<bool> deleteCommentsForPost(String postId) async {
+    try {
+      var docs = await _db
+          .collection("comments")
+          .where("belongPost", isEqualTo: postId)
+          .getDocuments();
+      var batch = _db.batch();
+
+      for (var d in docs.documents) {
+        batch.delete(d.reference);
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      print("Delete Comments for Post Error : ${e.toString()}");
+      return false;
+    }
+  }
+}
+
+class RetrievedPostsAndLastSnapshot {
+  List<Post> retrievedPosts;
+  DocumentSnapshot lastSnapshot;
+
+  RetrievedPostsAndLastSnapshot({
+    this.retrievedPosts,
+    this.lastSnapshot,
+  });
+}
+
+enum PostOrderByOption {
+  CreatedAt,
+  LikeCount,
 }

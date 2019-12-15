@@ -24,7 +24,6 @@ class PostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var postService = Provider.of<PostService>(context);
-
     return FutureBuilder<Object>(
       future: postService.getPostByID(postId),
       builder: (context, retrievedPostSnapshot) {
@@ -43,35 +42,38 @@ class PostDetailScreen extends StatelessWidget {
           body: NestedScrollView(
             headerSliverBuilder: (ctx, innerBoxIsSrolled) {
               return <Widget>[
-                ScrollHideSliverAppBar(titleText: post.title),
+                ScrollHideSliverAppBar(titleText: post?.title ?? "貼文不存在"),
               ];
             },
-            body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  PostDetailShowingColumn(post: post),
-                  ContentShowingContainer(content: post.content),
-                  CommentDivider(text: "熱門回文"),
-                  CommentShowingFutureBuilder(
-                    Provider.of<CommentService>(context, listen: false)
-                        .getTopLikedCommentsForPost(post.id, 3),
-                  ),
-                  CommentDivider(text: "全部回文"),
-                  CommentShowingFutureBuilder(
-                    Provider.of<CommentService>(context).getCommentForPost(
-                      post.id,
-                      orderBy: CommentOrderByOptions.ByCreatedAt,
+            body: post == null
+                ? Center(
+                    child: Text("此篇貼文已經不存在"),
+                  )
+                : SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        PostDetailShowingColumn(post: post),
+                        ContentShowingContainer(content: post?.content),
+                        CommentDivider(text: "熱門回文"),
+                        CommentShowingFutureBuilder(
+                          Provider.of<CommentService>(context, listen: false)
+                              .getTopLikedCommentsForPost(post.id, 3),
+                        ),
+                        CommentDivider(text: "全部回文"),
+                        CommentShowingFutureBuilder(
+                          Provider.of<CommentService>(context)
+                              .getCommentForPost(
+                            post.id,
+                            orderBy: CommentOrderByOptions.ByCreatedAt,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         );
       },
     );
   }
 }
-
-

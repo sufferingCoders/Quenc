@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/widgets/post/PostShowingListTile.dart';
 
 class PostShowingContainer extends StatefulWidget {
   final List<Post> posts;
   final Function infiniteScrollUpdater;
+  final Function refresh;
+  final bool isInit;
 
   PostShowingContainer({
+    this.isInit,
+    this.refresh,
     this.posts,
     this.infiniteScrollUpdater,
   });
@@ -45,9 +48,26 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
   @override
   Widget build(BuildContext context) {
     if (widget.posts == null) {
-      return Center(
-        child: Text("無貼文"),
-      );
+      if (widget.isInit == false) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("無貼文"),
+              FlatButton(
+                child: Text("重新整理"),
+                onPressed: () {
+                  widget.refresh();
+                },
+              )
+            ],
+          ),
+        );
+      }
     }
 
     return ListView.builder(

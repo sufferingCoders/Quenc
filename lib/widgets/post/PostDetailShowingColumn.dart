@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 
@@ -16,6 +17,8 @@ class PostDetailShowingColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Function idToName = Provider.of<PostService>(context).getCategoryNameByID;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -75,7 +78,7 @@ class PostDetailShowingColumn extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 4.0),
           child: Text(
-            "${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
+            "${idToName(post.category)}  -  ${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 12,

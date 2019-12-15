@@ -27,7 +27,7 @@ class Utils {
       return null;
     }
 
-    return emailParts[0];
+    return emailParts[1];
   }
 
   static String getDisplayNameFromEmail(String email) {

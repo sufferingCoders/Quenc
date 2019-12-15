@@ -35,7 +35,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
               color:
                   user.likePosts.contains(post?.id) ? Colors.pink : Colors.grey,
               onPressed: () {
-                userService.togglePostLike(post.id, user);
+                userService.togglePostLike(post?.id, user);
               },
             ),
           ),
@@ -43,11 +43,11 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.bookmark),
-              color: user.archivePosts.contains(post.id)
+              color: user.archivePosts.contains(post?.id)
                   ? Colors.blue
                   : Colors.grey,
               onPressed: () {
-                userService.togglePostArchive(post.id, user);
+                userService.togglePostArchive(post?.id, user);
               },
             ),
           ),
@@ -83,7 +83,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                       ),
                       value: MenuOptions.Report,
                     ),
-                    if (user.isAdmin || user.uid == post.author)
+                    if (user?.isAdmin || user?.uid == post?.author)
                       PopupMenuItem(
                         child: ListTile(
                           leading: Icon(Icons.delete_outline),
@@ -106,22 +106,27 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                         context: context,
                         builder: (ctx) => AlertDialog(
                               title: Text("刪除文章"),
-                              content: Text("是否刪除文章: \n${post.title}"),
+                              content: Text("是否刪除文章: \n${post?.title}"),
                               actions: <Widget>[
+                                FlatButton(
+                                  child: Text("否"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(true);
+                                  },
+                                ),
                                 FlatButton(
                                   child: Text("是"),
                                   onPressed: () {
                                     Provider.of<PostService>(context,
                                             listen: false)
-                                        .deletePost(post.id);
+                                        .deletePost(post?.id);
 
-                                    Navigator.of(context).pop(true);
-                                  },
-                                ),
-                                FlatButton(
-                                  child: Text("否"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(true);
+                                    var count = 0;
+                                    Navigator.popUntil(context, (route) {
+                                      return count++ == 2;
+                                    });
+
+                                    // Navigator.of(context).pop(true);
                                   },
                                 ),
                               ],

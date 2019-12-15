@@ -71,17 +71,17 @@ class CommentShowingColumn extends StatelessWidget {
                           "是否刪除 ${Utils.getDisplayNameFromDomain(comment.authorDomain)} 的回文"),
                       actions: <Widget>[
                         FlatButton(
+                          child: Text("否"),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                        FlatButton(
                           child: Text("是"),
                           onPressed: () {
                             Provider.of<CommentService>(context, listen: false)
                                 .deleteComment(comment.id);
 
-                            Navigator.of(context).pop(true);
-                          },
-                        ),
-                        FlatButton(
-                          child: Text("否"),
-                          onPressed: () {
                             Navigator.of(context).pop(true);
                           },
                         ),
