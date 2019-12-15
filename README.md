@@ -30,7 +30,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|收藏|Must Have|使用者能收藏帖子| Richard & Fei| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|個人資訊|Must Have|使用者能修改個人資訊| Richard| 13 Dec 2019 |
 |<ul><li>- [x] </li></ul>|已收藏的頁面|Must Have|顯示已收藏的帖子| Richard | 13 Dec 2019 |
-|<ul><li>- [ ] </li></ul>|我的帖子|Must Have|顯示發的帖子| Richard ||
+|<ul><li>- [x] </li></ul>|我的帖子|Must Have|顯示發的帖子| Richard | 16 Dec 2019 |
 |<ul><li>- [x] </li></ul>|舉報按鈕|Must Have|可以舉報回文或文章| Richard | 15 Dec 2019|
 |<ul><li>- [x] </li></ul>|顯示舉報案例於管理者介面|Must Have|在管理者介面可以確認所有舉報| Richard | 15 Dec 2019|
 |<ul><li>- [x] </li></ul>|舉報案例類別|Must Have|幫舉報案例加上類別| Richard | 15 Dec 2019|
@@ -38,8 +38,8 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|編輯帖子|Must Have|作者可以編輯帖子| Richard | 14 Dec 2019|
 |<ul><li>- [x] </li></ul>|Refactor|Must Have|Refore優化使用性能| Richard| 14 Dec 2019|
 |<ul><li>- [x] </li></ul>|RefactorII|Must Have|Refore優化使用性能| Richard| 15 Dec 2019 |
-|<ul><li>- [ ] </li></ul>|版區|Must Have|對不同種的貼文顯示不同區塊| Richard| |
-|<ul><li>- [ ] </li></ul>|排序|Must Have|新增最新和最熱門排序| Richard| |
+|<ul><li>- [x] </li></ul>|版區|Must Have|對不同種的貼文顯示不同區塊| Richard| 16 Dec 2019|
+|<ul><li>- [ ] </li></ul>|排序|Must Have|新增最新和最熱門排序| Richard| Doing |
 |<ul><li>- [x] </li></ul>|增加我的貼文區塊|Must Have|顯示所有使用者貼文| Richard| |
 |<ul><li>- [x] </li></ul>|更改Gender表示|Must Have|使用Bool代替String, 優化存儲空間| Richard| 15 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|加註釋|Must Have|給所有Widgets和functions加上註釋| Richard||
