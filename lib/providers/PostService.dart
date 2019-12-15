@@ -129,9 +129,9 @@ class PostService with ChangeNotifier {
     switch (orderBy) {
       case PostOrderByOption.CreatedAt:
         if (ref == null) {
-          ref = coRef.orderBy("createdAt");
+          ref = coRef.orderBy("createdAt", descending: true);
         } else {
-          ref = ref.orderBy("createdAt");
+          ref = ref.orderBy("createdAt", descending: true);
         }
         break;
       case PostOrderByOption.LikeCount:

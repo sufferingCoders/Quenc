@@ -10,7 +10,6 @@ import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
 class MainScreen extends StatefulWidget {
-
   FirebaseUser fbUser;
 
   MainScreen({this.fbUser});
@@ -35,10 +34,19 @@ class _MainScreenState extends State<MainScreen> {
     if (!isInit) {
       // var postService = Provider.of<PostService>(context, listen: false);
       // postService.tryInitPosts();
+      isInit = true;
       await loadMore();
       await loadCategories();
     }
     super.didChangeDependencies();
+  }
+
+  void orderByUpdater(PostOrderByOption o) {
+    setToNull();
+    setState(() {
+      orderBy = o;
+    });
+    loadMore();
   }
 
   Future<void> loadCategories() async {
@@ -66,7 +74,6 @@ class _MainScreenState extends State<MainScreen> {
   void setToNull() {
     setState(() {
       isInit = false;
-      category = null;
       startAfter = null;
       postAndSnapshot = null;
     });
@@ -130,6 +137,8 @@ class _MainScreenState extends State<MainScreen> {
           posts: postAndSnapshot?.retrievedPosts,
           infiniteScrollUpdater: loadMore,
           refresh: refresh,
+          orderBy: orderBy,
+          orderByUpdater: orderByUpdater,
         ),
       ),
       floatingActionButton: FloatingActionButton(

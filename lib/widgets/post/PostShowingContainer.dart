@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quenc/models/Post.dart';
+import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/widgets/post/PostShowingListTile.dart';
 
 class PostShowingContainer extends StatefulWidget {
@@ -7,8 +8,12 @@ class PostShowingContainer extends StatefulWidget {
   final Function infiniteScrollUpdater;
   final Function refresh;
   final bool isInit;
+  final PostOrderByOption orderBy;
+  final Function orderByUpdater;
 
   PostShowingContainer({
+    this.orderBy,
+    this.orderByUpdater,
     this.isInit,
     this.refresh,
     this.posts,
@@ -34,6 +39,102 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
         if (isEnd) {
           widget.infiniteScrollUpdater();
         }
+      },
+    );
+  }
+
+  Widget getOrderListView() {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      controller: _controller,
+      itemCount: widget.posts.length + 1,
+      itemBuilder: (ctx, idx) {
+        var theme = Theme.of(context);
+        if (idx == 0) {
+          return Container(
+            color: theme.primaryColorLight,
+            height: 40,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "排序",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: theme.primaryColorDark,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 13,
+                    color: theme.primaryColorDark,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<PostOrderByOption>(
+                    focusColor: theme.primaryColorDark,
+                    value: widget.orderBy,
+                    onChanged: (v) {
+                      widget.orderByUpdater(v);
+                    },
+                    items: [
+                      DropdownMenuItem(
+                        value: PostOrderByOption.LikeCount,
+                        child: Text(
+                          "熱門",
+                          style: TextStyle(
+                            color: theme.primaryColorDark,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: PostOrderByOption.CreatedAt,
+                        child: Text(
+                          "最新",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: theme.primaryColorDark,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return Column(
+          children: <Widget>[
+            PostShowingListTile(post: widget.posts[idx - 1]),
+            const Divider(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget getWithoutOrderListView() {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      controller: _controller,
+      itemCount: widget.posts.length,
+      itemBuilder: (ctx, idx) {
+        return Column(
+          children: <Widget>[
+            PostShowingListTile(post: widget.posts[idx]),
+            const Divider(),
+          ],
+        );
       },
     );
   }
@@ -70,18 +171,8 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
       }
     }
 
-    return ListView.builder(
-      physics: const AlwaysScrollableScrollPhysics(),
-      controller: _controller,
-      itemCount: widget.posts.length,
-      itemBuilder: (ctx, idx) {
-        return Column(
-          children: <Widget>[
-            PostShowingListTile(post: widget.posts[idx]),
-            const Divider(),
-          ],
-        );
-      },
-    );
+    return widget.orderBy != null && widget.orderByUpdater != null
+        ? getOrderListView()
+        : getWithoutOrderListView();
   }
 }
