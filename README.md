@@ -37,7 +37,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|幫文章加上類別(板)|Must Have|可以依類別尋找文章| Richard | 14 Dec 2019 |
 |<ul><li>- [x] </li></ul>|編輯帖子|Must Have|作者可以編輯帖子| Richard | 14 Dec 2019|
 |<ul><li>- [x] </li></ul>|Refactor|Must Have|Refore優化使用性能| Richard| 14 Dec 2019|
-|<ul><li>- [ ] </li></ul>|RefactorII|Must Have|Refore優化使用性能| Richard| Doing |
+|<ul><li>- [x] </li></ul>|RefactorII|Must Have|Refore優化使用性能| Richard| 15 Dec 2019 |
 |<ul><li>- [ ] </li></ul>|版區|Must Have|對不同種的貼文顯示不同區塊| Richard| |
 |<ul><li>- [ ] </li></ul>|排序|Must Have|新增最新和最熱門排序| Richard| |
 |<ul><li>- [x] </li></ul>|增加我的貼文區塊|Must Have|顯示所有使用者貼文| Richard| |
