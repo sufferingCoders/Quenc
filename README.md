@@ -42,7 +42,7 @@ A new Flutter project.
 |<ul><li>- [x] </li></ul>|排序|Must Have|新增最新和最熱門排序| Richard| 16 Dec 2019 |
 |<ul><li>- [x] </li></ul>|增加我的貼文區塊|Must Have|顯示所有使用者貼文| Richard| 16 Dec 2019  |
 |<ul><li>- [x] </li></ul>|更改Gender表示|Must Have|使用Bool代替String, 優化存儲空間| Richard| 15 Dec 2019 |
-|<ul><li>- [ ] </li></ul>|匿名Po文|Must Have|可在不顯示學校的情況下Po文| Richard| 16 Dec 2019  |
+|<ul><li>- [ ] </li></ul>|匿名Po文|Must Have|可在不顯示學校的情況下Po文| Richard|  |
 |<ul><li>- [ ] </li></ul>|加註釋|Must Have|給所有Widgets和functions加上註釋| Richard||
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
 |<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
