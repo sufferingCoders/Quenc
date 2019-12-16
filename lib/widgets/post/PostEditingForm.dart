@@ -103,7 +103,9 @@ class _PostEditingFormState extends State<PostEditingForm> {
                     secondary: Text("匿名"),
                     value: widget.post.anonymous,
                     onChanged: (v) {
-                      widget.post.anonymous = v;
+                      setState(() {
+                        widget.post.anonymous = v;
+                      });
                     },
                   ),
                 )

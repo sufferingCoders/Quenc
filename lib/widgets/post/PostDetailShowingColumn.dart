@@ -31,7 +31,9 @@ class PostDetailShowingColumn extends StatelessWidget {
               size: 35,
             ),
             title: Text(
-              Utils.getDisplayNameFromDomain(post.authorDomain),
+              post.anonymous
+                  ? "匿名"
+                  : Utils.getDisplayNameFromDomain(post.authorDomain),
               style: TextStyle(
                 fontSize: 13,
               ),

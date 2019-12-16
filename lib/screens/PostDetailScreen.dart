@@ -59,6 +59,7 @@ class PostDetailScreen extends StatelessWidget {
                         CommentShowingFutureBuilder(
                           Provider.of<CommentService>(context, listen: false)
                               .getTopLikedCommentsForPost(post.id, 3),
+                          post: post,
                         ),
                         CommentDivider(text: "全部回文"),
                         CommentShowingFutureBuilder(
@@ -67,6 +68,7 @@ class PostDetailScreen extends StatelessWidget {
                             post.id,
                             orderBy: CommentOrderByOptions.ByCreatedAt,
                           ),
+                          post: post,
                         ),
                       ],
                     ),

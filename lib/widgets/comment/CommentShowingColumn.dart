@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
+import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/Report.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentService.dart';
@@ -14,8 +15,10 @@ class CommentShowingColumn extends StatelessWidget {
   const CommentShowingColumn({
     Key key,
     @required this.comment,
+    this.post,
   }) : super(key: key);
 
+  final Post post;
   final Comment comment;
 
   @override
@@ -66,7 +69,7 @@ class CommentShowingColumn extends StatelessWidget {
             showDialog(
                 context: context,
                 builder: (ctx) => AlertDialog(
-                      title: Text("刪除文章"),
+                      title: Text("刪除評論"),
                       content: Text(
                           "是否刪除 ${Utils.getDisplayNameFromDomain(comment.authorDomain)} 的回文"),
                       actions: <Widget>[
@@ -113,6 +116,7 @@ class CommentShowingColumn extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           CommentDetailShowingContainer(
+            post: post,
             comment: comment,
           ),
           ContentShowingContainer(

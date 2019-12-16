@@ -136,9 +136,20 @@ class PostService with ChangeNotifier {
         break;
       case PostOrderByOption.LikeCount:
         if (ref == null) {
-          ref = coRef.orderBy("likeCount", descending: true);
+          ref = coRef
+              .where("createdAt",
+                  isGreaterThanOrEqualTo:
+                      DateTime.now().subtract(Duration(days: 15)))
+              .orderBy("createdAt", descending: true);
+          //
         } else {
-          ref = ref.orderBy("likeCount", descending: true);
+          ref = ref
+              .where("createdAt",
+                  isGreaterThanOrEqualTo:
+                      DateTime.now().subtract(Duration(days: 15)))
+              .orderBy("createdAt", descending: true);
+
+          //
         }
         break;
       default:
@@ -172,6 +183,12 @@ class PostService with ChangeNotifier {
       docs.documents.forEach((d) {
         retrievedPosts.add(Post.fromMap(d.data));
       });
+
+      if (orderBy == PostOrderByOption.LikeCount) {
+        retrievedPosts.sort((a, b) {
+          return b.likeCount.compareTo(a.likeCount);
+        });
+      }
 
       RetrievedPostsAndLastSnapshot postAndSnapshot =
           RetrievedPostsAndLastSnapshot(

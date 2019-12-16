@@ -26,7 +26,7 @@ class Comment {
   factory Comment.fromMap(Map data) {
     return Comment(
       id: data["id"],
-      author: data["authorDomain"],
+      author: data["author"],
       authorGender: data["authorGender"],
       authorDomain: data["authorDomain"],
       belongPost: data["belongPost"],
