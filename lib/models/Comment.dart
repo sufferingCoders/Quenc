@@ -1,8 +1,10 @@
 class Comment {
+  // Schema for saving the comment in Firestore
+
   String id;
   String author;
-  String authorName;
-  String authorGender;
+  String authorDomain;
+  int authorGender;
   String belongPost;
   String content;
   DateTime createdAt;
@@ -12,7 +14,7 @@ class Comment {
   Comment({
     this.id,
     this.author,
-    this.authorName,
+    this.authorDomain,
     this.authorGender,
     this.belongPost,
     this.content,
@@ -23,12 +25,12 @@ class Comment {
 
   factory Comment.fromMap(Map data) {
     return Comment(
-      id: data["id"] ?? "",
-      author: data["authorName"] ?? "",
-      authorGender: data["authorGender"] ?? "",
-      authorName: data["authorName"] ?? "",
-      belongPost: data["belongPost"] ?? "",
-      content: data["content"] ?? "",
+      id: data["id"],
+      author: data["author"],
+      authorGender: data["authorGender"],
+      authorDomain: data["authorDomain"],
+      belongPost: data["belongPost"],
+      content: data["content"],
       createdAt: data["createdAt"].toDate() ?? DateTime.now(),
       updatedAt: data["updatedAt"].toDate() ?? DateTime.now(),
       likeCount: data["likeCount"] ?? 0,
@@ -40,7 +42,7 @@ class Comment {
       "id": id,
       "author": author,
       "authorGender": authorGender,
-      "authorName": authorName,
+      "authorDomain": authorDomain,
       "belongPost": belongPost,
       "content": content,
       "createdAt": createdAt,

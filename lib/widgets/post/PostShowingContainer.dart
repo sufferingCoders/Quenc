@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/screens/PostDetailScreen.dart';
+import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/widgets/post/PostShowingListTile.dart';
 
 class PostShowingContainer extends StatefulWidget {
   final List<Post> posts;
   final Function infiniteScrollUpdater;
+  final Function refresh;
+  final bool isInit;
+  final PostOrderByOption orderBy;
+  final Function orderByUpdater;
 
   PostShowingContainer({
+    this.orderBy,
+    this.orderByUpdater,
+    this.isInit,
+    this.refresh,
     this.posts,
     this.infiniteScrollUpdater,
   });
@@ -28,22 +37,106 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
       () {
         var isEnd = _controller.offset == _controller.position.maxScrollExtent;
         if (isEnd) {
-          // setState(() {
-          //   // LoadingData Here
-          //   postService.getPosts();
-          // });
           widget.infiniteScrollUpdater();
         }
       },
     );
+  }
 
-    //Loading the initial data here
-    // if (postService.posts == null ||
-    //     postService.posts.isEmpty ||
-    //     postService.posts.length == 0) {
-    //   // Initialise it
-    //   postService.initialisePosts();
-    // }
+  Widget getOrderListView() {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      controller: _controller,
+      itemCount: widget.posts.length + 1,
+      itemBuilder: (ctx, idx) {
+        var theme = Theme.of(context);
+        if (idx == 0) {
+          return Container(
+            color: theme.primaryColorLight,
+            height: 40,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "排序",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: theme.primaryColorDark,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 13,
+                    color: theme.primaryColorDark,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<PostOrderByOption>(
+                    focusColor: theme.primaryColorDark,
+                    value: widget.orderBy,
+                    onChanged: (v) {
+                      widget.orderByUpdater(v);
+                    },
+                    items: [
+                      DropdownMenuItem(
+                        value: PostOrderByOption.LikeCount,
+                        child: Text(
+                          "熱門",
+                          style: TextStyle(
+                            color: theme.primaryColorDark,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        value: PostOrderByOption.CreatedAt,
+                        child: Text(
+                          "最新",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: theme.primaryColorDark,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return Column(
+          children: <Widget>[
+            PostShowingListTile(post: widget.posts[idx - 1]),
+            const Divider(),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget getWithoutOrderListView() {
+    return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
+      controller: _controller,
+      itemCount: widget.posts.length,
+      itemBuilder: (ctx, idx) {
+        return Column(
+          children: <Widget>[
+            PostShowingListTile(post: widget.posts[idx]),
+            const Divider(),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -55,129 +148,31 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
 
   @override
   Widget build(BuildContext context) {
-    // var postService = Provider.of<PostService>(context);
-
-    // if (!postService.postIsInit) {
-    //   postService.tryInitPosts();
-    //   return Center(
-    //     child: CircularProgressIndicator(),
-    //   );
-    // }
-
     if (widget.posts == null) {
-      return Center(
-        child: Text("無貼文"),
-      );
+      if (widget.isInit == false) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("無貼文"),
+              FlatButton(
+                child: Text("重新整理"),
+                onPressed: () {
+                  widget.refresh();
+                },
+              )
+            ],
+          ),
+        );
+      }
     }
 
-    return ListView.builder(
-      // separatorBuilder: (context, idx) {
-      //   return Divider(
-      //     color: Colors.grey,
-      //   );
-      // },
-      physics: const AlwaysScrollableScrollPhysics(),
-      controller: _controller,
-      itemCount: widget.posts.length,
-      itemBuilder: (ctx, idx) {
-        // if (idx == 0) {
-        //   return ListTile(
-        //     title: Text("${postService?.posts?.toString() ?? ""}"),
-        //   );
-        // }
-
-        return Column(
-          children: <Widget>[
-            ListTile(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  PostDetailScreen.routeName,
-                  arguments: widget.posts[idx].id,
-                );
-              },
-              isThreeLine: true,
-              subtitle: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12.0, top: 5),
-                    child: Text(
-                      "${widget.posts[idx]?.title ?? ""}",
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 19,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      // textAlign: TextAlign.center,
-                    ),
-                  ),
-                  if (widget.posts[idx]?.previewText != null &&
-                      widget.posts[idx]?.previewText?.isNotEmpty == true)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0, top: 5),
-                      child: Text(
-                        "${widget.posts[idx]?.previewText ?? ""}",
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15,
-                        ),
-                      ),
-                    )
-                ],
-              ),
-              title: Row(
-                children: <Widget>[
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 8.0, right: 3.0, top: 8.0),
-                    child: Icon(
-                      Icons.account_circle,
-                      color: widget.posts[idx].authorGender == "male"
-                          ? Colors.blue
-                          : Colors.pink,
-                      size: 16,
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 3.0, right: 8.0, top: 8.0),
-                      child: Text(
-                        "${widget.posts[idx]?.authorName}",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 13,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              trailing: Builder(builder: (context) {
-                String photo = widget.posts[idx]?.previewPhoto;
-
-                if (photo == null) {
-                  return Container();
-                }
-
-                return Image.network(
-                  widget.posts[idx]?.previewPhoto,
-                  fit: BoxFit.fill,
-                );
-
-                // return postService?.posts[idx]?.previewPhoto != null
-                //     ? Image.network(postService?.posts[idx]?.previewPhoto)
-                //     : Container();
-              }),
-            ),
-            const Divider(),
-          ],
-        );
-      },
-    );
+    return widget.orderBy != null && widget.orderByUpdater != null
+        ? getOrderListView()
+        : getWithoutOrderListView();
   }
 }

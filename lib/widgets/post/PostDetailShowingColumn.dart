@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 
 class PostDetailShowingColumn extends StatelessWidget {
@@ -15,6 +17,8 @@ class PostDetailShowingColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Function idToName = Provider.of<PostService>(context).getCategoryNameByID;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
@@ -23,11 +27,13 @@ class PostDetailShowingColumn extends StatelessWidget {
           child: ListTile(
             leading: Icon(
               Icons.account_circle,
-              color: post.authorGender == "male" ? Colors.blue : Colors.pink,
+              color: post.authorGender == 1 ? Colors.blue : Colors.pink,
               size: 35,
             ),
             title: Text(
-              "${post.authorName}",
+              post.anonymous
+                  ? "匿名"
+                  : Utils.getDisplayNameFromDomain(post.authorDomain),
               style: TextStyle(
                 fontSize: 13,
               ),
@@ -74,7 +80,7 @@ class PostDetailShowingColumn extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 4.0),
           child: Text(
-            "${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
+            "${idToName(post.category)}  -  ${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 12,

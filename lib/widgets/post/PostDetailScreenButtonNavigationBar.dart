@@ -13,25 +13,27 @@ class PostDetailScreenBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Transform.translate(
-      offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
-      child: BottomAppBar(
-        color: Theme.of(context).secondaryHeaderColor,
-        elevation: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              flex: 3,
-              child: WritingCommentFloatButton(post: post),
+    return post == null
+        ? BottomAppBar()
+        : Transform.translate(
+            offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
+            child: BottomAppBar(
+              color: Theme.of(context).secondaryHeaderColor,
+              elevation: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Flexible(
+                    flex: 2,
+                    child: WritingCommentFloatButton(post: post),
+                  ),
+                  Flexible(
+                    flex: 1,
+                    child: PostLikeAndSaveIconsRow(post: post),
+                  ),
+                ],
+              ),
             ),
-            Flexible(
-              flex: 1,
-              child: PostLikeAndSaveIconsRow(post: post),
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }

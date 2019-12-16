@@ -13,15 +13,15 @@ class AttributeSettingCard extends StatefulWidget {
 }
 
 class _AttributeSettingCardState extends State<AttributeSettingCard> {
-  final List<String> _allGenders = ["male", "female"];
-  String _gender = "male";
-  DateTime pickedDOB = DateTime.now();
+  int _gender = 0;
+  DateTime pickedDOB;
   TextEditingController majorController = TextEditingController();
 
   @override
   void initState() {
     majorController.text = widget.user?.major ?? "";
-
+    _gender = widget.user.gender;
+    pickedDOB = widget.user.dob;
     // TODO: implement initState
     super.initState();
   }
@@ -38,6 +38,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
     return Center(
       child: Card(
           child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -70,32 +71,6 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: InputDecorator(
-              decoration: const InputDecoration(
-                labelText: "性別",
-                hintText: "選擇你的性別",
-              ),
-              isEmpty: _gender == null || _gender.isEmpty,
-              child: DropdownButton<String>(
-                value: widget.user?.gender ?? _gender,
-                onChanged: (v) {
-                  setState(() {
-                    _gender = v;
-                  });
-                },
-                items: _allGenders
-                    .map(
-                      (g) => DropdownMenuItem(
-                        value: g,
-                        child: Text(g == "male" ? "男" : "女"),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
             child: TextFormField(
               // initialValue: widget.user?.major ?? "",
               decoration: const InputDecoration(
@@ -104,15 +79,56 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
               controller: majorController,
             ),
           ),
-          RaisedButton(
-            onPressed: () => UserService().updateCollectionUserData(
-              widget.user.uid,
-              {
-                "dob": pickedDOB,
-                "gender": _gender,
-                "major": majorController.text,
-              },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("性別"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DropdownButton<int>(
+                    value: _gender,
+                    onChanged: (v) {
+                      setState(() {
+                        _gender = v;
+                      });
+                    },
+                    items: [
+                      DropdownMenuItem(
+                        value: 0,
+                        child: Text("女"),
+                      ),
+                      DropdownMenuItem(
+                        value: 1,
+                        child: Text("男"),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
+          ),
+          RaisedButton(
+            onPressed: () {
+              Scaffold.of(context).showSnackBar(SnackBar(
+                content: Text("更新使用者資料中..."),
+                duration: Duration(seconds: 3),
+              ));
+
+              UserService().updateCollectionUserData(
+                widget.user.uid,
+                {
+                  "dob": pickedDOB,
+                  "gender": _gender,
+                  "major": majorController.text,
+                },
+              );
+
+              Navigator.of(context).pop(true);
+            },
             child: Text("確認"),
           )
         ],

@@ -1,4 +1,6 @@
 class PostCategory {
+  // Category for Post
+
   String id;
   String categoryName;
 

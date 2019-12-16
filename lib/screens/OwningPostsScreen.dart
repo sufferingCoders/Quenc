@@ -6,26 +6,25 @@ import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
 /// This screen show all the saved post
-class ArchivePostScreen extends StatelessWidget {
-  static const routeName = "/archive";
+class OwingPostsScreen extends StatelessWidget {
+  static const routeName = "/owing";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("收藏"),
+        title: Text("我的帖子"),
       ),
       body: Consumer<User>(
         builder: (ctx, user, ch) {
           if (user.archivePosts == null || user.archivePosts.isEmpty) {
             return Center(
-              child: Text("還未有收藏"),
+              child: Text("還未有帖子"),
             );
           }
 
           return FutureBuilder(
-            future: Provider.of<PostService>(context)
-                .getMultiplePostsByIds(user.archivePosts),
+            future: Provider.of<PostService>(context).getPostForUser(user.uid),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -37,7 +36,7 @@ class ArchivePostScreen extends StatelessWidget {
 
               if (retrievedPosts == null || retrievedPosts.isEmpty) {
                 return Center(
-                  child: Text("還未有收藏"),
+                  child: Text("還未有帖子"),
                 );
               }
 

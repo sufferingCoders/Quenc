@@ -1,28 +1,48 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/utils/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
-  // Not storing val in this calss since its instance will not be kept
+  // No storing val in this calss since its instance will not be kept
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
-  // FirebaseUser _fbUser;
-  // User _user;
 
-  // FirebaseUser get fbUser {
-  //   return _fbUser;
-  // }
+  /*******************************
+   *             ADD
+   *******************************/
 
-  // User get user {
-  //   return _user;
-  // }
+  /// Add a Post to user-owing array
+  Future<void> addPostToUser(postID, userId) async {
+    await _db.collection("users").document(userId).updateData({
+      "posts": FieldValue.arrayUnion([postID])
+    });
+  }
 
-  /*
-   * Adding Post or Comment to User
-   */
+  /*******************************
+   *             GET
+   *******************************/
 
+  /// Fetching the User Stream from Firestore
+  Stream<User> userStream(FirebaseUser user) {
+    if (user == null) return null;
+
+    var userStream = _db
+        .collection("users")
+        .document(user.uid)
+        .snapshots()
+        .map((u) => User.fromMap(u.data));
+
+    return userStream;
+  }
+
+  /*******************************
+   *             UPDATE
+   *******************************/
+
+  /// Toggle like for a comment
   Future<int> toggleCommentLike(String commentId, User user) async {
     if (user.likeComments.contains(commentId)) {
       await _db.collection("users").document(user.uid).updateData({
@@ -45,6 +65,7 @@ class UserService {
     }
   }
 
+  /// Toggle like for a post
   Future<int> togglePostLike(String postId, User user) async {
     if (user.likePosts.contains(postId)) {
       // Dislike the post
@@ -74,6 +95,7 @@ class UserService {
     }
   }
 
+  /// Toggle archive for a post
   Future<int> togglePostArchive(String postId, User user) async {
     if (user.archivePosts.contains(postId)) {
       // Dislike the post
@@ -101,16 +123,7 @@ class UserService {
     }
   }
 
-  Future<void> addPostToUser(postID, userId) async {
-    await _db.collection("users").document(userId).updateData({
-      "posts": FieldValue.arrayUnion([postID])
-    });
-  }
-
-  /*
-   * Updating the user field
-   */
-
+  /// Passing the Firebase User Data to Firestore
   void updateFirebaseUserDataToDB(FirebaseUser user) async {
     DocumentReference ref = _db.collection('users').document(user.uid);
 
@@ -118,11 +131,12 @@ class UserService {
       'uid': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
-      'displayName': user.displayName,
+      'domain': Utils.getDomainFromEmail(user.email),
       'lastSeen': DateTime.now(),
     }, merge: true);
   }
 
+  /// Update the User Data in Firestore by its ID and User Map (Merge = true)
   void updateCollectionUserData(String uid, Map user) async {
     DocumentReference ref = _db.collection('users').document(uid);
 
@@ -132,45 +146,15 @@ class UserService {
     }, merge: true);
   }
 
-  // Fetching the user stream
-  Stream<User> userStream(FirebaseUser user) {
-    print("User stream is called");
-    if (user == null) return null;
-    print("User stream is called and return stream");
+  /*******************************
+   *             DELETE
+   *******************************/
 
-    var userStream = _db
-        .collection("users")
-        .document(user.uid)
-        .snapshots()
-        .map((u) => User.fromMap(u.data));
+  /*******************************
+   *        AUTHORIZATION
+   *******************************/
 
-    // also listen to the userStream
-
-    // userStream.listen((u) {
-    //   _user = u;
-    //   notifyListeners();
-    // });
-
-    return userStream;
-  }
-
-  void addListenerToUserStream(FirebaseUser user) {
-    var userStream = _db
-        .collection("users")
-        .document(user.uid)
-        .snapshots()
-        .map((u) => User.fromMap(u.data));
-
-    // userStream.listen((u) {
-    //   _user = u;
-    //   notifyListeners();
-    // });
-  }
-
-  /*
-    Authorization Functions 
-  */
-
+  /// Signup User to Firebase By Email and Password
   Future<FirebaseUser> signupWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -188,6 +172,7 @@ class UserService {
     }
   }
 
+  /// Login User to Firebase by Email and Password
   Future<FirebaseUser> loginWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -207,9 +192,8 @@ class UserService {
     }
   }
 
+  /// Try to Login by the Email and Password saved in the SharedPreference
   Future<bool> tryAutoLogin() async {
-    // signOut();
-
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey("email") || !prefs.containsKey("password")) {
       return false;
@@ -221,6 +205,7 @@ class UserService {
     return true;
   }
 
+  /// Signout the User from Firebase
   Future<String> signOut() async {
     try {
       await _auth.signOut();
@@ -228,9 +213,6 @@ class UserService {
       final prefs = await SharedPreferences.getInstance();
       prefs.remove("email");
       prefs.remove("password");
-
-      // _fbUser = null;
-      // _user = null;
 
       return 'SignOut';
     } catch (e) {

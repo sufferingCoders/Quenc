@@ -1,22 +1,23 @@
 class User {
-  final String displayName;
-  final String email;
-  final DateTime lastSeen;
-  final String gender;
-  final String photoURL;
-  final String uid;
-  final DateTime addedTime;
-  final String currentRoom;
-  final String major;
-  final DateTime dob;
-  final int role; // 0 -> Admin, 1 -> NormalUser
+  String domain;
+  String email;
+  DateTime lastSeen;
+  int gender;
+  String photoURL;
+  String uid;
+  DateTime addedTime;
+  String currentRoom;
+  String major;
+  DateTime dob;
+  int role; // 0 -> Admin, 1 -> NormalUser
 
   List<String> likePosts;
   List<String> likeComments;
   List<String> archivePosts;
+
   User({
     this.role,
-    this.displayName,
+    this.domain,
     this.email,
     this.lastSeen,
     this.photoURL,
@@ -37,15 +38,15 @@ class User {
     }
 
     return User(
-      displayName: data["displayName"] ?? "",
-      email: data["email"] ?? "",
+      domain: data["domain"],
+      email: data["email"],
       lastSeen: DateTime.now(),
-      photoURL: data["photoURL"] ?? "",
-      uid: data["uid"] ?? "",
+      photoURL: data["photoURL"],
+      uid: data["uid"],
       addedTime: data["addedTime"]?.toDate() ?? DateTime.now(),
-      currentRoom: data["currentRoom"] ?? null,
-      gender: data["gender"] ?? "",
-      major: data["major"] ?? "",
+      currentRoom: data["currentRoom"],
+      gender: data["gender"],
+      major: data["major"],
       dob: data["dob"]?.toDate() ?? DateTime.now(),
       likePosts: data["likePosts"]?.cast<String>() ?? [],
       likeComments: data["likeComments"]?.cast<String>() ?? [],
@@ -70,7 +71,7 @@ class User {
 
   Map<String, dynamic> toMap() {
     return {
-      "displayName": displayName,
+      "domain": domain,
       "email": email,
       "lastSeen": lastSeen,
       "photoURL": photoURL,

@@ -4,6 +4,8 @@ import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/ArchivePostsScreen.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
+import 'package:quenc/screens/OwningPostsScreen.dart';
+import 'package:quenc/screens/ReportManagementScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -53,6 +55,21 @@ class ProfileScreen extends StatelessWidget {
                     },
                   ),
                   const Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.report,
+                    ),
+                    title: const Text("舉報案例管理"),
+                    onTap: () {
+                      // Need a category management page
+                      // push
+                      Navigator.pushNamed(
+                        context,
+                        ReportManagementScreen.routeName,
+                      );
+                    },
+                  ),
+                  const Divider(),
                   Container(
                     margin: EdgeInsets.all(10),
                     height: 60,
@@ -80,6 +97,16 @@ class ProfileScreen extends StatelessWidget {
                       UserAttributeSettingScreen.routeName,
                       arguments: user,
                     );
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: Icon(
+                    Icons.library_books,
+                  ),
+                  title: const Text("我的帖子"),
+                  onTap: () {
+                    Navigator.pushNamed(context, OwingPostsScreen.routeName);
                   },
                 ),
                 const Divider(),

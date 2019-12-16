@@ -173,11 +173,11 @@ class _PostAddingFullScreenDialogState
     var u = Provider.of<User>(context, listen: false);
     post.author = u.uid;
     post.authorGender = u.gender;
-    post.authorName = Utils.getDisplayNameFromEmail(u.email);
+    post.authorDomain = u.domain;
     post.previewPhoto = Utils.getFirstImageURLFromMarkdown(post.content);
     post.updatedAt = DateTime.now();
     post.previewText = Utils.getPreviewTextFromContent(post.content);
-
+    post.likeCount = 0;
     if (initCreatedAt) {
       post.createdAt = DateTime.now();
     }

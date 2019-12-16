@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
+import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/utils/index.dart';
 
 class CommentDetailShowingContainer extends StatelessWidget {
   CommentDetailShowingContainer({
     Key key,
     @required this.comment,
+    this.post,
   }) : super(key: key);
+  final Post post;
 
   final UserService userService = UserService();
 
@@ -25,13 +29,14 @@ class CommentDetailShowingContainer extends StatelessWidget {
           child: ListTile(
               leading: Icon(
                 Icons.account_circle,
-                color:
-                    comment.authorGender == "male" ? Colors.blue : Colors.pink,
+                color: comment.authorGender == 1 ? Colors.blue : Colors.pink,
                 size: 35,
               ),
               isThreeLine: true,
               title: Text(
-                "${comment.authorName}",
+                post?.author == comment?.author
+                    ? "作者"
+                    : Utils.getDisplayNameFromDomain(comment.authorDomain),
                 style: TextStyle(
                   fontSize: 13,
                 ),
