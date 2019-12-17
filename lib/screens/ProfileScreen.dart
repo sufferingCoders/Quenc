@@ -7,6 +7,7 @@ import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/OwningPostsScreen.dart';
 import 'package:quenc/screens/ReportManagementScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
+import 'package:quenc/screens/WebSocketTestingScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = "/profile";
@@ -66,6 +67,21 @@ class ProfileScreen extends StatelessWidget {
                       Navigator.pushNamed(
                         context,
                         ReportManagementScreen.routeName,
+                      );
+                    },
+                  ),
+                  const Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.text_fields,
+                    ),
+                    title: const Text("WebSocket Test"),
+                    onTap: () {
+                      // Need a category management page
+                      // push
+                      Navigator.pushNamed(
+                        context,
+                        WebSocketTestingScreen.routeName,
                       );
                     },
                   ),

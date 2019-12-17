@@ -16,6 +16,7 @@ import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/screens/ReportDetailShowingScreen.dart';
 import 'package:quenc/screens/ReportManagementScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
+import 'package:quenc/screens/WebSocketTestingScreen.dart';
 import 'package:quenc/widgets/common/HomePage.dart';
 
 void main() async {
@@ -148,6 +149,8 @@ class MyApp extends StatelessWidget {
                     CategoryManagementScreen(),
                 ReportManagementScreen.routeName: (ctx) =>
                     ReportManagementScreen(),
+                WebSocketTestingScreen.routeName: (ctx) =>
+                    WebSocketTestingScreen(),
               },
             ),
           );
