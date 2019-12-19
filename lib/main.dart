@@ -19,6 +19,8 @@ import 'package:quenc/screens/UserAttributeSettingScreen.dart';
 import 'package:quenc/screens/WebSocketTestingScreen.dart';
 import 'package:quenc/widgets/common/HomePage.dart';
 
+import 'providers/WebsocketServiceTest.dart';
+
 void main() async {
   // Brightness brightness;
   // SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -57,6 +59,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(
           value: ReportService(),
         ),
+        ChangeNotifierProvider.value(
+          value: WebScoketService(),
+        )
       ],
       child: Consumer<FirebaseUser>(
         builder: (ctx, fbUser, ch) {
