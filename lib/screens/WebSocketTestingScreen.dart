@@ -157,8 +157,6 @@ class _WebSocketTestingScreenState extends State<WebSocketTestingScreen> {
                       .currentChannel
                       .stream, // Extract the fullDocument part and setting in the user
                   builder: (context, snapshot) {
-
-
                     if (snapshot.hasData) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),

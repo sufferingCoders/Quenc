@@ -8,7 +8,6 @@ import 'package:web_socket_channel/io.dart';
 class WebScoketService with ChangeNotifier {
   // MacOS // static const String apiUrl = "http://192.168.1.112:8080/";
 
-  static const String apiURL = "http://192.168..1:8080/";
   static IOWebSocketChannel channel;
   static String insertedID;
 
@@ -66,6 +65,8 @@ class WebScoketService with ChangeNotifier {
     // });
   }
 
+
+  /// Adding test to backend
   Future<void> addTestDocument(String email) async {
     if (email == null || email.isEmpty) {
       return null;
@@ -100,7 +101,8 @@ class WebScoketService with ChangeNotifier {
     return resData["id"];
   }
 
-  Future<void> updateTestDocument(String id, String email) async {
+  /// Update test in the database
+  Future<dynamic> updateTestDocument(String id, String email) async {
     if (id == null || id.isEmpty) {
       if (insertedID == null) {
         return null;
@@ -135,6 +137,7 @@ class WebScoketService with ChangeNotifier {
     // insertedID =
 
     notifyListeners();
+    return resData;
   }
 
   Future<void> sendingPing() async {
