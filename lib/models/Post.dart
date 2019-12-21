@@ -13,9 +13,9 @@ class Post {
   String previewText;
   String previewPhoto;
   int likeCount;
+  String category; 
   // int archiveCount;
   // int commentCount;
-  String category; // 0 為其它
 
   Post({
     this.previewPhoto,

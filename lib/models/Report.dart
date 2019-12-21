@@ -6,8 +6,8 @@ enum ReportTarget {
 class Report {
   // Report Schema for saving in the Firestore
 
-  String content;
   String id;
+  String content;
   String author;
   String authorDomain;
   int authorGender;
