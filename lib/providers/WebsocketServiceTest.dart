@@ -8,8 +8,8 @@ import 'package:web_socket_channel/io.dart';
 class WebScoketService with ChangeNotifier {
   // MacOS // static const String apiUrl = "http://192.168.1.112:8080/";
 
-  static IOWebSocketChannel channel;
-  static String insertedID;
+  IOWebSocketChannel channel;
+  String insertedID;
 
   IOWebSocketChannel get currentChannel {
     return channel;
@@ -44,7 +44,7 @@ class WebScoketService with ChangeNotifier {
     String url =
         "ws://192.168.1.135:8080/ws"; // ipconfig can check should be IPv4 Address
     channel = IOWebSocketChannel.connect(url);
-    channel.sink.add("ping");
+    // channel.sink.add("ping");
     channel.stream.listen((m) {
       print(m);
     });
@@ -60,14 +60,13 @@ class WebScoketService with ChangeNotifier {
     }
     channel = IOWebSocketChannel.connect(url);
     // channel.sink.add("ping");
-    // channel.stream.listen((m) {
-    //   print(m);
-    // });
+    channel.stream.listen((m) {
+      print("get stream: $m");
+    });
   }
 
-
   /// Adding test to backend
-  Future<void> addTestDocument(String email) async {
+  Future<String> addTestDocument(String email) async {
     if (email == null || email.isEmpty) {
       return null;
     }
@@ -85,7 +84,7 @@ class WebScoketService with ChangeNotifier {
     );
 
     if (res.body == null || res.body.isEmpty) {
-      return;
+      return null;
     }
 
     final resData = json.decode(res.body);
@@ -95,8 +94,6 @@ class WebScoketService with ChangeNotifier {
     // Have to return ID here;
 
     insertedID = resData["id"];
-
-    notifyListeners();
 
     return resData["id"];
   }

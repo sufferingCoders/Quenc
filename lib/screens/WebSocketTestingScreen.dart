@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/providers/WebsocketServiceTest.dart';
+import 'package:web_socket_channel/io.dart';
 
 class WebSocketTestingScreen extends StatefulWidget {
   static const routeName = "/websocket-test";
@@ -40,17 +43,43 @@ class _WebSocketTestingScreenState extends State<WebSocketTestingScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController idController = TextEditingController();
 
+  IOWebSocketChannel channel;
+
+  void settingWebsocket(String id) {
+    String url =
+        "ws://192.168.1.135:8080/test/subscribe/$id"; // ipconfig can check should be IPv4 Address
+
+    // if (channel != null) {
+    //   channel.sink.close();
+    // }
+    channel = IOWebSocketChannel.connect(url);
+    // channel.sink.add("ping");
+    channel.stream.listen(
+      (m) {
+        Map newObj = json.decode(m);
+        print(newObj);
+        print("get stream: $m");
+      },
+      onDone: () {
+        debugPrint('ws channel closed');
+      },
+      onError: (error) {
+        debugPrint('ws error $error');
+      },
+    );
+  }
+
   @override
   void dispose() {
     emailController.dispose();
     idController.dispose();
+    channel?.sink?.close();
     // TODO: implement dispose
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    String id = Provider.of<WebScoketService>(context).currentId;
     return Scaffold(
       appBar: AppBar(
         title: Text("WebSocket Test"),
@@ -95,10 +124,18 @@ class _WebSocketTestingScreenState extends State<WebSocketTestingScreen> {
             child: Text("Create"),
             onPressed: () async {
               print("Create Pressed");
-              await Provider.of<WebScoketService>(context, listen: false)
-                  .addTestDocument(emailController.text);
+              var id =
+                  await Provider.of<WebScoketService>(context, listen: false)
+                      .addTestDocument(emailController.text);
+              if (id != null) {
+                settingWebsocket(id);
+              }
+              setState(() {
+                idController.text = id;
+              });
 
-              Provider.of<WebScoketService>(context).setTestDocumentStream();
+              // Provider.of<WebScoketService>(context, listen: false)
+              //     .setTestDocumentStream();
             },
           ),
           FlatButton(
@@ -109,79 +146,79 @@ class _WebSocketTestingScreenState extends State<WebSocketTestingScreen> {
                   .updateTestDocument(idController.text, emailController.text);
             },
           ),
-          FlatButton(
-            child: Text("Get Stream"),
-            onPressed: () {
-              print("stream Pressed");
-            },
-          ),
-          Builder(
-            builder: (
-              context,
-            ) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text("CurrentId is $id"),
-                ),
-              );
-            },
-          ),
-          Builder(
-            builder: (
-              context,
-            ) {
-              return FlatButton(
-                child: Text("Copy and Put into ID field"),
-                onPressed: () {
-                  ClipboardManager.copyToClipBoard(id).then((r) {
-                    Scaffold.of(context).showSnackBar(SnackBar(
-                      content: Text("Copied"),
-                      duration: Duration(
-                        seconds: 3,
-                      ),
-                    ));
-                  });
-                  setState(() {
-                    idController.text = id;
-                  });
-                },
-              );
-            },
-          ),
-          Builder(
-            builder: (context) {
-              if (id != null) {
-                return StreamBuilder(
-                  stream: Provider.of<WebScoketService>(context)
-                      .currentChannel
-                      .stream, // Extract the fullDocument part and setting in the user
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(snapshot.data.toString()),
-                      );
-                    }
+          // FlatButton(
+          //   child: Text("Get Stream"),
+          //   onPressed: () {
+          //     print("stream Pressed");
+          //   },
+          // ),
+          // Builder(
+          //   builder: (
+          //     context,
+          //   ) {
+          //     return Center(
+          //       child: Padding(
+          //         padding: const EdgeInsets.all(8.0),
+          //         child: Text("CurrentId is $id"),
+          //       ),
+          //     );
+          //   },
+          // ),
+          // Builder(
+          //   builder: (
+          //     context,
+          //   ) {
+          //     return FlatButton(
+          //       child: Text("Copy and Put into ID field"),
+          //       onPressed: () {
+          //         ClipboardManager.copyToClipBoard(id).then((r) {
+          //           Scaffold.of(context).showSnackBar(SnackBar(
+          //             content: Text("Copied"),
+          //             duration: Duration(
+          //               seconds: 3,
+          //             ),
+          //           ));
+          //         });
+          //         setState(() {
+          //           idController.text = id;
+          //         });
+          //       },
+          //     );
+          //   },
+          // ),
+          // Builder(
+          //   builder: (context) {
+          //     if (id != null) {
+          //       return StreamBuilder(
+          //         stream: Provider.of<WebScoketService>(context)
+          //             .currentChannel
+          //             .stream, // Extract the fullDocument part and setting in the user
+          //         builder: (context, snapshot) {
+          //           if (snapshot.hasData) {
+          //             return Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: Text(snapshot.data.toString()),
+          //             );
+          //           }
 
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("No Data now"),
-                      ),
-                    );
-                  },
-                );
-              } else {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("No id"),
-                  ),
-                );
-              }
-            },
-          ),
+          //           return Center(
+          //             child: Padding(
+          //               padding: const EdgeInsets.all(8.0),
+          //               child: Text("No Data now"),
+          //             ),
+          //           );
+          //         },
+          //       );
+          //     } else {
+          //       return Center(
+          //         child: Padding(
+          //           padding: const EdgeInsets.all(8.0),
+          //           child: Text("No id"),
+          //         ),
+          //       );
+          //     }
+          //   },
+          // ),
         ],
       ),
     );
