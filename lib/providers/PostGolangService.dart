@@ -8,6 +8,7 @@ import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 
 class PostGolangService with ChangeNotifier {
@@ -157,9 +158,9 @@ class PostGolangService with ChangeNotifier {
 
   // Doing this
   Future<List<Post>> getAllPosts({
-    PostOrderByOption orderBy = PostOrderByOption.CreatedAt,
+    OrderByOption orderBy = OrderByOption.CreatedAt,
     int skip = 0,
-    int pageSize = 50,
+    int limit = 50,
     String categoryId,
   }) async {
     try {
@@ -171,15 +172,15 @@ class PostGolangService with ChangeNotifier {
         url += "&skip=$skip";
       }
 
-      if (pageSize != null) {
-        url += "&limit=$pageSize";
+      if (limit != null) {
+        url += "&limit=$limit";
       }
 
       switch (orderBy) {
-        case PostOrderByOption.CreatedAt:
+        case OrderByOption.CreatedAt:
           url += "&sort=createdAt_-1";
           break;
-        case PostOrderByOption.LikeCount:
+        case OrderByOption.LikeCount:
           break;
         default:
           break;
@@ -280,17 +281,18 @@ class PostGolangService with ChangeNotifier {
     return retrievedPosts;
   }
 
-  Future<void> updatePost(Post post) async {
+  Future<void> updatePost(
+      String postId, Map<String, dynamic> updateFields) async {
     // Remove ID field and CreatedAt field <- in the backend
     try {
-      final url = apiUrl + "/post/${post.id}";
+      final url = apiUrl + "/post/$postId";
       final res = await http.post(
         url,
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",
           "Authorization": UserGolangService.token,
         },
-        body: post.toMap(),
+        body: json.encode(updateFields),
       );
 
       if (res.body == null || res.body.isEmpty) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/OwningPostsScreen.dart';
@@ -11,8 +12,6 @@ import 'package:quenc/screens/WebSocketTestingScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = "/profile";
-
-  final userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +143,8 @@ class ProfileScreen extends StatelessWidget {
                   title: const Text("登出"),
                   onTap: () {
                     Navigator.popUntil(context, ModalRoute.withName("/"));
-                    userService.signOut();
+                    Provider.of<UserGolangService>(context, listen: false)
+                        .signOut();
                   },
                 ),
                 const Divider(),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
 
 class AttributeSettingCard extends StatefulWidget {
@@ -118,7 +120,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
                 duration: Duration(seconds: 3),
               ));
 
-              UserService().updateCollectionUserData(
+              Provider.of<UserGolangService>(context, listen: false).updateUser(
                 widget.user.id,
                 {
                   "dob": pickedDOB,

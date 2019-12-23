@@ -1,6 +1,8 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
 
 class AuthCard extends StatefulWidget {
@@ -52,7 +54,8 @@ class _AuthCardState extends State<AuthCard> {
             duration: Duration(milliseconds: 2000),
           ),
         );
-        await UserService().signupWithEmailAndPassword(email, password);
+        await Provider.of<UserGolangService>(context, listen: false)
+            .signupUser(email, password);
       } else {
         Scaffold.of(ctx).removeCurrentSnackBar();
         Scaffold.of(ctx).showSnackBar(
@@ -61,7 +64,8 @@ class _AuthCardState extends State<AuthCard> {
             duration: Duration(milliseconds: 2000),
           ),
         );
-        await UserService().loginWithEmailAndPassword(email, password);
+        await Provider.of<UserGolangService>(context, listen: false)
+            .loginUser(email, password);
       }
     } catch (error) {
       const errorMessage = '未能認證你的Email，請稍後再嘗試';
@@ -157,8 +161,7 @@ class _AuthCardState extends State<AuthCard> {
                   onPressed: () => _submit(context),
                 ),
                 FlatButton(
-                  child:
-                      Text("我要${registerMode ? "登入" : "註冊"}"),
+                  child: Text("我要${registerMode ? "登入" : "註冊"}"),
                   onPressed: () {
                     setState(() {
                       registerMode = !registerMode;

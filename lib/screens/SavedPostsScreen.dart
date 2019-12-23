@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
@@ -24,8 +25,7 @@ class SavedPostscreen extends StatelessWidget {
           }
 
           return FutureBuilder(
-            future: Provider.of<PostService>(context)
-                .getMultiplePostsByIds(user.savedPosts),
+            future: Provider.of<PostGolangService>(context).getSavedPosts(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

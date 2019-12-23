@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:quenc/models/Comment.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 
 class CommentGolangService with ChangeNotifier {
@@ -12,9 +13,8 @@ class CommentGolangService with ChangeNotifier {
 
   Future<List<Comment>> getTopLikedCommentsForPost(
       String postId, int top) async {
-    List<Comment> retrivedComments =
-        await getCommentForPost(postId, CommentOrderByOption.LikeCount, 0, top);
-
+    List<Comment> retrivedComments = await getCommentForPost(
+        pid: postId, limit: top, skip: 0, orderBy: OrderByOption.LikeCount);
     return retrivedComments;
   }
 
@@ -48,12 +48,12 @@ class CommentGolangService with ChangeNotifier {
     return comment;
   }
 
-  Future<List<Comment>> getCommentForPost(
+  Future<List<Comment>> getCommentForPost({
     String pid,
-    CommentOrderByOption orderBy,
-    int skip,
-    int limit,
-  ) async {
+    OrderByOption orderBy = OrderByOption.CreatedAt,
+    int skip = 0,
+    int limit = 50,
+  }) async {
     List<Comment> retrivedComments = [];
 
     try {
@@ -68,10 +68,10 @@ class CommentGolangService with ChangeNotifier {
       }
 
       switch (orderBy) {
-        case CommentOrderByOption.CreatedAt:
+        case OrderByOption.CreatedAt:
           url += "&sort=createdAt_-1";
           break;
-        case CommentOrderByOption.LikeCount:
+        case OrderByOption.LikeCount:
           url += "&sort=likeCount_-1";
           break;
         default:

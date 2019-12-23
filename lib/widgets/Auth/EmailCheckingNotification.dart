@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
 
 class EmailCheckingNotification extends StatefulWidget {
@@ -49,8 +51,8 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: RaisedButton(
-                  child:
-                      Text("再次寄送${availibleForSending ? "" : "($secCounting)"}"),
+                  child: Text(
+                      "再次寄送${availibleForSending ? "" : "($secCounting)"}"),
                   onPressed: availibleForSending
                       ? () {
                           secCounting = 5;
@@ -79,7 +81,8 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
                 child: RaisedButton(
                   child: Text("重新登入"),
                   onPressed: () {
-                    UserService().signOut();
+                    Provider.of<UserGolangService>(context, listen: false)
+                        .signOut();
                   },
                 ),
               )

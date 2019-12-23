@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/UserService.dart';
 
@@ -42,20 +43,7 @@ class _PostAddingAndEditingCardState extends State<PostAddingAndEditingCard> {
   final _form = GlobalKey<FormState>();
 
   void addPost(BuildContext ctx, Post post) async {
-    // Initialise the fields
-    post.author = Provider.of<User>(ctx, listen: false).id;
-    post.createdAt = DateTime.now();
-    post.updatedAt = DateTime.now();
-
-    // Add to the post collection
-    String postID = await Provider.of<PostService>(ctx).addPost(post);
-
-    // Add to the user collection
-    UserService().addPostToUser(
-      postID,
-      post.author,
-    );
-
+    Provider.of<PostGolangService>(ctx).addPost(post);
     Navigator.of(ctx).pop();
   }
 
@@ -63,7 +51,10 @@ class _PostAddingAndEditingCardState extends State<PostAddingAndEditingCard> {
     widget.post.updatedAt = DateTime.now();
 
     // Edit the posts in Collection
-    Provider.of<PostService>(context).editPost(widget.post);
+    Provider.of<PostGolangService>(context, listen: false).updatePost(
+      widget.post.id,
+      widget.post.toMap(),
+    );
 
     Navigator.of(ctx).pop();
   }

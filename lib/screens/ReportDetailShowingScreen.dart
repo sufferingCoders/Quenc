@@ -3,8 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/Report.dart';
+import 'package:quenc/providers/CommentGolangService.dart';
 import 'package:quenc/providers/CommentService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/ReportService.dart';
 import 'package:quenc/widgets/comment/CommentShowingColumn.dart';
 import 'package:quenc/widgets/common/CommentDivider.dart';
@@ -40,7 +43,7 @@ class _ReportDetailShowingScreenState extends State<ReportDetailShowingScreen> {
   void setReportAndReportedItem() {
     if (widget.report == null) {
       setState(() async {
-        report = await Provider.of<ReportService>(context)
+        report = await Provider.of<ReportGolangService>(context)
             .getReportById(widget.reportId);
       });
     } else {
@@ -51,7 +54,7 @@ class _ReportDetailShowingScreenState extends State<ReportDetailShowingScreen> {
 
     switch (target) {
       case ReportTarget.Comment:
-        Provider.of<CommentService>(context)
+        Provider.of<CommentGolangService>(context)
             .getCommentById(report.reportId)
             .then((c) {
           setState(() {
@@ -61,7 +64,7 @@ class _ReportDetailShowingScreenState extends State<ReportDetailShowingScreen> {
         });
         break;
       case ReportTarget.Post:
-        Provider.of<PostService>(context)
+        Provider.of<PostGolangService>(context)
             .getPostByID(report.reportId)
             .then((p) {
           setState(() {
@@ -129,8 +132,8 @@ class _ReportDetailShowingScreenState extends State<ReportDetailShowingScreen> {
                     report.solve = !(report.solve == true);
                   });
 
-                  var success =
-                      await Provider.of<ReportService>(context).updateReport(
+                  var success = await Provider.of<ReportGolangService>(context)
+                      .updateReport(
                     report.id,
                     {"solve": report.solve},
                   );

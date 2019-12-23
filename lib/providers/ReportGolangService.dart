@@ -124,7 +124,7 @@ class ReportGolangService with ChangeNotifier {
     return report;
   }
 
-  Future<void> updateReport(
+  Future<bool> updateReport(
       String id, Map<String, dynamic> updateFields) async {
     try {
       final url = apiUrl + "/report/$id";
@@ -146,8 +146,9 @@ class ReportGolangService with ChangeNotifier {
       if (res.statusCode >= 400) {
         throw HttpException(resData["err"]);
       }
+      return true;
     } catch (e) {
-      throw e;
+      return false;
     }
   }
 }

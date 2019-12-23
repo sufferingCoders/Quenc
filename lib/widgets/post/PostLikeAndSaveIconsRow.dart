@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/Report.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/widgets/report/ReportAddingFullScreenDialog.dart';
 
@@ -19,7 +21,6 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
   }) : super(key: key);
 
   final Post post;
-  final UserService userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,8 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
               color:
                   user.likePosts.contains(post?.id) ? Colors.pink : Colors.grey,
               onPressed: () {
-                userService.togglePostLike(post?.id, user);
+                Provider.of<UserGolangService>(context, listen: false)
+                    .toggoleFunction(post?.id, ToggleOptions.LikePosts);
               },
             ),
           ),
@@ -47,7 +49,8 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                   ? Colors.blue
                   : Colors.grey,
               onPressed: () {
-                userService.togglePostArchive(post?.id, user);
+                Provider.of<UserGolangService>(context, listen: false)
+                    .toggoleFunction(post?.id, ToggleOptions.SavedPosts);
               },
             ),
           ),
@@ -117,7 +120,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                                 FlatButton(
                                   child: Text("是"),
                                   onPressed: () {
-                                    Provider.of<PostService>(context,
+                                    Provider.of<PostGolangService>(context,
                                             listen: false)
                                         .deletePost(post?.id);
 

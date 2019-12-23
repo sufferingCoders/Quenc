@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
 /// This screen show all the saved post
@@ -24,7 +24,8 @@ class OwingPostsScreen extends StatelessWidget {
           }
 
           return FutureBuilder(
-            future: Provider.of<PostService>(context).getPostForUser(user.id),
+            future:
+                Provider.of<PostGolangService>(context).getPostForAuthor(user.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

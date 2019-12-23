@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 
@@ -17,7 +17,8 @@ class PostDetailShowingColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Function idToName = Provider.of<PostService>(context).getCategoryNameByID;
+    Function idToName =
+        Provider.of<PostGolangService>(context).getCategoryNameByID;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

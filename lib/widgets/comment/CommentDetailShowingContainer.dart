@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/utils/index.dart';
 
@@ -15,7 +16,6 @@ class CommentDetailShowingContainer extends StatelessWidget {
   }) : super(key: key);
   final Post post;
 
-  final UserService userService = UserService();
 
   final Comment comment;
 
@@ -58,9 +58,9 @@ class CommentDetailShowingContainer extends StatelessWidget {
                     icon: Icon(Icons.favorite),
                     onPressed: () {
                       if (comment.id != null) {
-                        userService.toggleCommentLike(
+                        Provider.of<UserGolangService>(context).toggoleFunction(
                           comment.id,
-                          user,
+                          ToggleOptions.LikeComments,
                         );
                       }
                     },

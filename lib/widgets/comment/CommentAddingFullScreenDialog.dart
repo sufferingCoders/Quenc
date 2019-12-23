@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/CommentService.dart';
+import 'package:quenc/providers/CommentGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/comment/CommentPreviewFullScreenDialog.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
@@ -89,7 +89,7 @@ class _CommentAddingFullScreenDialogState
 
   void addComment(BuildContext ctx) async {
     commentFieldComplete();
-    await Provider.of<CommentService>(context).addComment(comment);
+    await Provider.of<CommentGolangService>(context).addComment(comment);
     Navigator.of(context).pop();
   }
 

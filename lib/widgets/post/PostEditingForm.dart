@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/widgets/common/ContentEditingContainer.dart';
 import 'package:quenc/widgets/post/TitleEditingTextField.dart';
@@ -37,7 +38,7 @@ class _PostEditingFormState extends State<PostEditingForm> {
   }
 
   void setCategories() {
-    Provider.of<PostService>(context).getAllPostCategories().then((cat) {
+    Provider.of<PostGolangService>(context).getAllPostCategories().then((cat) {
       setState(() {
         categories = cat;
         isInit = true;

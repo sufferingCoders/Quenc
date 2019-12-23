@@ -115,8 +115,9 @@ class UserGolangService with ChangeNotifier {
 
   /// Fetching the User Stream from Firestore
   void setUserStream() async {
-    String url =
-        "ws://" + baseUrl + ""; // ipconfig can check should be IPv4 Address
+    String url = "ws://" +
+        baseUrl +
+        "/subsrible"; // ipconfig can check should be IPv4 Address
 
     if (channel != null) {
       await channel.sink.close();
@@ -177,6 +178,25 @@ class UserGolangService with ChangeNotifier {
           "Authorization": token,
         },
       );
+
+      if (res.body == null || res.body.isEmpty) {
+        return;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> updateUser(String id, Map<String, dynamic> updateFields) async {
+    try {
+      final url = apiUrl + "/detail/$id";
+      final res = await http.patch(url, body: json.encode(updateFields));
 
       if (res.body == null || res.body.isEmpty) {
         return;

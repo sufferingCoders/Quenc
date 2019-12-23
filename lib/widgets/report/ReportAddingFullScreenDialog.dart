@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Report.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/ReportService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
@@ -100,7 +101,7 @@ class _ReportAddingFullScreenDialogState
 
   void addReport() async {
     reportCompleteFields();
-    await Provider.of<ReportService>(context).addReport(report);
+    await Provider.of<ReportGolangService>(context).addReport(report);
     Navigator.of(context).pop();
   }
 

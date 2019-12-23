@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/widgets/post/PostShowingListTile.dart';
 
 class PostShowingContainer extends StatefulWidget {
@@ -8,7 +9,7 @@ class PostShowingContainer extends StatefulWidget {
   final Function infiniteScrollUpdater;
   final Function refresh;
   final bool isInit;
-  final PostOrderByOption orderBy;
+  final OrderByOption orderBy;
   final Function orderByUpdater;
 
   PostShowingContainer({
@@ -78,7 +79,7 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: DropdownButton<PostOrderByOption>(
+                  child: DropdownButton<OrderByOption>(
                     focusColor: theme.primaryColorDark,
                     value: widget.orderBy,
                     onChanged: (v) {
@@ -86,7 +87,7 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
                     },
                     items: [
                       DropdownMenuItem(
-                        value: PostOrderByOption.LikeCount,
+                        value: OrderByOption.LikeCount,
                         child: Text(
                           "熱門",
                           style: TextStyle(
@@ -96,7 +97,7 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
                         ),
                       ),
                       DropdownMenuItem(
-                        value: PostOrderByOption.CreatedAt,
+                        value: OrderByOption.CreatedAt,
                         child: Text(
                           "最新",
                           style: TextStyle(

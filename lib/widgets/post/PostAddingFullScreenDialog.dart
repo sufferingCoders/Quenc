@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
@@ -185,13 +186,13 @@ class _PostAddingFullScreenDialogState
 
   void addPost(BuildContext ctx) async {
     postCompleteFields();
-    await Provider.of<PostService>(ctx, listen: false).addPost(post);
+    await Provider.of<PostGolangService>(ctx, listen: false).addPost(post);
     Navigator.of(ctx).pop();
   }
 
   void updatePost(BuildContext ctx) async {
     postCompleteFields(initCreatedAt: false);
-    await Provider.of<PostService>(ctx, listen: false).updatePost(
+    await Provider.of<PostGolangService>(ctx, listen: false).updatePost(
       post.id,
       post.toMap(),
     );

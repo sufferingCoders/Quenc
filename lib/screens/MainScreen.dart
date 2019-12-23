@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
-import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/widgets/AppDrawer.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
@@ -21,19 +23,19 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   bool isInit = false;
   PostCategory category;
-  int pageSize = 50;
-  DocumentSnapshot startAfter;
-  RetrievedPostsAndLastSnapshot postAndSnapshot;
-  PostOrderByOption orderBy = PostOrderByOption.LikeCount;
+  int limit = 50;
+  int skip;
+  OrderByOption orderBy = OrderByOption.LikeCount;
   List<PostCategory> allCategories;
+  List<Post> retrievedPosts;
 
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
 
     if (!isInit) {
-      // var postService = Provider.of<PostService>(context, listen: false);
-      // postService.tryInitPosts();
+      // var PostGolangService = Provider.of<PostGolangService>(context, listen: false);
+      // PostGolangService.tryInitPosts();
       isInit = true;
       await loadMore();
       await loadCategories();
@@ -41,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
     super.didChangeDependencies();
   }
 
-  void orderByUpdater(PostOrderByOption o) {
+  void orderByUpdater(OrderByOption o) {
     setToNull();
     setState(() {
       orderBy = o;
@@ -50,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> loadCategories() async {
-    var cs = await Provider.of<PostService>(context, listen: false)
+    var cs = await Provider.of<PostGolangService>(context, listen: false)
         .getAllPostCategories();
     setState(() {
       allCategories = cs;
@@ -74,29 +76,26 @@ class _MainScreenState extends State<MainScreen> {
   void setToNull() {
     setState(() {
       isInit = false;
-      startAfter = null;
-      postAndSnapshot = null;
+      skip = 0;
     });
   }
 
   Future<void> loadMore() async {
     var newPostAndSnapshot =
-        await Provider.of<PostService>(context).getAllPosts(
+        await Provider.of<PostGolangService>(context).getAllPosts(
       categoryId: category?.id,
-      pageSize: pageSize,
+      limit: limit,
       orderBy: orderBy,
-      startAfter: postAndSnapshot?.lastSnapshot,
+      skip: skip,
     );
 
     setState(() {
-      if (postAndSnapshot == null) {
-        postAndSnapshot = newPostAndSnapshot;
+      if (retrievedPosts == null) {
+        retrievedPosts = newPostAndSnapshot;
         isInit = true;
       } else {
         if (newPostAndSnapshot != null) {
-          postAndSnapshot.retrievedPosts
-              .addAll(newPostAndSnapshot.retrievedPosts);
-          postAndSnapshot.lastSnapshot = newPostAndSnapshot.lastSnapshot;
+          retrievedPosts.addAll(newPostAndSnapshot);
           isInit = true;
         }
       }
@@ -105,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var postService = Provider.of<PostService>(context);
+    // var PostGolangService = Provider.of<PostGolangService>(context);
     return Scaffold(
       appBar: AppBar(
         // automaticallyImplyLeading: true,
@@ -129,12 +128,12 @@ class _MainScreenState extends State<MainScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          // postService.initialisePosts();
+          // PostGolangService.initialisePosts();
           refresh();
         },
         child: PostShowingContainer(
           isInit: isInit,
-          posts: postAndSnapshot?.retrievedPosts,
+          posts: retrievedPosts,
           infiniteScrollUpdater: loadMore,
           refresh: refresh,
           orderBy: orderBy,
