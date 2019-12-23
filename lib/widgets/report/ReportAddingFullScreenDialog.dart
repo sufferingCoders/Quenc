@@ -79,7 +79,7 @@ class _ReportAddingFullScreenDialogState
     report.reportTarget = Report.reportTargetEnumToInt(widget.target);
     report.previewPhoto = Utils.getFirstImageURLFromMarkdown(report.content);
     report.previewText = Utils.getPreviewTextFromContent(report.content);
-    report.author = u.uid;
+    report.author = u.id;
     report.createdAt = DateTime.now();
   }
 

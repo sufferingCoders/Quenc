@@ -40,7 +40,7 @@ class PostDetailShowingColumn extends StatelessWidget {
             ),
             trailing: Consumer<User>(
               builder: (ctx, user, ch) {
-                if (user.uid == post.author) {
+                if (user.id == post.author) {
                   return IconButton(
                     icon: Icon(
                       Icons.edit,

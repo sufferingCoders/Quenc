@@ -45,7 +45,7 @@ class UserService {
   /// Toggle like for a comment
   Future<int> toggleCommentLike(String commentId, User user) async {
     if (user.likeComments.contains(commentId)) {
-      await _db.collection("users").document(user.uid).updateData({
+      await _db.collection("users").document(user.id).updateData({
         "likeComments": FieldValue.arrayRemove([commentId]),
       });
 
@@ -54,7 +54,7 @@ class UserService {
       });
       return -1;
     } else {
-      await _db.collection("users").document(user.uid).updateData({
+      await _db.collection("users").document(user.id).updateData({
         "likeComments": FieldValue.arrayUnion([commentId]),
       });
 
@@ -69,7 +69,7 @@ class UserService {
   Future<int> togglePostLike(String postId, User user) async {
     if (user.likePosts.contains(postId)) {
       // Dislike the post
-      await _db.collection("users").document(user.uid).updateData({
+      await _db.collection("users").document(user.id).updateData({
         "likePosts": FieldValue.arrayRemove([postId]),
       });
 
@@ -81,7 +81,7 @@ class UserService {
 
       return -1;
     } else {
-      await _db.collection("users").document(user.uid).updateData({
+      await _db.collection("users").document(user.id).updateData({
         "likePosts": FieldValue.arrayUnion([postId]),
       });
 
@@ -97,9 +97,9 @@ class UserService {
 
   /// Toggle archive for a post
   Future<int> togglePostArchive(String postId, User user) async {
-    if (user.archivePosts.contains(postId)) {
+    if (user.savedPosts.contains(postId)) {
       // Dislike the post
-      await _db.collection("users").document(user.uid).updateData({
+      await _db.collection("users").document(user.id).updateData({
         "archivePosts": FieldValue.arrayRemove([postId]),
       });
 
@@ -110,7 +110,7 @@ class UserService {
       );
       return -1;
     } else {
-      await _db.collection("users").document(user.uid).updateData({
+      await _db.collection("users").document(user.id).updateData({
         "archivePosts": FieldValue.arrayUnion([postId]),
       });
 
@@ -128,7 +128,7 @@ class UserService {
     DocumentReference ref = _db.collection('users').document(user.uid);
 
     return ref.setData({
-      'uid': user.uid,
+      'id': user.uid,
       'email': user.email,
       'photoURL': user.photoUrl,
       'domain': Utils.getDomainFromEmail(user.email),
@@ -137,8 +137,8 @@ class UserService {
   }
 
   /// Update the User Data in Firestore by its ID and User Map (Merge = true)
-  void updateCollectionUserData(String uid, Map user) async {
-    DocumentReference ref = _db.collection('users').document(uid);
+  void updateCollectionUserData(String id, Map user) async {
+    DocumentReference ref = _db.collection('users').document(id);
 
     return ref.setData({
       ...user,

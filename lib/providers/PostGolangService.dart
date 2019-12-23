@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
+import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 
 class PostGolangService with ChangeNotifier {
@@ -27,7 +30,7 @@ class PostGolangService with ChangeNotifier {
         ),
       );
 
-      if (res.body == res.body.isEmpty) {
+      if (res.body == null || res.body.isEmpty) {
         return;
       }
 
@@ -55,7 +58,7 @@ class PostGolangService with ChangeNotifier {
         ),
       );
 
-      if (res.body == res.body.isEmpty) {
+      if (res.body == null || res.body.isEmpty) {
         return;
       }
 
@@ -89,7 +92,7 @@ class PostGolangService with ChangeNotifier {
         },
       );
 
-      if (res.body == res.body.isEmpty) {
+      if (res.body == null || res.body.isEmpty) {
         return null;
       }
 
@@ -130,7 +133,7 @@ class PostGolangService with ChangeNotifier {
         },
       );
 
-      if (res.body == res.body.isEmpty) {
+      if (res.body == null || res.body.isEmpty) {
         return null;
       }
 
@@ -152,16 +155,36 @@ class PostGolangService with ChangeNotifier {
     }
   }
 
-
   // Doing this
-  Future<List<Post>> getAllPosts(String aid) async {
-    if (aid == null) {
-      return null;
-    }
+  Future<List<Post>> getAllPosts({
+    PostOrderByOption orderBy = PostOrderByOption.CreatedAt,
+    int skip = 0,
+    int pageSize = 50,
+    String categoryId,
+  }) async {
     try {
       List<Post> retrievedPost = [];
 
-      final url = apiUrl + "/post/author/$aid";
+      String url = apiUrl + "/post/all/?";
+
+      if (skip != null) {
+        url += "&skip=$skip";
+      }
+
+      if (pageSize != null) {
+        url += "&limit=$pageSize";
+      }
+
+      switch (orderBy) {
+        case PostOrderByOption.CreatedAt:
+          url += "&sort=createdAt_-1";
+          break;
+        case PostOrderByOption.LikeCount:
+          break;
+        default:
+          break;
+      }
+
       final res = await http.get(
         url,
         headers: {
@@ -170,7 +193,7 @@ class PostGolangService with ChangeNotifier {
         },
       );
 
-      if (res.body == res.body.isEmpty) {
+      if (res.body == null || res.body.isEmpty) {
         return null;
       }
 
@@ -187,6 +210,148 @@ class PostGolangService with ChangeNotifier {
         retrievedPost.add(newPost);
       }
       return retrievedPost;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Post> getPostByID(String postId) async {
+    Post post;
+    try {
+      if (postId != null && postId.isNotEmpty) {
+        final url = apiUrl + "/post/detail/$postId";
+        final res = await http.get(
+          url,
+          headers: {
+            HttpHeaders.contentTypeHeader: "application/json",
+            "Authorization": UserGolangService.token,
+          },
+        );
+
+        if (res.body == null || res.body.isEmpty) {
+          return null;
+        }
+
+        final resData = json.decode(res.body);
+
+        if (res.statusCode >= 400) {
+          throw HttpException(resData["err"]);
+        }
+
+        post = Post.fromMap(resData["post"]);
+      }
+    } catch (e) {
+      throw e;
+    }
+    return post;
+  }
+
+  Future<List<Post>> getSavedPosts() async {
+    List<Post> retrievedPosts = [];
+    try {
+      final url = apiUrl + "/post/saved";
+      final res = await http.get(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      List<Map<String, dynamic>> posts = resData["posts"];
+
+      for (var p in posts) {
+        Post newPost = Post.fromMap(p);
+        retrievedPosts.add(newPost);
+      }
+    } catch (e) {
+      throw e;
+    }
+    return retrievedPosts;
+  }
+
+  Future<void> updatePost(Post post) async {
+    // Remove ID field and CreatedAt field <- in the backend
+    try {
+      final url = apiUrl + "/post/${post.id}";
+      final res = await http.post(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+        body: post.toMap(),
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> deletePostCategoriesById(String cid) async {
+    try {
+      final url = apiUrl + "/post-category/$cid";
+      final res = await http.delete(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> deletePost(String postId) async {
+    try {
+      final url = apiUrl + "/post/$postId";
+      final res = await http.delete(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
     } catch (e) {
       throw e;
     }

@@ -171,7 +171,7 @@ class _PostAddingFullScreenDialogState
 
   void postCompleteFields({initCreatedAt = true}) {
     var u = Provider.of<User>(context, listen: false);
-    post.author = u.uid;
+    post.author = u.id;
     post.authorGender = u.gender;
     post.authorDomain = u.domain;
     post.previewPhoto = Utils.getFirstImageURLFromMarkdown(post.content);

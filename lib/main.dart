@@ -6,7 +6,6 @@ import 'package:quenc/providers/CommentService.dart';
 import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/ReportService.dart';
 import 'package:quenc/providers/UserService.dart';
-import 'package:quenc/screens/ArchivePostsScreen.dart';
 import 'package:quenc/screens/AuthScreen.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/EmailVerificationScreen.dart';
@@ -15,6 +14,7 @@ import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/screens/ReportDetailShowingScreen.dart';
 import 'package:quenc/screens/ReportManagementScreen.dart';
+import 'package:quenc/screens/SavedPostsScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
 import 'package:quenc/screens/WebSocketTestingScreen.dart';
 import 'package:quenc/widgets/common/HomePage.dart';
@@ -148,7 +148,7 @@ class MyApp extends StatelessWidget {
                     ),
               routes: {
                 ProfileScreen.routeName: (ctx) => ProfileScreen(),
-                ArchivePostScreen.routeName: (ctx) => ArchivePostScreen(),
+                SavedPostscreen.routeName: (ctx) => SavedPostscreen(),
                 OwingPostsScreen.routeName: (ctx) => OwingPostsScreen(),
                 CategoryManagementScreen.routeName: (ctx) =>
                     CategoryManagementScreen(),

@@ -119,7 +119,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
               ));
 
               UserService().updateCollectionUserData(
-                widget.user.uid,
+                widget.user.id,
                 {
                   "dob": pickedDOB,
                   "gender": _gender,

@@ -43,7 +43,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.bookmark),
-              color: user.archivePosts.contains(post?.id)
+              color: user.savedPosts.contains(post?.id)
                   ? Colors.blue
                   : Colors.grey,
               onPressed: () {
@@ -83,7 +83,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                       ),
                       value: MenuOptions.Report,
                     ),
-                    if (user?.isAdmin || user?.uid == post?.author)
+                    if (user?.isAdmin || user?.id == post?.author)
                       PopupMenuItem(
                         child: ListTile(
                           leading: Icon(Icons.delete_outline),

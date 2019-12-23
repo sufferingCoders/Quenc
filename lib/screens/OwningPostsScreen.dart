@@ -17,14 +17,14 @@ class OwingPostsScreen extends StatelessWidget {
       ),
       body: Consumer<User>(
         builder: (ctx, user, ch) {
-          if (user.archivePosts == null || user.archivePosts.isEmpty) {
+          if (user.savedPosts == null || user.savedPosts.isEmpty) {
             return Center(
               child: Text("還未有帖子"),
             );
           }
 
           return FutureBuilder(
-            future: Provider.of<PostService>(context).getPostForUser(user.uid),
+            future: Provider.of<PostService>(context).getPostForUser(user.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

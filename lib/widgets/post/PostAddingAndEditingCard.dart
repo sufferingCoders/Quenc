@@ -43,7 +43,7 @@ class _PostAddingAndEditingCardState extends State<PostAddingAndEditingCard> {
 
   void addPost(BuildContext ctx, Post post) async {
     // Initialise the fields
-    post.author = Provider.of<User>(ctx, listen: false).uid;
+    post.author = Provider.of<User>(ctx, listen: false).id;
     post.createdAt = DateTime.now();
     post.updatedAt = DateTime.now();
 

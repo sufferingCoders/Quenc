@@ -178,7 +178,7 @@ class UserGolangService with ChangeNotifier {
         },
       );
 
-      if (res.body == res.body.isEmpty) {
+      if (res.body == null || res.body.isEmpty) {
         return;
       }
 

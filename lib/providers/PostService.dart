@@ -321,6 +321,7 @@ class PostService with ChangeNotifier {
 
   /// Delete all the comments for the post by post's id
   Future<bool> deleteCommentsForPost(String postId) async {
+    // doing it in the backend, if I delete the post, the backend will delete comment as well
     try {
       var docs = await _db
           .collection("comments")
