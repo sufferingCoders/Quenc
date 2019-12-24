@@ -55,7 +55,7 @@ class PostGolangService with ChangeNotifier {
           "Authorization": UserGolangService.token,
         },
         body: json.encode(
-          post.toMap(),
+          post.toAddingMap(),
         ),
       );
 
@@ -285,7 +285,7 @@ class PostGolangService with ChangeNotifier {
       String postId, Map<String, dynamic> updateFields) async {
     // Remove ID field and CreatedAt field <- in the backend
     try {
-      final url = apiUrl + "/post/$postId";
+      final url = apiUrl + "/post/detail/$postId";
       final res = await http.post(
         url,
         headers: {

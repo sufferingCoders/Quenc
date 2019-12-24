@@ -1,10 +1,10 @@
+import 'package:quenc/models/User.dart';
+
 class Post {
   // Schema for saving the Post in Firestore
 
   String id;
-  String author;
-  String authorDomain;
-  int authorGender;
+  User author;
   String title;
   String content;
   DateTime createdAt;
@@ -12,8 +12,8 @@ class Post {
   bool anonymous;
   String previewText;
   String previewPhoto;
-  int likeCount;
   String category;
+  List<String> likers;
 
   Post({
     this.previewPhoto,
@@ -25,17 +25,25 @@ class Post {
     this.updatedAt,
     this.category,
     this.anonymous,
-    this.authorGender,
-    this.authorDomain,
     this.previewText,
-    this.likeCount,
+    this.likers,
   });
+
+  int get likeCount {
+    return likers?.length;
+  }
+
+  String get authorDomain {
+    return author.domain;
+  }
+
+  int get authorGender {
+    return author.gender;
+  }
 
   factory Post.fromMap(Map data) {
     return Post(
       id: data["id"],
-      authorDomain: data["authorDomain"],
-      authorGender: data["authorGender"],
       author: data["author"],
       title: data["title"],
       content: data["content"],
@@ -44,43 +52,41 @@ class Post {
       anonymous: data["anonymous"] ?? true,
       previewPhoto: data["previewPhoto"],
       previewText: data["previewText"],
-      likeCount: data["likeCount"] ?? 0,
       category: data["category"],
+      likers: data["likers"],
     );
   }
 
-  Map<String, dynamic> toMapWithoutId() {
+  Map<String, dynamic> toAddingMap() {
+    // Author to
     return {
-      "author": author,
+      "id": id,
+      "author": author.id,
       "title": title,
       "content": content,
       "createdAt": createdAt,
       "updatedAt": updatedAt,
-      "authorDomain": authorDomain,
-      "authorGender": authorGender,
       "anonymous": anonymous,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
-      "likeCount": likeCount,
       "category": category,
+      "likers": likers,
     };
   }
 
   Map<String, dynamic> toMap() {
     return {
       "id": id,
-      "author": author,
+      "author": author.toMap(),
       "title": title,
       "content": content,
       "createdAt": createdAt,
       "updatedAt": updatedAt,
-      "authorDomain": authorDomain,
-      "authorGender": authorGender,
       "anonymous": anonymous,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
-      "likeCount": likeCount,
       "category": category,
+      "likers": likers,
     };
   }
 }

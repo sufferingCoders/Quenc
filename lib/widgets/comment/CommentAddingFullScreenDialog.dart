@@ -95,13 +95,10 @@ class _CommentAddingFullScreenDialogState
 
   void commentFieldComplete() {
     var u = Provider.of<User>(context, listen: false);
-    comment.author = u.id;
-    comment.authorDomain = u.domain;
-    comment.authorGender = u.gender;
+    comment.author = u;
     comment.createdAt = DateTime.now();
     comment.updatedAt = DateTime.now();
     comment.belongPost = widget.belongPost;
-    comment.likeCount = 0;
   }
 
   bool prepairCommentForPreview() {

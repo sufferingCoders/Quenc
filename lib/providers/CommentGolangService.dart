@@ -118,7 +118,7 @@ class CommentGolangService with ChangeNotifier {
           "Authorization": UserGolangService.token,
         },
         body: json.encode(
-          comment.toMap(),
+          comment.toAddingMap(),
         ),
       );
 
@@ -164,7 +164,7 @@ class CommentGolangService with ChangeNotifier {
   Future<void> updateComment(
       String commentId, Map<String, dynamic> updateFields) async {
     try {
-      final url = apiUrl + "/comment/$commentId";
+      final url = apiUrl + "/comment/detail/$commentId";
       final res = await http.patch(
         url,
         headers: {

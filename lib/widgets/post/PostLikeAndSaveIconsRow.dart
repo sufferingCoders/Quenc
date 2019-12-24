@@ -33,11 +33,16 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.favorite),
-              color:
-                  user.likePosts.contains(post?.id) ? Colors.pink : Colors.grey,
+              color: post?.likers?.contains(user?.id) == true
+                  ? Colors.pink
+                  : Colors.grey,
               onPressed: () {
                 Provider.of<UserGolangService>(context, listen: false)
-                    .toggoleFunction(post?.id, ToggleOptions.LikePosts);
+                    .toggoleFunction(
+                  id: post?.id,
+                  toggle: ToggleOptions.LikePosts,
+                  condition: !(post?.likers?.contains(user?.id) == true),
+                );
               },
             ),
           ),
@@ -50,7 +55,10 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                   : Colors.grey,
               onPressed: () {
                 Provider.of<UserGolangService>(context, listen: false)
-                    .toggoleFunction(post?.id, ToggleOptions.SavedPosts);
+                    .toggoleFunction(
+                  id: post?.id,
+                  toggle: ToggleOptions.SavedPosts,
+                );
               },
             ),
           ),

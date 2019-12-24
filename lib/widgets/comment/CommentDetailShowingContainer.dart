@@ -16,7 +16,6 @@ class CommentDetailShowingContainer extends StatelessWidget {
   }) : super(key: key);
   final Post post;
 
-
   final Comment comment;
 
   @override
@@ -52,15 +51,17 @@ class CommentDetailShowingContainer extends StatelessWidget {
               trailing: Consumer<User>(
                 builder: (ctx, user, ch) {
                   return IconButton(
-                    color: user.likeComments.contains(comment.id)
+                    color: comment?.likers?.contains(user?.id) == true
                         ? Colors.pink
                         : Colors.grey,
                     icon: Icon(Icons.favorite),
                     onPressed: () {
                       if (comment.id != null) {
                         Provider.of<UserGolangService>(context).toggoleFunction(
-                          comment.id,
-                          ToggleOptions.LikeComments,
+                          id: comment.id,
+                          toggle: ToggleOptions.LikeComments,
+                          condition:
+                              !(comment?.likers?.contains(user?.id) == true),
                         );
                       }
                     },

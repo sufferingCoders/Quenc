@@ -133,40 +133,36 @@ class UserGolangService with ChangeNotifier {
    *             UPDATE
    *******************************/
 
-  Future<void> toggoleFunction(
+  Future<void> toggoleFunction({
     String id,
     ToggleOptions toggle,
-  ) async {
+    bool condition = false,
+  }) async {
     try {
       String fullApi;
 
       switch (toggle) {
         case ToggleOptions.Friends:
-          fullApi =
-              apiUrl + "/friends/" + (user.friends.contains(id) ? "0" : "1");
+          fullApi = apiUrl +
+              "/user/friends/$id/" +
+              (user.friends.contains(id) ? "0" : "1");
           break;
         case ToggleOptions.ChatRooms:
           fullApi = apiUrl +
-              "/chat-rooms/" +
+              "/user/chat-rooms/$id/" +
               (user.chatRooms.contains(id) ? "0" : "1");
           break;
         case ToggleOptions.LikePosts:
-          fullApi = apiUrl +
-              "/like-posts/" +
-              (user.likePosts.contains(id) ? "0" : "1");
+          fullApi = apiUrl + "/post/like/$id" + (condition ? "0" : "1");
 
           break;
         case ToggleOptions.LikeComments:
-          fullApi = apiUrl +
-              "/like-comments/" +
-              (user.likeComments.contains(id) ? "0" : "1");
-
+          fullApi = apiUrl + "/comment/like/$id" + (condition ? "0" : "1");
           break;
         case ToggleOptions.SavedPosts:
           fullApi = apiUrl +
               "/saved-posts/" +
               (user.savedPosts.contains(id) ? "0" : "1");
-
           break;
         default:
           fullApi = null;

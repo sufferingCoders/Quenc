@@ -12,8 +12,6 @@ class User {
   DateTime dob;
   List<String> chatRooms;
   List<String> friends;
-  List<String> likePosts;
-  List<String> likeComments;
   List<String> savedPosts;
 
   // Role: 0 -> Admin, 1 -> NormalUser
@@ -31,8 +29,6 @@ class User {
     this.dob,
     this.chatRooms,
     this.friends,
-    this.likePosts,
-    this.likeComments,
     this.savedPosts,
   });
 
@@ -55,8 +51,6 @@ class User {
       dob: data["dob"],
       chatRooms: data["chatRooms"],
       friends: data["friends"],
-      likePosts: data["likePosts"],
-      likeComments: data["likeComments"],
       savedPosts: data["savedPosts"],
     );
   }
@@ -90,8 +84,6 @@ class User {
       "dob": dob,
       "chatRooms": chatRooms,
       "friends": friends,
-      "likePosts": likePosts,
-      "likeComments": likeComments,
       "savedPosts": savedPosts,
     };
   }
