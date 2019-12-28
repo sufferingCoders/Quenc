@@ -127,3 +127,8 @@ buildscript {
 }
     
 ```
+
+### ( MultiProvider 使用問題 ) Could not find the correct Provider above this MyApp Widget
+Solution: 將MaterialApp下的 home 取代掉, 將使用Provider的地方移至子Widget (不要在創建MaterialApp的時候使用Provider和Consumer)
+
+
