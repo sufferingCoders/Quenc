@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:quenc/models/User.dart';
+import 'package:quenc/utils/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -39,7 +40,7 @@ class UserGolangService with ChangeNotifier {
       String email, String password, String urlSeg) async {
     // The urlSeg can be "login" or "signup"
 
-    final url = apiUrl + "user/$urlSeg";
+    final url = apiUrl + "/user/$urlSeg";
 
     try {
       final res = await http.post(url,
@@ -54,7 +55,7 @@ class UserGolangService with ChangeNotifier {
       final resData = json.decode(res.body);
       if (res.statusCode >= 400) {
         throw HttpException(
-          resData['err'],
+          resData['err'].toString(),
         );
       }
 
@@ -67,7 +68,7 @@ class UserGolangService with ChangeNotifier {
       // Saving both user and token
       final prefs = await SharedPreferences.getInstance();
       // prefs.setString("user", json.encode(_user.toMap()));
-      // Saving user but not token
+      // Saving user but nogt token
       prefs.setString("email", email);
       prefs.setString("password", password);
     } catch (error) {
@@ -189,10 +190,42 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
+  Future<void> sendEnaukVerufucation() async {
+    try {
+      final url = apiUrl + "/user/send-verification-email";
+      final res = await http.get(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": token,
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<void> updateUser(String id, Map<String, dynamic> updateFields) async {
     try {
-      final url = apiUrl + "/detail/$id";
-      final res = await http.patch(url, body: json.encode(updateFields));
+      final url = apiUrl + "/user/detail/$id";
+      final res = await http.patch(
+        url,
+        headers: {
+          "Authorization": token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+        body: json.encode(updateFields, toEncodable: Utils.jsonEncodable),
+      );
 
       if (res.body == null || res.body.isEmpty) {
         return;

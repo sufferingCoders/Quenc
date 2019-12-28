@@ -1,9 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
+import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
@@ -12,10 +11,6 @@ import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
 class MainScreen extends StatefulWidget {
-  FirebaseUser fbUser;
-
-  MainScreen({this.fbUser});
-
   @override
   _MainScreenState createState() => _MainScreenState();
 }

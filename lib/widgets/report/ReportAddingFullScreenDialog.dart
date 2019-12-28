@@ -73,14 +73,12 @@ class _ReportAddingFullScreenDialogState
 
   void reportCompleteFields() {
     var u = Provider.of<User>(context, listen: false);
-    report.authorDomain = u.domain;
     report.reportId = widget.reportId;
-    report.authorGender = u.gender;
     report.solve = false;
     report.reportTarget = Report.reportTargetEnumToInt(widget.target);
     report.previewPhoto = Utils.getFirstImageURLFromMarkdown(report.content);
     report.previewText = Utils.getPreviewTextFromContent(report.content);
-    report.author = u.id;
+    report.author = u;
     report.createdAt = DateTime.now();
   }
 

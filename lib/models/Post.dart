@@ -1,4 +1,6 @@
+import 'package:quenc/models/PostCategory.dart';
 import 'package:quenc/models/User.dart';
+import 'package:quenc/utils/index.dart';
 
 class Post {
   // Schema for saving the Post in Firestore
@@ -12,8 +14,9 @@ class Post {
   bool anonymous;
   String previewText;
   String previewPhoto;
-  String category;
+  PostCategory category;
   List<String> likers;
+  int likeCount;
 
   Post({
     this.previewPhoto,
@@ -27,9 +30,10 @@ class Post {
     this.anonymous,
     this.previewText,
     this.likers,
+    this.likeCount,
   });
 
-  int get likeCount {
+  int get likeCountFromLikers {
     return likers?.length;
   }
 
@@ -43,40 +47,39 @@ class Post {
 
   factory Post.fromMap(Map data) {
     return Post(
-      id: data["id"],
-      author: data["author"],
+      id: data["_id"],
+      author: User.fromMap(data["author"]),
       title: data["title"],
       content: data["content"],
-      createdAt: data["createdAt"]?.toDate() ?? DateTime.now(),
-      updatedAt: data["updatedAt"]?.toDate() ?? DateTime.now(),
+      createdAt: Utils.getDateTime(data["createdAt"]),
+      updatedAt: Utils.getDateTime(data["updatedAt"]),
       anonymous: data["anonymous"] ?? true,
       previewPhoto: data["previewPhoto"],
       previewText: data["previewText"],
-      category: data["category"],
-      likers: data["likers"],
+      category: PostCategory.fromMap(data["category"]),
+      likers: data["likers"]..cast<String>(),
+      likeCount: data["likeCount"],
     );
   }
 
   Map<String, dynamic> toAddingMap() {
     // Author to
     return {
-      "id": id,
+      "_id": id,
       "author": author.id,
       "title": title,
       "content": content,
-      "createdAt": createdAt,
-      "updatedAt": updatedAt,
       "anonymous": anonymous,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
-      "category": category,
+      "category": category.id,
       "likers": likers,
     };
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
+      "_id": id,
       "author": author.toMap(),
       "title": title,
       "content": content,
@@ -85,8 +88,9 @@ class Post {
       "anonymous": anonymous,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
-      "category": category,
+      "category": category.toMap(),
       "likers": likers,
+      "likeCount": likeCount,
     };
   }
 }

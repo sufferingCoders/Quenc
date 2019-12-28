@@ -1,19 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quenc/models/PostCategory.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentGolangService.dart';
-import 'package:quenc/providers/CommentService.dart';
 import 'package:quenc/providers/PostGolangService.dart';
-import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
-import 'package:quenc/providers/ReportService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
-import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/AuthScreen.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/EmailVerificationScreen.dart';
+import 'package:quenc/screens/HomeScreen.dart';
 import 'package:quenc/screens/OwningPostsScreen.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
@@ -52,30 +48,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        // StreamProvider<FirebaseUser>.value(
-        //   value: FirebaseAuth.instance.onAuthStateChanged,
-        // ),
-        // ChangeNotifierProvider.value(
-        //   value: PostService(),
-        // ),
-        // ChangeNotifierProvider.value(
-        //   value: CommentService(),
-        // ),
-        // ChangeNotifierProvider.value(
-        //   value: ReportService(),
-        // ),
-        ChangeNotifierProvider.value(
-          value: WebScoketService(),
-        ),
-
         ChangeNotifierProvider.value(
           value: UserGolangService(),
         ),
-
+        ChangeNotifierProvider.value(
+          value: WebScoketService(),
+        ),
         ChangeNotifierProvider.value(
           value: PostGolangService(),
         ),
-
         ChangeNotifierProvider.value(
           value: CommentGolangService(),
         ),
@@ -83,8 +64,8 @@ class MyApp extends StatelessWidget {
           value: ReportGolangService(),
         )
       ],
-      child: Consumer<FirebaseUser>(
-        builder: (ctx, fbUser, ch) {
+      child: Consumer<UserGolangService>(
+        builder: (ctx, userService, ch) {
           return MaterialApp(
             onGenerateRoute: (setting) {
               switch (setting.name) {
@@ -147,24 +128,7 @@ class MyApp extends StatelessWidget {
                 textTheme: ButtonTextTheme.primary,
               ),
             ),
-            home: fbUser != null
-                ? fbUser.isEmailVerified == true
-                    ? HomePage(
-                        fbUser: fbUser,
-                      )
-                    : EmailVerificationScreen(
-                        fbUser: fbUser,
-                      ) // Main Screen
-
-                : FutureBuilder(
-                    future:
-                        Provider.of<UserGolangService>(context).tryAutoLogin(),
-                    builder: (ctx, authResultSnapshot) =>
-                        authResultSnapshot.connectionState ==
-                                ConnectionState.waiting
-                            ? Container() // SplashScreen
-                            : AuthScreen(), //AuthScreen
-                  ),
+            home: HomeScreen(),
             routes: {
               ProfileScreen.routeName: (ctx) => ProfileScreen(),
               SavedPostscreen.routeName: (ctx) => SavedPostscreen(),

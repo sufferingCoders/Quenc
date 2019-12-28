@@ -19,12 +19,12 @@ class ReportShowingListTile extends StatelessWidget {
     return ListTile(
       leading: Icon(
         Icons.account_circle,
-        color: report.authorGender == 1 ? Colors.blue : Colors.pink,
+        color: report.author.gender == 1 ? Colors.blue : Colors.pink,
       ),
       title: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Text(
-          Utils.getDisplayNameFromDomain(report.authorDomain),
+          Utils.getDisplayNameFromDomain(report.author.domain),
           overflow: TextOverflow.ellipsis,
         ),
       ),

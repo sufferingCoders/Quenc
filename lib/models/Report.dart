@@ -1,3 +1,6 @@
+import 'package:quenc/models/User.dart';
+import 'package:quenc/utils/index.dart';
+
 enum ReportTarget {
   Comment,
   Post,
@@ -8,9 +11,7 @@ class Report {
 
   String id;
   String content;
-  String author;
-  String authorDomain;
-  int authorGender;
+  User author;
   String previewText;
   String previewPhoto;
   int reportTarget;
@@ -25,8 +26,6 @@ class Report {
     this.author,
     this.reportType,
     this.createdAt,
-    this.authorDomain,
-    this.authorGender,
     this.previewPhoto,
     this.previewText,
     this.reportTarget,
@@ -58,7 +57,7 @@ class Report {
     }
   }
 
-  // From ReportTarget to int 
+  // From ReportTarget to int
   static int reportTargetEnumToInt(ReportTarget target) {
     switch (target) {
       case ReportTarget.Post:
@@ -82,12 +81,10 @@ class Report {
   factory Report.fromMap(Map data) {
     return Report(
       author: data["author"],
-      id: data["id"],
+      id: data["_id"],
       content: data["content"],
       reportType: data["reportType"],
-      createdAt: data["createdAt"].toDate(),
-      authorDomain: data["authorDomain"],
-      authorGender: data["authorGender"],
+      createdAt: Utils.getDateTime(data["createdAt"]),
       previewPhoto: data["previewPhoto"],
       previewText: data["previewText"],
       reportTarget: data["reportTarget"],
@@ -96,15 +93,27 @@ class Report {
     );
   }
 
+  Map<String, dynamic> toAddingMap() {
+    return {
+      "author": author.toMap(),
+      "_id": id,
+      "content": content,
+      "reportType": reportType,
+      "previewPhoto": previewPhoto,
+      "previewText": previewText,
+      "reportTarget": reportTarget,
+      "reportId": reportId,
+      "solve": solve,
+    };
+  }
+
   Map<String, dynamic> toMap() {
     return {
-      "author": author,
-      "id": id,
+      "author": author.toMap(),
+      "_id": id,
       "content": content,
       "reportType": reportType,
       "createdAt": createdAt,
-      "authorDomain": authorDomain,
-      "authorGender": authorGender,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
       "reportTarget": reportTarget,

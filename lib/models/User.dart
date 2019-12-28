@@ -1,3 +1,5 @@
+import 'package:quenc/utils/index.dart';
+
 class User {
   String id;
   String domain;
@@ -38,7 +40,7 @@ class User {
     }
 
     return User(
-      id: data["id"],
+      id: data["_id"],
       domain: data["domain"],
       email: data["email"],
       photoURL: data["photoURL"],
@@ -46,12 +48,12 @@ class User {
       role: data["role"],
       gender: data["gender"] == -1 ? null : data["gender"],
       emailVerified: data["emailVerified"],
-      createdAt: data["createdAt"],
-      lastSeen: data["lastSeen"],
-      dob: data["dob"],
-      chatRooms: data["chatRooms"],
-      friends: data["friends"],
-      savedPosts: data["savedPosts"],
+      createdAt: Utils.getDateTime(data["createdAt"]),
+      lastSeen: Utils.getDateTime(data["lastSeen"]),
+      dob: Utils.getDateTime(data["dob"]),
+      chatRooms: data["chatRooms"]?.cast<String>(),
+      friends: data["friends"]?.cast<String>(),
+      savedPosts: data["savedPosts"]?.cast<String>(),
     );
   }
 
@@ -69,9 +71,11 @@ class User {
     return true;
   }
 
+  
+
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
+      "_id": id,
       "domain": domain,
       "email": email,
       "photoURL": photoURL,
@@ -79,7 +83,6 @@ class User {
       "role": role,
       "gender": gender,
       "emailVerified": emailVerified,
-      "createdAt": createdAt,
       "lastSeen": lastSeen,
       "dob": dob,
       "chatRooms": chatRooms,

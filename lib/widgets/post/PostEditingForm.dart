@@ -68,7 +68,7 @@ class _PostEditingFormState extends State<PostEditingForm> {
                   flex: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButton<String>(
+                    child: DropdownButton<PostCategory>(
                       value: widget.post?.category,
                       onChanged: (v) {
                         setState(() {
@@ -78,7 +78,7 @@ class _PostEditingFormState extends State<PostEditingForm> {
                       items: categories
                           .map((c) => DropdownMenuItem(
                                 child: Text(c.categoryName),
-                                value: c.id,
+                                value: c,
                               ))
                           .toList(),
                     ),

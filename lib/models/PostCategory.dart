@@ -11,14 +11,14 @@ class PostCategory {
 
   factory PostCategory.fromMap(Map data) {
     return PostCategory(
-      id: data["id"] ?? "",
+      id: data["_id"] ?? "",
       categoryName: data["categoryName"] ?? "其他",
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
+      "_id": id,
       "categoryName": categoryName,
     };
   }

@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
 
 class EmailCheckingNotification extends StatefulWidget {
-  final FirebaseUser fbUser;
-  EmailCheckingNotification({this.fbUser});
+  final User user;
+  EmailCheckingNotification({this.user});
 
   @override
   _EmailCheckingNotificationState createState() =>
@@ -39,7 +40,7 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("我們已經寄送認證信至 ${widget.fbUser.email}"),
+            child: Text("我們已經寄送認證信至 ${widget.user.email}"),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -71,7 +72,8 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
                               },
                             ),
                           );
-                          widget.fbUser.sendEmailVerification();
+                          Provider.of<UserGolangService>(context)
+                              .sendEnaukVerufucation();
                         }
                       : null,
                 ),

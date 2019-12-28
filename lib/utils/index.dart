@@ -55,6 +55,13 @@ class Utils {
     return uni;
   }
 
+  static dynamic jsonEncodable(dynamic data) {
+    if (data is DateTime) {
+      return data.toIso8601String();
+    }
+    return "";
+  }
+
   static String getFirstImageURLFromMarkdown(String content) {
     var match = imageReg.firstMatch(content);
     String firstImageUrl = content.substring(match.start, match.end);
@@ -77,5 +84,19 @@ class Utils {
     }
 
     return preview;
+  }
+
+  static DateTime getDateTime(dynamic time) {
+    if (time is DateTime) {
+      return time;
+    } else if (time is String) {
+      if (time.length > 23) {
+        String tempTime = time.substring(0, 23) + "Z";
+        return DateTime.tryParse(tempTime) ?? DateTime.now();
+      }
+      return DateTime.tryParse(time) ?? DateTime.now();
+    } else {
+      return DateTime.now();
+    }
   }
 }

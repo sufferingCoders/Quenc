@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:html';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
-import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 
@@ -104,12 +101,13 @@ class PostGolangService with ChangeNotifier {
       }
 
       List<Map<String, dynamic>> postCategories_raw = resData["postCategories"];
-
-      for (var c in postCategories_raw) {
-        PostCategory newCat = PostCategory.fromMap(c);
-        retrievedPostCategories.add(newCat);
-        if (newCat != null && newCat.id != null) {
-          categoryIdToName[newCat.id] = newCat.categoryName;
+      if (postCategories_raw != null) {
+        for (var c in postCategories_raw) {
+          PostCategory newCat = PostCategory.fromMap(c);
+          retrievedPostCategories.add(newCat);
+          if (newCat != null && newCat.id != null) {
+            categoryIdToName[newCat.id] = newCat.categoryName;
+          }
         }
       }
       return retrievedPostCategories;
@@ -161,12 +159,13 @@ class PostGolangService with ChangeNotifier {
     OrderByOption orderBy = OrderByOption.CreatedAt,
     int skip = 0,
     int limit = 50,
-    String categoryId,
+    String categoryId = "all",
   }) async {
     try {
       List<Post> retrievedPost = [];
 
-      String url = apiUrl + "/post/all/?";
+      String url = apiUrl +
+          "/post/category/${(categoryId?.isNotEmpty == true && categoryId != null) ? categoryId : "all"}/?";
 
       if (skip != null) {
         url += "&skip=$skip";
@@ -178,9 +177,9 @@ class PostGolangService with ChangeNotifier {
 
       switch (orderBy) {
         case OrderByOption.CreatedAt:
-          url += "&sort=createdAt_-1";
           break;
         case OrderByOption.LikeCount:
+          url += "&sort=likecount";
           break;
         default:
           break;
@@ -194,7 +193,7 @@ class PostGolangService with ChangeNotifier {
         },
       );
 
-      if (res.body == null || res.body.isEmpty) {
+      if (res?.body == null || res?.body?.isEmpty == true) {
         return null;
       }
 
@@ -219,7 +218,7 @@ class PostGolangService with ChangeNotifier {
   Future<Post> getPostByID(String postId) async {
     Post post;
     try {
-      if (postId != null && postId.isNotEmpty) {
+      if (postId != null && postId?.isNotEmpty == true) {
         final url = apiUrl + "/post/detail/$postId";
         final res = await http.get(
           url,

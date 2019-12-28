@@ -1,4 +1,5 @@
 import 'package:quenc/models/User.dart';
+import 'package:quenc/utils/index.dart';
 
 class Comment {
   // Schema for saving the comment in Firestore
@@ -10,6 +11,7 @@ class Comment {
   DateTime createdAt;
   DateTime updatedAt;
   List<String> likers;
+  int likeCount;
 
   Comment({
     this.id,
@@ -19,9 +21,10 @@ class Comment {
     this.likers,
     this.createdAt,
     this.updatedAt,
+    this.likeCount,
   });
 
-  int get likeCount {
+  int get likeCountFromLikers {
     return likers?.length;
   }
 
@@ -35,18 +38,20 @@ class Comment {
 
   factory Comment.fromMap(Map data) {
     return Comment(
-        id: data["id"],
-        author: User.fromMap(data["author"]),
-        belongPost: data["belongPost"],
-        content: data["content"],
-        createdAt: data["createdAt"].toDate() ?? DateTime.now(),
-        updatedAt: data["updatedAt"].toDate() ?? DateTime.now(),
-        likers: data["likers"]);
+      id: data["_id"],
+      author: User.fromMap(data["author"]),
+      belongPost: data["belongPost"],
+      content: data["content"],
+      createdAt: Utils.getDateTime(data["createdAt"]),
+      updatedAt: Utils.getDateTime(data["updatedAt"]),
+      likers: data["likers"],
+      likeCount: data["likeCount"],
+    );
   }
 
   Map<String, dynamic> toAddingMap() {
     return {
-      "id": id,
+      "_id": id,
       "author": author,
       "author": author.id,
       "belongPost": belongPost,
@@ -59,7 +64,7 @@ class Comment {
 
   Map<String, dynamic> toMap() {
     return {
-      "id": id,
+      "_id": id,
       "author": author,
       "author": author.toMap(),
       "belongPost": belongPost,
@@ -67,6 +72,7 @@ class Comment {
       "createdAt": createdAt,
       "updatedAt": updatedAt,
       "likers": likers,
+      "likeCount": likeCount,
     };
   }
 }
