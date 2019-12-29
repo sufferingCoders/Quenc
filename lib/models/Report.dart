@@ -78,7 +78,7 @@ class Report {
     return reportTypeCodeList[code];
   }
 
-  factory Report.fromMap(Map data) {
+  factory Report.fromMap(dynamic data) {
     return Report(
       author: data["author"],
       id: data["_id"],

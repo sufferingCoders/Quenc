@@ -8,6 +8,7 @@ import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
 import 'package:quenc/widgets/common/ScrollHideSliverAppBar.dart';
@@ -171,7 +172,7 @@ class _PostAddingFullScreenDialogState
   }
 
   void postCompleteFields({initCreatedAt = true}) {
-    var u = Provider.of<User>(context, listen: false);
+    var u = Provider.of<UserGolangService>(context, listen: false).user;
     post.author = u;
     post.previewPhoto = Utils.getFirstImageURLFromMarkdown(post.content);
     post.updatedAt = DateTime.now();
@@ -191,7 +192,7 @@ class _PostAddingFullScreenDialogState
     postCompleteFields(initCreatedAt: false);
     await Provider.of<PostGolangService>(ctx, listen: false).updatePost(
       post.id,
-      post.toMap(),
+      post.toAddingMap(),
     );
     Navigator.of(ctx).pop();
   }

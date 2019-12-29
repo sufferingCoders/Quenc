@@ -97,10 +97,11 @@ class CommentGolangService with ChangeNotifier {
       }
 
       List<Map<String, dynamic>> comments = resData["comments"];
-
-      for (var c in comments) {
-        Comment newComment = Comment.fromMap(c);
-        retrivedComments.add(newComment);
+      if (comments != null) {
+        for (var c in comments) {
+          Comment newComment = Comment.fromMap(c);
+          retrivedComments.add(newComment);
+        }
       }
     } catch (e) {
       throw e;

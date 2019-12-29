@@ -11,7 +11,7 @@ class User {
   bool emailVerified;
   DateTime createdAt;
   DateTime lastSeen;
-  DateTime dob;
+  String dob;
   List<String> chatRooms;
   List<String> friends;
   List<String> savedPosts;
@@ -34,7 +34,7 @@ class User {
     this.savedPosts,
   });
 
-  factory User.fromMap(Map data) {
+  factory User.fromMap(dynamic data) {
     if (data == null) {
       return null;
     }
@@ -50,7 +50,7 @@ class User {
       emailVerified: data["emailVerified"],
       createdAt: Utils.getDateTime(data["createdAt"]),
       lastSeen: Utils.getDateTime(data["lastSeen"]),
-      dob: Utils.getDateTime(data["dob"]),
+      dob: data["dob"],
       chatRooms: data["chatRooms"]?.cast<String>(),
       friends: data["friends"]?.cast<String>(),
       savedPosts: data["savedPosts"]?.cast<String>(),

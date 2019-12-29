@@ -36,7 +36,7 @@ class Comment {
     return author.gender;
   }
 
-  factory Comment.fromMap(Map data) {
+  factory Comment.fromMap(dynamic data) {
     return Comment(
       id: data["_id"],
       author: User.fromMap(data["author"]),

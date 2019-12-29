@@ -48,20 +48,22 @@ class CommentDetailShowingContainer extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
-              trailing: Consumer<User>(
-                builder: (ctx, user, ch) {
+              trailing: Consumer<UserGolangService>(
+                builder: (ctx, userService, ch) {
                   return IconButton(
-                    color: comment?.likers?.contains(user?.id) == true
-                        ? Colors.pink
-                        : Colors.grey,
+                    color:
+                        comment?.likers?.contains(userService.user?.id) == true
+                            ? Colors.pink
+                            : Colors.grey,
                     icon: Icon(Icons.favorite),
                     onPressed: () {
                       if (comment.id != null) {
                         Provider.of<UserGolangService>(context).toggoleFunction(
                           id: comment.id,
                           toggle: ToggleOptions.LikeComments,
-                          condition:
-                              !(comment?.likers?.contains(user?.id) == true),
+                          condition: !(comment?.likers
+                                  ?.contains(userService.user?.id) ==
+                              true),
                         );
                       }
                     },

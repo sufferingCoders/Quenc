@@ -45,7 +45,7 @@ class Post {
     return author.gender;
   }
 
-  factory Post.fromMap(Map data) {
+  factory Post.fromMap(dynamic data) {
     return Post(
       id: data["_id"],
       author: User.fromMap(data["author"]),
@@ -53,11 +53,11 @@ class Post {
       content: data["content"],
       createdAt: Utils.getDateTime(data["createdAt"]),
       updatedAt: Utils.getDateTime(data["updatedAt"]),
-      anonymous: data["anonymous"] ?? true,
+      anonymous: data["anonymous"],
       previewPhoto: data["previewPhoto"],
       previewText: data["previewText"],
       category: PostCategory.fromMap(data["category"]),
-      likers: data["likers"]..cast<String>(),
+      likers: data["likers"]?.cast<String>(),
       likeCount: data["likeCount"],
     );
   }
@@ -65,15 +65,12 @@ class Post {
   Map<String, dynamic> toAddingMap() {
     // Author to
     return {
-      "_id": id,
-      "author": author.id,
       "title": title,
       "content": content,
       "anonymous": anonymous,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
       "category": category.id,
-      "likers": likers,
     };
   }
 

@@ -68,17 +68,23 @@ class _PostEditingFormState extends State<PostEditingForm> {
                   flex: 2,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DropdownButton<PostCategory>(
-                      value: widget.post?.category,
+                    child: DropdownButton<String>(
+                      value: widget.post?.category.id,
                       onChanged: (v) {
                         setState(() {
-                          widget.post.category = v;
+                          widget.post.category.id = v;
+                          // Get c
+
+                          PostCategory c =
+                              categories.where((c) => c.id == v).toList()[0];
+
+                          widget.post.category.categoryName = c.categoryName;
                         });
                       },
                       items: categories
                           .map((c) => DropdownMenuItem(
                                 child: Text(c.categoryName),
-                                value: c,
+                                value: c.id,
                               ))
                           .toList(),
                     ),
@@ -102,7 +108,7 @@ class _PostEditingFormState extends State<PostEditingForm> {
                   fit: FlexFit.loose,
                   child: CheckboxListTile(
                     secondary: Text("匿名"),
-                    value: widget.post.anonymous,
+                    value: widget.post.anonymous ?? false,
                     onChanged: (v) {
                       setState(() {
                         widget.post.anonymous = v;

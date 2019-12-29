@@ -9,7 +9,7 @@ class PostCategory {
     this.id,
   });
 
-  factory PostCategory.fromMap(Map data) {
+  factory PostCategory.fromMap(dynamic data) {
     return PostCategory(
       id: data["_id"] ?? "",
       categoryName: data["categoryName"] ?? "其他",

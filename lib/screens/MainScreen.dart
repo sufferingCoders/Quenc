@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
-import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
@@ -19,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
   bool isInit = false;
   PostCategory category;
   int limit = 50;
-  int skip;
   OrderByOption orderBy = OrderByOption.LikeCount;
   List<PostCategory> allCategories;
   List<Post> retrievedPosts;
@@ -33,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
       // PostGolangService.tryInitPosts();
       isInit = true;
       await loadMore();
-      await loadCategories();
+      // await loadCategories();
     }
     super.didChangeDependencies();
   }
@@ -46,13 +44,13 @@ class _MainScreenState extends State<MainScreen> {
     loadMore();
   }
 
-  Future<void> loadCategories() async {
-    var cs = await Provider.of<PostGolangService>(context, listen: false)
-        .getAllPostCategories();
-    setState(() {
-      allCategories = cs;
-    });
-  }
+  // Future<void> loadCategories() async {
+  //   var cs = await Provider.of<PostGolangService>(context, listen: false)
+  //       .getAllPostCategories();
+  //   setState(() {
+  //     allCategories = cs;
+  //   });
+  // }
 
   void changeCategory(PostCategory cat) async {
     setToNull();
@@ -65,13 +63,13 @@ class _MainScreenState extends State<MainScreen> {
   void refresh() {
     setToNull();
     loadMore();
-    loadCategories();
+    // loadCategories();
   }
 
   void setToNull() {
     setState(() {
       isInit = false;
-      skip = 0;
+      retrievedPosts = null;
     });
   }
 
@@ -81,7 +79,7 @@ class _MainScreenState extends State<MainScreen> {
       categoryId: category?.id,
       limit: limit,
       orderBy: orderBy,
-      skip: skip,
+      skip: retrievedPosts?.length ?? 0,
     );
 
     setState(() {
@@ -119,7 +117,6 @@ class _MainScreenState extends State<MainScreen> {
       ),
       drawer: AppDrawer(
         changeCategory: changeCategory,
-        allCategories: allCategories,
       ),
       body: RefreshIndicator(
         onRefresh: () async {

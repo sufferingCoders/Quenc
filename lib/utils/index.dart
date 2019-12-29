@@ -90,13 +90,17 @@ class Utils {
     if (time is DateTime) {
       return time;
     } else if (time is String) {
-      if (time.length > 23) {
-        String tempTime = time.substring(0, 23) + "Z";
-        return DateTime.tryParse(tempTime) ?? DateTime.now();
+      if (time?.isNotEmpty == true) {
+        if (time.length > 23) {
+          String tempTime = time.substring(0, 23) + "Z";
+          return DateTime.tryParse(tempTime);
+        }
+        return DateTime.tryParse(time);
+      } else {
+        return null;
       }
-      return DateTime.tryParse(time) ?? DateTime.now();
     } else {
-      return DateTime.now();
+      return null;
     }
   }
 }

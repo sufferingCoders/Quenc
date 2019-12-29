@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 
@@ -32,38 +32,43 @@ class PostDetailShowingColumn extends StatelessWidget {
               size: 35,
             ),
             title: Text(
-              post.anonymous
+              post.anonymous == true
                   ? "匿名"
                   : Utils.getDisplayNameFromDomain(post.authorDomain),
               style: TextStyle(
                 fontSize: 13,
               ),
             ),
-            trailing: Consumer<User>(
-              builder: (ctx, user, ch) {
-                if (user.id == post.author) {
-                  return IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: Theme.of(context).primaryColorDark,
+            trailing: Consumer<UserGolangService>(
+              builder: (ctx, userService, ch) {
+                if (userService?.user?.id == post?.author?.id) {
+                  return Container(
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              final dialog = PostAddingFullScreenDialog(
+                                post: post,
+                              );
+                              return dialog;
+                            },
+                            fullscreenDialog: true,
+                          ),
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            final dialog = PostAddingFullScreenDialog(
-                              post: post,
-                            );
-                            return dialog;
-                          },
-                          fullscreenDialog: true,
-                        ),
-                      );
-                    },
                   );
                 }
-                return Container();
+                return Container(
+                  height: 0,
+                  width: 0,
+                );
               },
             ),
           ),
@@ -81,7 +86,7 @@ class PostDetailShowingColumn extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 4.0),
           child: Text(
-            "${idToName(post.category)}  -  ${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
+            "${post.category.categoryName}  -  ${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 12,

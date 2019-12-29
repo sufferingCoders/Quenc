@@ -16,7 +16,7 @@ class PostGolangService with ChangeNotifier {
 
   Future<void> addPostCategory(PostCategory postCategory) async {
     try {
-      final url = apiUrl + "/post-category";
+      final url = apiUrl + "/post-category/";
       final res = await http.post(
         url,
         headers: {
@@ -24,7 +24,7 @@ class PostGolangService with ChangeNotifier {
           "Authorization": UserGolangService.token,
         },
         body: json.encode(
-          postCategory.toMap(),
+          {"name": postCategory.categoryName},
         ),
       );
 
@@ -44,7 +44,7 @@ class PostGolangService with ChangeNotifier {
 
   Future<void> addPost(Post post) async {
     try {
-      final url = apiUrl + "/post";
+      final url = apiUrl + "/post/";
       final res = await http.post(
         url,
         headers: {
@@ -81,7 +81,7 @@ class PostGolangService with ChangeNotifier {
     try {
       List<PostCategory> retrievedPostCategories = [];
 
-      final url = apiUrl + "/post-category";
+      final url = apiUrl + "/post-category/";
       final res = await http.get(
         url,
         headers: {
@@ -100,9 +100,9 @@ class PostGolangService with ChangeNotifier {
         throw HttpException(resData["err"]);
       }
 
-      List<Map<String, dynamic>> postCategories_raw = resData["postCategories"];
-      if (postCategories_raw != null) {
-        for (var c in postCategories_raw) {
+      List<dynamic> postCategoriesRaw = resData["postCategories"];
+      if (postCategoriesRaw != null) {
+        for (var c in postCategoriesRaw) {
           PostCategory newCat = PostCategory.fromMap(c);
           retrievedPostCategories.add(newCat);
           if (newCat != null && newCat.id != null) {
@@ -165,7 +165,7 @@ class PostGolangService with ChangeNotifier {
       List<Post> retrievedPost = [];
 
       String url = apiUrl +
-          "/post/category/${(categoryId?.isNotEmpty == true && categoryId != null) ? categoryId : "all"}/?";
+          "/post/category/${(categoryId?.isNotEmpty == true && categoryId != null) ? categoryId : "all"}?";
 
       if (skip != null) {
         url += "&skip=$skip";
@@ -203,12 +203,14 @@ class PostGolangService with ChangeNotifier {
         throw HttpException(resData["err"]);
       }
 
-      List<Map<String, dynamic>> posts = resData["posts"];
-
-      for (var p in posts) {
-        Post newPost = Post.fromMap(p);
-        retrievedPost.add(newPost);
+      List<dynamic> posts = resData["posts"];
+      if (posts != null) {
+        for (var p in posts) {
+          Post newPost = Post.fromMap(p);
+          retrievedPost.add(newPost);
+        }
       }
+
       return retrievedPost;
     } catch (e) {
       throw e;
@@ -285,7 +287,7 @@ class PostGolangService with ChangeNotifier {
     // Remove ID field and CreatedAt field <- in the backend
     try {
       final url = apiUrl + "/post/detail/$postId";
-      final res = await http.post(
+      final res = await http.patch(
         url,
         headers: {
           HttpHeaders.contentTypeHeader: "application/json",

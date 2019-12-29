@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/utils/index.dart';
 
 class AttributeSettingCard extends StatefulWidget {
   final User user;
@@ -23,7 +24,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
   void initState() {
     majorController.text = widget.user?.major ?? "";
     _gender = widget.user.gender;
-    pickedDOB = widget.user.dob;
+    pickedDOB = Utils.getDateTime(widget?.user?.dob) ?? DateTime.now();
     // TODO: implement initState
     super.initState();
   }
@@ -47,7 +48,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
             child: InkWell(
               onTap: () async {
                 var picked = await showDatePicker(
-                  initialDate: widget.user?.dob ?? pickedDOB,
+                  initialDate: pickedDOB,
                   context: context,
                   firstDate: DateTime(1900, 1),
                   lastDate: DateTime.now(),
@@ -123,13 +124,13 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
               Provider.of<UserGolangService>(context, listen: false).updateUser(
                 widget.user.id,
                 {
-                  "dob": pickedDOB,
+                  "dob": pickedDOB.toUtc().toString(),
                   "gender": _gender,
                   "major": majorController.text,
                 },
               );
-
-              Navigator.of(context).pop(true);
+              Navigator.popUntil(context, ModalRoute.withName("/"));
+              // Navigator.of(context).pop(true);
             },
             child: Text("確認"),
           )

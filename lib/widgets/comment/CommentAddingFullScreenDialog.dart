@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/comment/CommentPreviewFullScreenDialog.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
@@ -94,7 +95,7 @@ class _CommentAddingFullScreenDialogState
   }
 
   void commentFieldComplete() {
-    var u = Provider.of<User>(context, listen: false);
+    var u = Provider.of<UserGolangService>(context, listen: false).user;
     comment.author = u;
     comment.createdAt = DateTime.now();
     comment.updatedAt = DateTime.now();

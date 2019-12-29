@@ -71,6 +71,8 @@ class UserGolangService with ChangeNotifier {
       // Saving user but nogt token
       prefs.setString("email", email);
       prefs.setString("password", password);
+
+      setUserStream();
     } catch (error) {
       throw error;
     }
@@ -118,14 +120,19 @@ class UserGolangService with ChangeNotifier {
   void setUserStream() async {
     String url = "ws://" +
         baseUrl +
-        "/subsrible"; // ipconfig can check should be IPv4 Address
+        "/user/subsrible"; // ipconfig can check should be IPv4 Address
 
     if (channel != null) {
       await channel.sink.close();
     }
-    channel = IOWebSocketChannel.connect(url);
+    channel = IOWebSocketChannel.connect(
+      url,
+      headers: {
+        "Authorization": token,
+      },
+    );
     channel.stream.listen((u) {
-      _user = User.fromMap(u);
+      _user = User.fromMap(json.decode(u));
       notifyListeners();
     });
   }

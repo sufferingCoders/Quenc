@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
 /// This screen show all the saved post
@@ -15,17 +16,18 @@ class OwingPostsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("我的帖子"),
       ),
-      body: Consumer<User>(
-        builder: (ctx, user, ch) {
-          if (user.savedPosts == null || user.savedPosts.isEmpty) {
+      body: Consumer<UserGolangService>(
+        builder: (ctx, userService, ch) {
+          if (userService.user.savedPosts == null ||
+              userService.user.savedPosts.isEmpty) {
             return Center(
               child: Text("還未有帖子"),
             );
           }
 
           return FutureBuilder(
-            future:
-                Provider.of<PostGolangService>(context).getPostForAuthor(user.id),
+            future: Provider.of<PostGolangService>(context)
+                .getPostForAuthor(userService.user.id),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

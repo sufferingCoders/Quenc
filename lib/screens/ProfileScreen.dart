@@ -20,11 +20,11 @@ class ProfileScreen extends StatelessWidget {
           title: Text("個人資訊"),
           centerTitle: true,
         ),
-        body: Consumer<User>(
-          builder: (ctx, user, ch) {
+        body: Consumer<UserGolangService>(
+          builder: (ctx, userService, ch) {
             return ListView(
               children: <Widget>[
-                if (user.isAdmin) ...[
+                if (userService?.user?.isAdmin == true) ...[
                   Container(
                     margin: EdgeInsets.all(10),
                     height: 60,
@@ -110,7 +110,7 @@ class ProfileScreen extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       UserAttributeSettingScreen.routeName,
-                      arguments: user,
+                      arguments: userService.user,
                     );
                   },
                 ),

@@ -9,6 +9,7 @@ import 'package:quenc/models/Report.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/ReportService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
 import 'package:quenc/widgets/report/ReportPreviewFullScreenDialog.dart';
@@ -72,7 +73,7 @@ class _ReportAddingFullScreenDialogState
   }
 
   void reportCompleteFields() {
-    var u = Provider.of<User>(context, listen: false);
+    var u = Provider.of<UserGolangService>(context, listen: false).user;
     report.reportId = widget.reportId;
     report.solve = false;
     report.reportTarget = Report.reportTargetEnumToInt(widget.target);

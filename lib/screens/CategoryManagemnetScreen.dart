@@ -141,7 +141,10 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                                       listen: false)
                                   .addPostCategory(PostCategory(
                                 categoryName: searchingStr,
-                              ));
+                              ))
+                                  .then((v) {
+                                refresh();
+                              });
                               Navigator.of(context).pop(true);
                             },
                           ),

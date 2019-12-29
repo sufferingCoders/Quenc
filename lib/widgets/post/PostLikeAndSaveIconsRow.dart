@@ -24,8 +24,8 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<User>(
-      builder: (context, user, ch) => Row(
+    return Consumer<UserGolangService>(
+      builder: (context, userService, ch) => Row(
         // mainAxisAlignment: MainAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -33,7 +33,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.favorite),
-              color: post?.likers?.contains(user?.id) == true
+              color: post?.likers?.contains(userService.user?.id) == true
                   ? Colors.pink
                   : Colors.grey,
               onPressed: () {
@@ -41,7 +41,8 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                     .toggoleFunction(
                   id: post?.id,
                   toggle: ToggleOptions.LikePosts,
-                  condition: !(post?.likers?.contains(user?.id) == true),
+                  condition:
+                      !(post?.likers?.contains(userService.user?.id) == true),
                 );
               },
             ),
@@ -50,7 +51,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.bookmark),
-              color: user.savedPosts.contains(post?.id)
+              color: userService?.user?.savedPosts?.contains(post?.id) == true
                   ? Colors.blue
                   : Colors.grey,
               onPressed: () {
@@ -69,7 +70,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                 Icons.more_vert,
                 color: Theme.of(context).primaryColorDark,
               ),
-              // color: user.archivePosts.contains(post.id)
+              // color: userService.user.archivePosts.contains(post.id)
               //     ? Colors.blue
               //     : Colors.grey,
               onTapDown: (detail) async {
@@ -94,7 +95,8 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                       ),
                       value: MenuOptions.Report,
                     ),
-                    if (user?.isAdmin || user?.id == post?.author)
+                    if (userService.user?.isAdmin ||
+                        userService.user?.id == post?.author)
                       PopupMenuItem(
                         child: ListTile(
                           leading: Icon(Icons.delete_outline),
