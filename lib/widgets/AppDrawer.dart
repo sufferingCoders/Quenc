@@ -57,6 +57,15 @@ class _AppDrawerState extends State<AppDrawer> {
     listTiles.add(const Divider());
 
     if (allCategories == null) {
+      if (!isInit) {
+        listTiles.add(ListTile(
+          leading: FittedBox(
+            child: CircularProgressIndicator(),
+          ),
+          title: Text("分類載入中..."),
+        ));
+      }
+
       return listTiles;
     }
 

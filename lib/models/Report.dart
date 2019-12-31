@@ -15,7 +15,6 @@ class Report {
   String previewText;
   String previewPhoto;
   int reportTarget;
-  int reportType;
   DateTime createdAt;
   String reportId;
   bool solve;
@@ -24,7 +23,6 @@ class Report {
     this.content,
     this.id,
     this.author,
-    this.reportType,
     this.createdAt,
     this.previewPhoto,
     this.previewText,
@@ -83,7 +81,6 @@ class Report {
       author: data["author"],
       id: data["_id"],
       content: data["content"],
-      reportType: data["reportType"],
       createdAt: Utils.getDateTime(data["createdAt"]),
       previewPhoto: data["previewPhoto"],
       previewText: data["previewText"],
@@ -98,7 +95,6 @@ class Report {
       "author": author.toMap(),
       "_id": id,
       "content": content,
-      "reportType": reportType,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
       "reportTarget": reportTarget,
@@ -112,7 +108,6 @@ class Report {
       "author": author.toMap(),
       "_id": id,
       "content": content,
-      "reportType": reportType,
       "createdAt": createdAt,
       "previewPhoto": previewPhoto,
       "previewText": previewText,

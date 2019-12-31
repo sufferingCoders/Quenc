@@ -79,6 +79,36 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                       icon: Icon(Icons.delete_outline),
                       onPressed: () {
                         //Deleteing Category here
+
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                                  title: Text("刪除分類"),
+                                  content: Text(
+                                      "是否要刪除分類: ${show[idx].categoryName} ?"),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text("否"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text("是"),
+                                      onPressed: () {
+                                        Provider.of<PostGolangService>(context,
+                                                listen: false)
+                                            .deletePostCategoriesById(
+                                                show[idx].id)
+                                            .then((v) {
+                                          refresh();
+                                        });
+                                        Navigator.of(context).pop(true);
+                                      },
+                                    ),
+                                  ],
+                                ));
+
                         Provider.of<PostGolangService>(context, listen: false)
                             .deletePostCategoriesById(show[idx].id);
                       },
@@ -135,6 +165,12 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                         content: Text("是否要加入分類: ${searchingStr} ?"),
                         actions: <Widget>[
                           FlatButton(
+                            child: Text("否"),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                          ),
+                          FlatButton(
                             child: Text("是"),
                             onPressed: () {
                               Provider.of<PostGolangService>(context,
@@ -146,12 +182,6 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                                 refresh();
                               });
                               Navigator.of(context).pop(true);
-                            },
-                          ),
-                          FlatButton(
-                            child: Text("否"),
-                            onPressed: () {
-                              Navigator.of(context).pop(false);
                             },
                           ),
                         ],

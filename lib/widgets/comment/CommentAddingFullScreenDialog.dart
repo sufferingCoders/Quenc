@@ -64,7 +64,17 @@ class _CommentAddingFullScreenDialogState
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    File selected = await ImagePicker.pickImage(source: source);
+    currentInsertImage = null;
+    currentUploadURL = null;
+    _uploadTask = null;
+    currentFilePath = null;
+    File selected = await ImagePicker.pickImage(
+      source: source,
+      maxWidth: 1936,
+      maxHeight: 1936,
+      imageQuality: 40,
+    );
+    print("File Size is ${selected?.lengthSync()}");
 
     setState(() {
       currentInsertImage = selected;
@@ -90,7 +100,7 @@ class _CommentAddingFullScreenDialogState
 
   void addComment(BuildContext ctx) async {
     commentFieldComplete();
-    await Provider.of<CommentGolangService>(context).addComment(comment);
+    await Provider.of<CommentGolangService>(context, listen: false).addComment(comment);
     Navigator.of(context).pop();
   }
 
@@ -206,6 +216,10 @@ class _CommentAddingFullScreenDialogState
               validator: (v) {
                 if (v == null || v.isEmpty) {
                   return "請輸入內容";
+                }
+
+                if (v.length > 3000) {
+                  return "字元數不可超過3000";
                 }
                 return null;
               },

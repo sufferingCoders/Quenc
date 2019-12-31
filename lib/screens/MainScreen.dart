@@ -29,8 +29,8 @@ class _MainScreenState extends State<MainScreen> {
     if (!isInit) {
       // var PostGolangService = Provider.of<PostGolangService>(context, listen: false);
       // PostGolangService.tryInitPosts();
-      isInit = true;
       await loadMore();
+      isInit = true;
       // await loadCategories();
     }
     super.didChangeDependencies();

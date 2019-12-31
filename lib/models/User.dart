@@ -12,7 +12,10 @@ class User {
   DateTime createdAt;
   DateTime lastSeen;
   String dob;
+
+  List<String> likePosts;
   List<String> chatRooms;
+  List<String> likeComments;
   List<String> friends;
   List<String> savedPosts;
 
@@ -32,6 +35,8 @@ class User {
     this.chatRooms,
     this.friends,
     this.savedPosts,
+    this.likePosts,
+    this.likeComments,
   });
 
   factory User.fromMap(dynamic data) {
@@ -54,6 +59,8 @@ class User {
       chatRooms: data["chatRooms"]?.cast<String>(),
       friends: data["friends"]?.cast<String>(),
       savedPosts: data["savedPosts"]?.cast<String>(),
+      likePosts: data["likePosts"]?.cast<String>(),
+      likeComments: data["likeComments"]?.cast<String>(),
     );
   }
 
@@ -71,8 +78,6 @@ class User {
     return true;
   }
 
-  
-
   Map<String, dynamic> toMap() {
     return {
       "_id": id,
@@ -88,6 +93,8 @@ class User {
       "chatRooms": chatRooms,
       "friends": friends,
       "savedPosts": savedPosts,
+      "likePosts": likePosts,
+      "likeComments": likeComments,
     };
   }
 }

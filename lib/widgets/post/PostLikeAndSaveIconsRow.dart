@@ -33,7 +33,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.favorite),
-              color: post?.likers?.contains(userService.user?.id) == true
+              color: userService?.user?.likePosts?.contains(post?.id) == true
                   ? Colors.pink
                   : Colors.grey,
               onPressed: () {
@@ -42,7 +42,8 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                   id: post?.id,
                   toggle: ToggleOptions.LikePosts,
                   condition:
-                      !(post?.likers?.contains(userService.user?.id) == true),
+                      !(userService?.user?.likePosts?.contains(post?.id) ==
+                          true),
                 );
               },
             ),

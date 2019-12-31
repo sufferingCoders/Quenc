@@ -108,7 +108,7 @@ class UserGolangService with ChangeNotifier {
     String email = prefs.getString("email");
     String password = prefs.getString("password");
 
-    _authenticate(email, password, "login");
+    await _authenticate(email, password, "login");
     return true;
   }
 
@@ -131,10 +131,38 @@ class UserGolangService with ChangeNotifier {
         "Authorization": token,
       },
     );
+
+    // We can get user stream from this
+    // channel.stream.map((u) => User.fromMap(json.decode(u)));
+
     channel.stream.listen((u) {
       _user = User.fromMap(json.decode(u));
       notifyListeners();
     });
+  }
+
+  Stream<User> getUserStream() {
+    if (token == null) {
+      return null;
+    }
+
+    String url = "ws://" +
+        baseUrl +
+        "/user/subsrible"; // ipconfig can check should be IPv4 Address
+
+    if (channel != null) {
+      channel.sink.close();
+    }
+
+    channel = IOWebSocketChannel.connect(
+      url,
+      headers: {
+        "Authorization": token,
+      },
+    );
+
+    // We can get user stream from this
+    return channel.stream.map((u) => User.fromMap(json.decode(u)));
   }
 
   /*******************************
@@ -161,11 +189,13 @@ class UserGolangService with ChangeNotifier {
               (user.chatRooms.contains(id) ? "0" : "1");
           break;
         case ToggleOptions.LikePosts:
-          fullApi = apiUrl + "/post/like/$id" + (condition ? "0" : "1");
+          fullApi =
+              apiUrl + "/post/like/$id?condition=" + (condition ? "1" : "0");
 
           break;
         case ToggleOptions.LikeComments:
-          fullApi = apiUrl + "/comment/like/$id" + (condition ? "0" : "1");
+          fullApi =
+              apiUrl + "/comment/like/$id?condition=" + (condition ? "1" : "0");
           break;
         case ToggleOptions.SavedPosts:
           fullApi = apiUrl +
@@ -176,7 +206,7 @@ class UserGolangService with ChangeNotifier {
           fullApi = null;
           break;
       }
-      final res = await http.post(
+      final res = await http.patch(
         fullApi,
         headers: {
           "Authorization": token,
@@ -192,6 +222,9 @@ class UserGolangService with ChangeNotifier {
       if (res.statusCode >= 400) {
         throw HttpException(resData["err"]);
       }
+
+  	  
+
     } catch (e) {
       throw e;
     }

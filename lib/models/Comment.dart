@@ -51,14 +51,8 @@ class Comment {
 
   Map<String, dynamic> toAddingMap() {
     return {
-      "_id": id,
-      "author": author,
-      "author": author.id,
       "belongPost": belongPost,
       "content": content,
-      "createdAt": createdAt,
-      "updatedAt": updatedAt,
-      "likers": likers,
     };
   }
 

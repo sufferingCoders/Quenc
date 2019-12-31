@@ -113,7 +113,7 @@ class _PostAddingFullScreenDialogState
 
   void addingImageMarkdownToContent() {
     String addingImageMd =
-        "\n" + "![圖片載入中...](" + currentUploadURL + ")" + "\n";
+        "\n" + "![圖片載入中...]($currentUploadURL)" + "\n";
 
     var cursorPosition = contentController.selection;
     var idx = cursorPosition.start;
@@ -149,7 +149,18 @@ class _PostAddingFullScreenDialogState
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    File selected = await ImagePicker.pickImage(source: source);
+    currentInsertImage = null;
+    currentUploadURL = null;
+    _uploadTask = null;
+    currentFilePath = null;
+
+    File selected = await ImagePicker.pickImage(
+      source: source,
+      maxWidth: 1936,
+      maxHeight: 1936,
+      imageQuality: 40,
+    );
+    print("File Size is ${selected?.lengthSync()}");
 
     setState(() {
       currentInsertImage = selected;

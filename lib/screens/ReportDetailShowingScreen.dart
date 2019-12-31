@@ -167,19 +167,19 @@ class _ReportDetailShowingScreenState extends State<ReportDetailShowingScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      Container(
-                        height: 60,
-                        margin: EdgeInsets.all(10),
-                        color: Colors.pink[200],
-                        child: Center(
-                            child: Text(
-                          "${Report.reportTypeCodeToString(report.reportType)}",
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColorDark,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold),
-                        )),
-                      ),
+                      // Container(
+                      //   height: 60,
+                      //   margin: EdgeInsets.all(10),
+                      //   color: Colors.pink[200],
+                      //   child: Center(
+                      //       child: Text(
+                      //     "${Report.reportTypeCodeToString(report.reportType)}",
+                      //     style: TextStyle(
+                      //         color: Theme.of(context).primaryColorDark,
+                      //         fontSize: 16,
+                      //         fontWeight: FontWeight.bold),
+                      //   )),
+                      // ),
                       ReportShowingColumn(
                         report: report,
                       ),

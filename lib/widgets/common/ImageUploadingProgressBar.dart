@@ -10,6 +10,7 @@ class ImageUploadingProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,6 +20,8 @@ class ImageUploadingProgressBar extends StatelessWidget {
           ),
           LinearProgressIndicator(
             value: progressPercent,
+            backgroundColor: theme.primaryColorLight,
+            valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColorDark),
           ),
           Text(
             '上傳中',

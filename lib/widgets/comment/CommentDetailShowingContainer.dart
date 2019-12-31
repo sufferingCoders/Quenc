@@ -52,17 +52,19 @@ class CommentDetailShowingContainer extends StatelessWidget {
                 builder: (ctx, userService, ch) {
                   return IconButton(
                     color:
-                        comment?.likers?.contains(userService.user?.id) == true
+                        userService?.user?.likeComments?.contains(comment.id) ==
+                                true
                             ? Colors.pink
                             : Colors.grey,
                     icon: Icon(Icons.favorite),
                     onPressed: () {
                       if (comment.id != null) {
-                        Provider.of<UserGolangService>(context).toggoleFunction(
+                        Provider.of<UserGolangService>(context, listen: false)
+                            .toggoleFunction(
                           id: comment.id,
                           toggle: ToggleOptions.LikeComments,
-                          condition: !(comment?.likers
-                                  ?.contains(userService.user?.id) ==
+                          condition: !(userService?.user?.likeComments
+                                  ?.contains(comment.id) ==
                               true),
                         );
                       }

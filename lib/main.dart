@@ -6,9 +6,7 @@ import 'package:quenc/providers/CommentGolangService.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
-import 'package:quenc/screens/AuthScreen.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
-import 'package:quenc/screens/EmailVerificationScreen.dart';
 import 'package:quenc/screens/HomeScreen.dart';
 import 'package:quenc/screens/OwningPostsScreen.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
@@ -18,7 +16,6 @@ import 'package:quenc/screens/ReportManagementScreen.dart';
 import 'package:quenc/screens/SavedPostsScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
 import 'package:quenc/screens/WebSocketTestingScreen.dart';
-import 'package:quenc/widgets/common/HomePage.dart';
 
 import 'providers/WebsocketServiceTest.dart';
 
@@ -44,8 +41,6 @@ class MyApp extends StatelessWidget {
 
   MyApp({this.brightness});
 
-
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -66,83 +61,77 @@ class MyApp extends StatelessWidget {
           value: ReportGolangService(),
         )
       ],
-      child: Consumer<UserGolangService>(
-        builder: (ctx, userService, ch) {
-          return MaterialApp(
-            onGenerateRoute: (setting) {
-              switch (setting.name) {
-                case ReportDetailShowingScreen.routeName:
-                  return MaterialPageRoute(
-                    builder: (context) {
-                      final ReportDetailRouterArg args = setting.arguments;
+      child: MaterialApp(
+        onGenerateRoute: (setting) {
+          switch (setting.name) {
+            case ReportDetailShowingScreen.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  final ReportDetailRouterArg args = setting.arguments;
 
-                      if (args.report != null) {
-                        return ReportDetailShowingScreen(
-                          report: args.report,
-                        );
-                      }
-
-                      return ReportDetailShowingScreen(
-                        reportId: args.reportId,
-                      );
-                    },
-                  );
-                  break;
-                case PostDetailScreen.routeName:
-                  return MaterialPageRoute(
-                    builder: (context) {
-                      final String postId = setting.arguments;
-                      return PostDetailScreen(
-                        postId: postId,
-                      );
-                    },
-                  );
-                  break;
-                case UserAttributeSettingScreen.routeName:
-                  return MaterialPageRoute(
-                    builder: (context) {
-                      return UserAttributeSettingScreen(
-                        user: setting.arguments as User,
-                      );
-                    },
-                  );
-                  break;
-                default:
-                  return MaterialPageRoute(builder: (context) {
-                    return Scaffold(
-                      body: Center(
-                        child: Text("無此頁面"),
-                      ),
+                  if (args.report != null) {
+                    return ReportDetailShowingScreen(
+                      report: args.report,
                     );
-                  });
-                  break;
-              }
-            },
-            debugShowCheckedModeBanner: false,
-            debugShowMaterialGrid: false,
-            title: 'QuenC',
-            theme: ThemeData(
-              accentColor: Colors.teal[200],
-              primarySwatch: Colors.teal,
-              brightness: brightness,
-              buttonTheme: ButtonThemeData(
-                buttonColor: Colors.teal[400],
-                textTheme: ButtonTextTheme.primary,
-              ),
-            ),
-            home: HomeScreen(),
-            routes: {
-              ProfileScreen.routeName: (ctx) => ProfileScreen(),
-              SavedPostscreen.routeName: (ctx) => SavedPostscreen(),
-              OwingPostsScreen.routeName: (ctx) => OwingPostsScreen(),
-              CategoryManagementScreen.routeName: (ctx) =>
-                  CategoryManagementScreen(),
-              ReportManagementScreen.routeName: (ctx) =>
-                  ReportManagementScreen(),
-              WebSocketTestingScreen.routeName: (ctx) =>
-                  WebSocketTestingScreen(),
-            },
-          );
+                  }
+
+                  return ReportDetailShowingScreen(
+                    reportId: args.reportId,
+                  );
+                },
+              );
+              break;
+            case PostDetailScreen.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  final String postId = setting.arguments;
+                  return PostDetailScreen(
+                    postId: postId,
+                  );
+                },
+              );
+              break;
+            case UserAttributeSettingScreen.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return UserAttributeSettingScreen(
+                    user: setting.arguments as User,
+                  );
+                },
+              );
+              break;
+            default:
+              return MaterialPageRoute(builder: (context) {
+                return Scaffold(
+                  body: Center(
+                    child: Text("無此頁面"),
+                  ),
+                );
+              });
+              break;
+          }
+        },
+        debugShowCheckedModeBanner: false,
+        debugShowMaterialGrid: false,
+        title: 'QuenC',
+        theme: ThemeData(
+          accentColor: Colors.teal[200],
+          primarySwatch: Colors.teal,
+          brightness: brightness,
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.teal[400],
+            textTheme: ButtonTextTheme.primary,
+          ),
+        ),
+        home: HomeScreen(),
+        routes: {
+          ProfileScreen.routeName: (ctx) => ProfileScreen(),
+          SavedPostscreen.routeName: (ctx) => SavedPostscreen(),
+          OwingPostsScreen.routeName: (ctx) => OwingPostsScreen(),
+          CategoryManagementScreen.routeName: (ctx) =>
+              CategoryManagementScreen(),
+          ReportManagementScreen.routeName: (ctx) => ReportManagementScreen(),
+          WebSocketTestingScreen.routeName: (ctx) => WebSocketTestingScreen(),
         },
       ),
     );

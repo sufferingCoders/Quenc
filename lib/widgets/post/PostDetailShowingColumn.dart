@@ -86,7 +86,7 @@ class PostDetailShowingColumn extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 4.0),
           child: Text(
-            "${post.category.categoryName}  -  ${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
+            "${post?.category?.categoryName}  -  ${DateFormat("h:mm a   dd, MMM, yyyy").format(post.createdAt)}",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 12,

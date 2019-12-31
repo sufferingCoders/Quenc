@@ -67,16 +67,20 @@ class CommentGolangService with ChangeNotifier {
         url += "&limit=$limit";
       }
 
-      switch (orderBy) {
-        case OrderByOption.CreatedAt:
-          url += "&sort=createdAt_-1";
-          break;
-        case OrderByOption.LikeCount:
-          url += "&sort=likeCount_-1";
-          break;
-        default:
-          break;
+      if (orderBy == OrderByOption.LikeCount) {
+        url += "&sort=likeCount";
       }
+
+      // switch (orderBy) {
+      //   case OrderByOption.CreatedAt:
+      //     url += "&sort=createdAt_-1";
+      //     break;
+      //   case :
+      //     url += "&sort=likeCount_-1";
+      //     break;
+      //   default:
+      //     break;
+      // }
 
       final res = await http.get(
         url,
@@ -96,22 +100,23 @@ class CommentGolangService with ChangeNotifier {
         throw HttpException(resData["err"]);
       }
 
-      List<Map<String, dynamic>> comments = resData["comments"];
+      List<dynamic> comments = resData["comments"];
       if (comments != null) {
         for (var c in comments) {
           Comment newComment = Comment.fromMap(c);
           retrivedComments.add(newComment);
         }
       }
+
+      return retrivedComments;
     } catch (e) {
       throw e;
     }
-    return retrivedComments;
   }
 
   Future<void> addComment(Comment comment) async {
     try {
-      final url = apiUrl + "/comment";
+      final url = apiUrl + "/comment/";
       final res = await http.post(
         url,
         headers: {
@@ -132,6 +137,8 @@ class CommentGolangService with ChangeNotifier {
       if (res.statusCode >= 400) {
         throw HttpException(resData["err"]);
       }
+
+      notifyListeners();
     } catch (e) {
       throw e;
     }

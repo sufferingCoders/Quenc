@@ -64,6 +64,10 @@ class Utils {
 
   static String getFirstImageURLFromMarkdown(String content) {
     var match = imageReg.firstMatch(content);
+    if (match == null) {
+      return null;
+    }
+
     String firstImageUrl = content.substring(match.start, match.end);
     // print(firstImageUrl);
     int idxStart = firstImageUrl.indexOf("(");

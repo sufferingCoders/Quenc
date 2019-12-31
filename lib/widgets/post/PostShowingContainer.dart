@@ -44,74 +44,79 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
     );
   }
 
+  Widget getOrderSelection(BuildContext context) {
+    var theme = Theme.of(context);
+
+    return Container(
+      color: theme.primaryColorLight,
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "排序",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: theme.primaryColorDark,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.arrow_forward_ios,
+              size: 13,
+              color: theme.primaryColorDark,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DropdownButton<OrderByOption>(
+              focusColor: theme.primaryColorDark,
+              value: widget.orderBy,
+              onChanged: (v) {
+                widget.orderByUpdater(v);
+              },
+              items: [
+                DropdownMenuItem(
+                  value: OrderByOption.LikeCount,
+                  child: Text(
+                    "熱門",
+                    style: TextStyle(
+                      color: theme.primaryColorDark,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                DropdownMenuItem(
+                  value: OrderByOption.CreatedAt,
+                  child: Text(
+                    "最新",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: theme.primaryColorDark,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget getOrderListView() {
     return ListView.builder(
       physics: const AlwaysScrollableScrollPhysics(),
       controller: _controller,
       itemCount: widget.posts.length + 1,
       itemBuilder: (ctx, idx) {
-        var theme = Theme.of(context);
         if (idx == 0) {
-          return Container(
-            color: theme.primaryColorLight,
-            height: 40,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "排序",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: theme.primaryColorDark,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    size: 13,
-                    color: theme.primaryColorDark,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: DropdownButton<OrderByOption>(
-                    focusColor: theme.primaryColorDark,
-                    value: widget.orderBy,
-                    onChanged: (v) {
-                      widget.orderByUpdater(v);
-                    },
-                    items: [
-                      DropdownMenuItem(
-                        value: OrderByOption.LikeCount,
-                        child: Text(
-                          "熱門",
-                          style: TextStyle(
-                            color: theme.primaryColorDark,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      DropdownMenuItem(
-                        value: OrderByOption.CreatedAt,
-                        child: Text(
-                          "最新",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: theme.primaryColorDark,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
+          return getOrderSelection(context);
         }
 
         return Column(
@@ -157,15 +162,22 @@ class _PostShowingContainerState extends State<PostShowingContainer> {
       } else {
         return Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text("無貼文"),
-              FlatButton(
-                child: Text("重新整理"),
-                onPressed: () {
-                  widget.refresh();
-                },
-              )
+              getOrderSelection(context),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("無貼文"),
+                    FlatButton(
+                      child: Text("重新整理"),
+                      onPressed: () {
+                        widget.refresh();
+                      },
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         );

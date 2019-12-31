@@ -79,7 +79,7 @@ class ReportGolangService with ChangeNotifier {
         throw HttpException(resData["err"]);
       }
 
-      List<Map<String, dynamic>> reports = resData["reports"];
+      List<dynamic> reports = resData["reports"];
 
       for (var r in reports) {
         Report newReport = Report.fromMap(r);
