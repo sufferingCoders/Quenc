@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Report.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
-import 'package:quenc/providers/ReportService.dart';
-import 'package:quenc/screens/ReportDetailShowingScreen.dart';
 import 'package:quenc/widgets/report/ReportShowingListTile.dart';
 
 enum ReportShowingOption {

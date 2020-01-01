@@ -86,8 +86,11 @@ class PostShowingListTile extends StatelessWidget {
       trailing: Builder(builder: (context) {
         String photo = post?.previewPhoto;
 
-        if (photo == null) {
-          return Container();
+        if (photo == null || photo.isEmpty) {
+          return Container(
+            height: 1,
+            width: 1,
+          );
         }
 
         return Image.network(

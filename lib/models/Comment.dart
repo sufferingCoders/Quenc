@@ -60,7 +60,7 @@ class Comment {
     return {
       "_id": id,
       "author": author,
-      "author": author.toMap(),
+      "author": author?.toMap(),
       "belongPost": belongPost,
       "content": content,
       "createdAt": createdAt,

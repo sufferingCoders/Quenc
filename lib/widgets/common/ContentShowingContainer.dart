@@ -19,7 +19,7 @@ class ContentShowingContainer extends StatelessWidget {
       child: Builder(
         builder: (context) {
           var mdText = mk.markdownToHtml(
-            content.replaceAll("\n", "</br>"),
+            content?.replaceAll("\n", "</br>"),
             extensionSet: mk.ExtensionSet.gitHubWeb,
           );
 

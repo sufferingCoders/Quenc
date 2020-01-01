@@ -60,8 +60,11 @@ class ReportShowingListTile extends StatelessWidget {
         builder: (context) {
           String photo = report.previewPhoto;
 
-          if (photo == null) {
-            return Container();
+          if (photo == null || photo.isEmpty) {
+            return Container(
+              height: 1,
+              width: 1,
+            );
           }
 
           return Image.network(

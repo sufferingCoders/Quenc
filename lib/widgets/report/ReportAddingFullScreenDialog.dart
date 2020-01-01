@@ -86,6 +86,7 @@ class _ReportAddingFullScreenDialogState
   void reportCompleteFields() {
     var u = Provider.of<UserGolangService>(context, listen: false).user;
     report.reportId = widget.reportId;
+    report.createdAt = DateTime.now();
     report.reportTarget = Report.reportTargetEnumToInt(widget.target);
     report.previewPhoto = Utils.getFirstImageURLFromMarkdown(report.content);
     report.previewText = Utils.getPreviewTextFromContent(report.content);

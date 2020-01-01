@@ -12,10 +12,14 @@ class ReportGolangService with ChangeNotifier {
 
   Future<void> addReport(Report report) async {
     try {
-      final url = apiUrl + "/report";
+      final url = apiUrl + "/report/";
       final res = await http.post(
         url,
-        body: json.encode(report.toMap()),
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+        body: json.encode(report.toAddingMap()),
       );
 
       if (res.body == null || res.body.isEmpty) {
@@ -40,7 +44,7 @@ class ReportGolangService with ChangeNotifier {
     List<Report> retrivedReports = [];
 
     try {
-      String url = apiUrl + "/report?";
+      String url = apiUrl + "/report/?";
 
       if (skip != null) {
         url += "&skip=$skip";
@@ -85,6 +89,7 @@ class ReportGolangService with ChangeNotifier {
         Report newReport = Report.fromMap(r);
         retrivedReports.add(newReport);
       }
+      return retrivedReports;
     } catch (e) {
       throw e;
     }

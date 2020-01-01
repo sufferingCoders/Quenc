@@ -77,7 +77,7 @@ class Post {
   Map<String, dynamic> toMap() {
     return {
       "_id": id,
-      "author": author.toMap(),
+      "author": author?.toMap(),
       "title": title,
       "content": content,
       "createdAt": createdAt,
@@ -85,7 +85,7 @@ class Post {
       "anonymous": anonymous,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
-      "category": category.toMap(),
+      "category": category?.toMap(),
       "likers": likers,
       "likeCount": likeCount,
     };

@@ -78,7 +78,7 @@ class Report {
 
   factory Report.fromMap(dynamic data) {
     return Report(
-      author: data["author"],
+      author: User.fromMap(data["author"]),
       id: data["_id"],
       content: data["content"],
       createdAt: Utils.getDateTime(data["createdAt"]),
@@ -92,8 +92,6 @@ class Report {
 
   Map<String, dynamic> toAddingMap() {
     return {
-      "author": author.toMap(),
-      "_id": id,
       "content": content,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
@@ -105,7 +103,7 @@ class Report {
 
   Map<String, dynamic> toMap() {
     return {
-      "author": author.toMap(),
+      "author": author?.toMap(),
       "_id": id,
       "content": content,
       "createdAt": createdAt,
