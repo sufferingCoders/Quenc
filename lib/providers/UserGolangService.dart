@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:quenc/models/ChatRoom.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -222,9 +223,6 @@ class UserGolangService with ChangeNotifier {
       if (res.statusCode >= 400) {
         throw HttpException(resData["err"]);
       }
-
-  	  
-
     } catch (e) {
       throw e;
     }
@@ -295,5 +293,9 @@ class UserGolangService with ChangeNotifier {
     } catch (e) {
       return e.toString();
     }
+  }
+
+  Future<List<ChatRoom>> getAllUserChatRooms() {
+    
   }
 }
