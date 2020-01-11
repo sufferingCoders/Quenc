@@ -4,8 +4,11 @@ import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
+import 'package:quenc/screens/ChatScreen.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/widgets/AppDrawer.dart';
+import 'package:quenc/widgets/chat/ChatRoomShowingList.dart';
+import 'package:quenc/widgets/common/AppBottomNavigationBar.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
 
@@ -21,6 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   OrderByOption orderBy = OrderByOption.LikeCount;
   List<PostCategory> allCategories;
   List<Post> retrievedPosts;
+  int currentIdx = 0;
 
   @override
   void didChangeDependencies() async {
@@ -42,6 +46,12 @@ class _MainScreenState extends State<MainScreen> {
       orderBy = o;
     });
     loadMore();
+  }
+
+  void idxUpdateFunc(int idx) {
+    setState(() {
+      currentIdx = idx;
+    });
   }
 
   // Future<void> loadCategories() async {
@@ -95,11 +105,9 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // var PostGolangService = Provider.of<PostGolangService>(context);
-    return Scaffold(
-      appBar: AppBar(
+  Widget getMainScrenAppBar(idx) {
+    return [
+      AppBar(
         // automaticallyImplyLeading: true,
         centerTitle: true,
         title: Text(category == null ? "QuenC" : category.categoryName),
@@ -115,10 +123,28 @@ class _MainScreenState extends State<MainScreen> {
           )
         ],
       ),
-      drawer: AppDrawer(
-        changeCategory: changeCategory,
+      AppBar(
+        // automaticallyImplyLeading: true,
+        centerTitle: true,
+        title: Text("聊天"),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(ProfileScreen.routeName);
+            },
+            icon: Icon(
+              Icons.account_circle,
+              size: 30,
+            ),
+          )
+        ],
       ),
-      body: RefreshIndicator(
+    ][idx];
+  }
+
+  Widget getMainScreenBody(idx) {
+    return [
+      RefreshIndicator(
         onRefresh: () async {
           // PostGolangService.initialisePosts();
           refresh();
@@ -132,6 +158,35 @@ class _MainScreenState extends State<MainScreen> {
           orderByUpdater: orderByUpdater,
         ),
       ),
+      ChatRoomShowingList(),
+    ][idx];
+  }
+
+  // Widget mainScreenBody = [
+  //   RefreshIndicator(
+  //     onRefresh: () async {
+  //       refresh();
+  //     },
+  //     child: PostShowingContainer(
+  //       isInit: isInit,
+  //       posts: retrievedPosts,
+  //       infiniteScrollUpdater: loadMore,
+  //       refresh: refresh,
+  //       orderBy: orderBy,
+  //       orderByUpdater: orderByUpdater,
+  //     ),
+  //   ),
+  // ];
+
+  @override
+  Widget build(BuildContext context) {
+    // var PostGolangService = Provider.of<PostGolangService>(context);
+    return Scaffold(
+      appBar: getMainScrenAppBar(currentIdx),
+      drawer: AppDrawer(
+        changeCategory: changeCategory,
+      ),
+      body: getMainScreenBody(currentIdx),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
         onPressed: () {
@@ -146,6 +201,10 @@ class _MainScreenState extends State<MainScreen> {
             ),
           );
         },
+      ),
+      bottomNavigationBar: AppBottomNavigationBar(
+        idx: currentIdx,
+        idxUpdateFunc: idxUpdateFunc,
       ),
     );
   }

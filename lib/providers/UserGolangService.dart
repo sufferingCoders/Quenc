@@ -295,7 +295,9 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
-  Future<List<ChatRoom>> getAllUserChatRooms() {
-    
-  }
+
+
+
+
+
 }

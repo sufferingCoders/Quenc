@@ -8,6 +8,7 @@ class ChatRoom {
   DateTime createdAt;
   bool isGroup;
   String groupName;
+  String groupPhotoUrl;
 
   ChatRoom({
     this.id,
@@ -16,6 +17,7 @@ class ChatRoom {
     this.createdAt,
     this.isGroup,
     this.groupName,
+    this.groupPhotoUrl,
   });
 
   factory ChatRoom.fromMap(dynamic data) {
@@ -28,6 +30,7 @@ class ChatRoom {
       createdAt: Utils.getDateTime(data["createdAt"]),
       isGroup: data["isGroup"],
       groupName: data["groupName"],
+      groupPhotoUrl: data["groupPhotoUrl"],
     );
   }
 }

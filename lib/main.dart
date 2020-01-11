@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quenc/models/ChatRoom.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentGolangService.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
+import 'package:quenc/screens/ChatScreen.dart';
 import 'package:quenc/screens/HomeScreen.dart';
 import 'package:quenc/screens/OwningPostsScreen.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
@@ -100,6 +102,17 @@ class MyApp extends StatelessWidget {
                 },
               );
               break;
+
+            case ChatScreen.routeName:
+              return MaterialPageRoute(
+                builder: (context) {
+                  return ChatScreen(
+                    chatRoom: setting.arguments as ChatRoom,
+                  );
+                },
+              );
+              break;
+
             default:
               return MaterialPageRoute(builder: (context) {
                 return Scaffold(
@@ -132,6 +145,7 @@ class MyApp extends StatelessWidget {
               CategoryManagementScreen(),
           ReportManagementScreen.routeName: (ctx) => ReportManagementScreen(),
           WebSocketTestingScreen.routeName: (ctx) => WebSocketTestingScreen(),
+          ChatScreen.routeName: (ctx) => ChatScreen(),
         },
       ),
     );
