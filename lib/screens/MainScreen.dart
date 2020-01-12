@@ -162,22 +162,6 @@ class _MainScreenState extends State<MainScreen> {
     ][idx];
   }
 
-  // Widget mainScreenBody = [
-  //   RefreshIndicator(
-  //     onRefresh: () async {
-  //       refresh();
-  //     },
-  //     child: PostShowingContainer(
-  //       isInit: isInit,
-  //       posts: retrievedPosts,
-  //       infiniteScrollUpdater: loadMore,
-  //       refresh: refresh,
-  //       orderBy: orderBy,
-  //       orderByUpdater: orderByUpdater,
-  //     ),
-  //   ),
-  // ];
-
   @override
   Widget build(BuildContext context) {
     // var PostGolangService = Provider.of<PostGolangService>(context);

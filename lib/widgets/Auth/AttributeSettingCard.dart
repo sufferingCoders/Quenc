@@ -19,9 +19,11 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
   int _gender = 0;
   DateTime pickedDOB;
   TextEditingController majorController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
+    nameController.text = widget.user?.name ?? "";
     majorController.text = widget.user?.major ?? "";
     _gender = widget.user.gender;
     pickedDOB = Utils.getDateTime(widget?.user?.dob) ?? DateTime.now();
@@ -33,6 +35,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
   void dispose() {
     // TODO: implement dispose
     majorController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -43,6 +46,16 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              // initialValue: widget.user?.major ?? "",
+              decoration: const InputDecoration(
+                labelText: "姓名",
+              ),
+              controller: nameController,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: InkWell(
@@ -77,7 +90,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
             child: TextFormField(
               // initialValue: widget.user?.major ?? "",
               decoration: const InputDecoration(
-                labelText: "Major",
+                labelText: "主修",
               ),
               controller: majorController,
             ),
@@ -127,6 +140,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
                   "dob": pickedDOB.toUtc().toString(),
                   "gender": _gender,
                   "major": majorController.text,
+                  "name": nameController.text,
                 },
               );
               Navigator.popUntil(context, ModalRoute.withName("/"));

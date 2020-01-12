@@ -6,12 +6,13 @@ class User {
   String email;
   String photoURL;
   String major;
+  String dob;
+  String name;
   int role;
   int gender;
   bool emailVerified;
   DateTime createdAt;
   DateTime lastSeen;
-  String dob;
 
   List<String> likePosts;
   List<String> chatRooms;
@@ -37,6 +38,7 @@ class User {
     this.savedPosts,
     this.likePosts,
     this.likeComments,
+    this.name,
   });
 
   factory User.fromMap(dynamic data) {
@@ -61,6 +63,7 @@ class User {
       savedPosts: data["savedPosts"]?.cast<String>(),
       likePosts: data["likePosts"]?.cast<String>(),
       likeComments: data["likeComments"]?.cast<String>(),
+      name: data["name"],
     );
   }
 
@@ -69,7 +72,7 @@ class User {
   }
 
   bool haveAttributesSet() {
-    List<dynamic> neededField = [gender, major, dob];
+    List<dynamic> neededField = [gender, major, dob, name];
     for (var ele in neededField) {
       if (ele == null || ele.toString().isEmpty) {
         return false;
@@ -95,6 +98,7 @@ class User {
       "savedPosts": savedPosts,
       "likePosts": likePosts,
       "likeComments": likeComments,
+      "name": name,
     };
   }
 }

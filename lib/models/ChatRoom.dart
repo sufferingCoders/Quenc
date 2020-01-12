@@ -33,6 +33,30 @@ class ChatRoom {
       groupPhotoUrl: data["groupPhotoUrl"],
     );
   }
+
+  Map<String, dynamic> toAddingMap() {
+    return {
+      "id": id,
+      "members": members.map((m) => m.id).toList(),
+      "messages": messages,
+      "createdAt": createdAt,
+      "isGroup": isGroup,
+      "groupName": groupName,
+      "groupPhotoUrl": groupPhotoUrl,
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "members": members,
+      "messages": messages,
+      "createdAt": createdAt,
+      "isGroup": isGroup,
+      "groupName": groupName,
+      "groupPhotoUrl": groupPhotoUrl,
+    };
+  }
 }
 
 class Message {
@@ -64,5 +88,39 @@ class Message {
       likeBy: data["likeBy"]?.cast<String>(),
       readBy: data["readBy"]?.cast<String>(),
     );
+  }
+
+  Map<String, dynamic> toAddingMap() {
+    return {
+      "id": id,
+      "author": author.id,
+      "messageType": messageType,
+      "content": content,
+      "createdAt": createdAt,
+      "likeBy": likeBy,
+      "readBy": readBy,
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "id": id,
+      "author": author,
+      "messageType": messageType,
+      "content": content,
+      "createdAt": createdAt,
+      "likeBy": likeBy,
+      "readBy": readBy,
+    };
+  }
+
+  void replaceByAnother(Message another) {
+    id = another.id;
+    author = another.author;
+    messageType = another.messageType;
+    content = another.content;
+    createdAt = another.createdAt;
+    likeBy = another.likeBy;
+    readBy = another.readBy;
   }
 }

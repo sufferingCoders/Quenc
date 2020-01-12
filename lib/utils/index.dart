@@ -107,4 +107,20 @@ class Utils {
       return null;
     }
   }
+
+  static bool isSameDate(DateTime a, DateTime b) {
+    if (a.year != b.year) {
+      return false;
+    }
+
+    if (a.month != b.month) {
+      return false;
+    }
+
+    if (a.day != b.day) {
+      return false;
+    }
+
+    return true;
+  }
 }
