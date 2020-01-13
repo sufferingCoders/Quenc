@@ -47,6 +47,8 @@ A new Flutter project.
 |<ul><li>- [ ] </li></ul>|交友|Must Have|平台提供交友配對功能| 請認領 | |
 |<ul><li>- [ ] </li></ul>|聊天|Must Have|平台提供文字聊天功能| Liu | |
 |<ul><li>- [ ] </li></ul>|搜尋|Must Have|平台提供搜尋文章的功能| Fei | |
+|<ul><li>- [ ] </li></ul>|Adding Chatroom|Must Have|Adding Chatroom to db| Richard | |
+
 
 
 ## Flutter 資源
