@@ -42,15 +42,12 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement didChangeDependencies
 
     if (!isInit) {
-      // var PostGolangService = Provider.of<PostGolangService>(context, listen: false);
-      // PostGolangService.tryInitPosts();
       await loadMore();
       isInit = true;
-      // await loadCategories();
+
       mainScreenBody = [
         RefreshIndicator(
           onRefresh: () async {
-            // PostGolangService.initialisePosts();
             refresh();
           },
           child: PostShowingContainer(
@@ -63,7 +60,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
         RandomChatRoom(), // changing this to random chat
-        // ProfileScreen(),
       ];
 
       mainScreenAppBar = [
@@ -84,7 +80,6 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
         AppBar(
-          // automaticallyImplyLeading: true,
           centerTitle: true,
           title: Text("半日聊天"),
           actions: <Widget>[
@@ -102,13 +97,6 @@ class _MainScreenState extends State<MainScreen> {
                 ChatRoom random =
                     Provider.of<UserGolangService>(context).randomChatRoom;
                 if (random.id == null) {
-                  // Scaffold.of(context).showSnackBar(
-                  //   SnackBar(
-                  //     content: Text("未能找到相對應的聊天"),
-                  //     duration: Duration(milliseconds: 2000),
-                  //   ),
-                  // );
-
                   showDialog(
                       context: context,
                       builder: (ctx) {
@@ -244,21 +232,6 @@ class _MainScreenState extends State<MainScreen> {
           );
         },
       ),
-      // FloatingActionButton(
-      //   child: Icon(Icons.add),
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(
-      //         builder: (context) {
-      //           final dialog = ChatAddingFullScreenDialog();
-      //           return dialog;
-      //         },
-      //         fullscreenDialog: true,
-      //       ),
-      //     );
-      //   },
-      // ),
       Container(),
     ];
 
@@ -328,14 +301,6 @@ class _MainScreenState extends State<MainScreen> {
       currentIdx = idx;
     });
   }
-
-  // Future<void> loadCategories() async {
-  //   var cs = await Provider.of<PostGolangService>(context, listen: false)
-  //       .getAllPostCategories();
-  //   setState(() {
-  //     allCategories = cs;
-  //   });
-  // }
 
   void changeCategory(PostCategory cat) async {
     setToNull();
@@ -421,7 +386,6 @@ class _MainScreenState extends State<MainScreen> {
     return [
       RefreshIndicator(
         onRefresh: () async {
-          // PostGolangService.initialisePosts();
           refresh();
         },
         child: PostShowingContainer(
@@ -439,7 +403,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // var PostGolangService = Provider.of<PostGolangService>(context);
     return Scaffold(
       appBar: mainScreenAppBar == null
           ? AppBar(

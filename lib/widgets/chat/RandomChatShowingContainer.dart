@@ -96,7 +96,6 @@ class _RandomChatShowingContainerState
             controller: _scrollController,
             itemCount: random.messages.length,
             itemBuilder: (ctx, idx) {
-
               bool authorIsUser =
                   random.messages[idx].author.id == userService.user.id;
 
@@ -133,57 +132,8 @@ class _RandomChatShowingContainerState
 
               return dateAndMessageColumn(
                   widget.random.messages[idx], authorIsUser);
-
-              // if (idx == 0) {
-              //   return MessageItem(
-              //     authorIsUser: authorIsUser,
-              //     message: widget.random.messages[idx],
-              //   );
-              //   // 這層直接加上
-              // } else {
-              //   if (widget?.random?.messages[idx]?.createdAt == null ||
-              //       widget?.random?.messages[idx - 1]?.createdAt == null) {
-              //     return MessageItem(
-              //       authorIsUser: authorIsUser,
-              //       message: widget.random.messages[idx],
-              //     );
-              //   }
-
-              //   // if (sameDate == null) {
-              //   //   return MessageItem(
-              //   //     authorIsUser: authorIsUser,
-              //   //     message: widget.random.messages[idx],
-              //   //   );
-              //   // }
-
-              //   if (sameDate == true) {
-              //     // 如果和上一個Message不是在同一天的話
-              //     // 加上日期
-              //     Column(
-              //       children: <Widget>[
-              //         Padding(
-              //           padding: const EdgeInsets.all(8.0),
-              //           child: Text(DateFormat("E, dd/MMM/yyyy")
-              //               .format(widget.random.messages[idx].createdAt)),
-              //         ),
-              //         MessageItem(
-              //           authorIsUser: authorIsUser,
-              //           message: widget.random.messages[idx],
-              //         ),
-              //       ],
-              //     );
-              //   }
-              // }
-              // return MessageItem(
-              //   authorIsUser: authorIsUser,
-              //   message: widget.random.messages[idx],
-              // );
             },
           );
-          // if (_scrollController.hasClients) {
-          //   _scrollController
-          //       .jumpTo(_scrollController.position.maxScrollExtent);
-          // }
 
           return listview;
         }
