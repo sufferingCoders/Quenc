@@ -8,7 +8,10 @@ import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 
 class CommentGolangService with ChangeNotifier {
-  static const String baseUrl = "192.168.1.135:8080";
+  // static const String baseUrl = "192.168.1.135:8080";
+  static const String baseUrl = "192.168.1.112:8080";
+
+  
   static const String apiUrl = "http://" + baseUrl;
 
   /// Showing Top-Liked Comments

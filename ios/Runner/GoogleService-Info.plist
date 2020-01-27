@@ -4,6 +4,12 @@
 <dict>
 	<key>CLIENT_ID</key>
 	<string>625526528915-pgn2n8ms8faf2ldcsd8og7lknf3h2cjs.apps.googleusercontent.com</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Take Photo from client device</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take Photo from cleint device</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Used for taking video sounds</string>
 	<key>REVERSED_CLIENT_ID</key>
 	<string>com.googleusercontent.apps.625526528915-pgn2n8ms8faf2ldcsd8og7lknf3h2cjs</string>
 	<key>API_KEY</key>

@@ -23,7 +23,9 @@ class UserGolangService with ChangeNotifier {
   IOWebSocketChannel channel;
   User _user;
   static String _token;
-  static const String baseUrl = "192.168.1.135:8080";
+  static const String baseUrl = "192.168.1.112:8080";
+
+  // static const String baseUrl = "192.168.1.135:8080";
   static const String apiUrl = "http://" + baseUrl;
   ChatRoom _currentRandomChatRoom;
 

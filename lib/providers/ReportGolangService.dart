@@ -7,7 +7,9 @@ import 'package:quenc/models/Report.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 
 class ReportGolangService with ChangeNotifier {
-  static const String baseUrl = "192.168.1.135:8080";
+  // static const String baseUrl = "192.168.1.135:8080";
+  static const String baseUrl = "192.168.1.112:8080";
+
   static const String apiUrl = "http://" + baseUrl;
 
   Future<void> addReport(Report report) async {

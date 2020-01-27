@@ -42,179 +42,185 @@ class _MainScreenState extends State<MainScreen> {
     // TODO: implement didChangeDependencies
 
     if (!isInit) {
-      await loadMore();
-      isInit = true;
+      initFunction();
+    }
 
-      mainScreenBody = [
-        RefreshIndicator(
-          onRefresh: () async {
-            refresh();
-          },
-          child: PostShowingContainer(
-            isInit: isInit,
-            posts: retrievedPosts,
-            infiniteScrollUpdater: loadMore,
-            refresh: refresh,
-            orderBy: orderBy,
-            orderByUpdater: orderByUpdater,
-          ),
+    super.didChangeDependencies();
+  }
+
+  void initFunction() async {
+    await loadMore();
+    isInit = true;
+
+    mainScreenBody = [
+      RefreshIndicator(
+        onRefresh: () async {
+          refresh();
+        },
+        child: PostShowingContainer(
+          isInit: isInit,
+          posts: retrievedPosts,
+          infiniteScrollUpdater: loadMore,
+          refresh: refresh,
+          orderBy: orderBy,
+          orderByUpdater: orderByUpdater,
         ),
-        RandomChatRoom(), // changing this to random chat
-      ];
+      ),
+      RandomChatRoom(), // changing this to random chat
+    ];
 
-      mainScreenAppBar = [
-        AppBar(
-          // automaticallyImplyLeading: true,
-          centerTitle: true,
-          title: Text(category == null ? "QuenC" : category.categoryName),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(ProfileScreen.routeName);
-              },
-              icon: Icon(
-                Icons.account_circle,
-                size: 30,
-              ),
-            )
-          ],
-        ),
-        AppBar(
-          centerTitle: true,
-          title: Text("半日聊天"),
-          actions: <Widget>[
-            // RaisedButton(
-            //   child: Text(
-            //     "送出測試",
-            //   ),
-            //   onPressed: () {
-            //     Provider.of<UserGolangService>(context)
-            //         .test_addMessageToRandomChatRoom();
-            //   },
-            // ),
-            IconButton(
-              onPressed: () {
-                ChatRoom random =
-                    Provider.of<UserGolangService>(context).randomChatRoom;
-                if (random.id == null) {
-                  showDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return AlertDialog(
-                          title: Text("錯誤"),
-                          content: Text("未能找到相對應的聊天"),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: Text("確認"),
-                              onPressed: () {
-                                Navigator.of(context).pop(true);
-                              },
-                            ),
-                          ],
-                        );
-                      });
-                }
-
-                // jump to report page
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      final dialog = ReportAddingFullScreenDialog(
-                        reportId: random.id,
-                        target: ReportTarget.Chat,
-                      );
-                      return dialog;
-                    },
-                    fullscreenDialog: true,
-                  ),
-                );
-              },
-              icon: Icon(Icons.report),
+    mainScreenAppBar = [
+      AppBar(
+        // automaticallyImplyLeading: true,
+        centerTitle: true,
+        title: Text(category == null ? "QuenC" : category.categoryName),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed(ProfileScreen.routeName);
+            },
+            icon: Icon(
+              Icons.account_circle,
+              size: 30,
             ),
-            IconButton(
-              onPressed: () {
-                // Show alert dialog
-
-                ChatRoom random =
-                    Provider.of<UserGolangService>(context).randomChatRoom;
-
+          )
+        ],
+      ),
+      AppBar(
+        centerTitle: true,
+        title: Text("半日聊天"),
+        actions: <Widget>[
+          // RaisedButton(
+          //   child: Text(
+          //     "送出測試",
+          //   ),
+          //   onPressed: () {
+          //     Provider.of<UserGolangService>(context)
+          //         .test_addMessageToRandomChatRoom();
+          //   },
+          // ),
+          IconButton(
+            onPressed: () {
+              ChatRoom random =
+                  Provider.of<UserGolangService>(context).randomChatRoom;
+              if (random.id == null) {
                 showDialog(
                     context: context,
                     builder: (ctx) {
-                      Duration timePass =
-                          DateTime.now().difference(random.createdAt);
-
                       return AlertDialog(
-                        title: Text("離開聊天"),
-                        content: Text(
-                            "是否離開此聊天室?\n(必須連接12小時以上才可離開)\n目前連線時間為:\n${timePass.inHours}小時: ${timePass.inMinutes % 60}分"),
+                        title: Text("錯誤"),
+                        content: Text("未能找到相對應的聊天"),
                         actions: <Widget>[
                           FlatButton(
-                            child: Text("否"),
+                            child: Text("確認"),
                             onPressed: () {
-                              Navigator.of(context).pop(false);
-                            },
-                          ),
-                          FlatButton(
-                            child: Text("是"),
-                            onPressed: () {
-                              if (DateTime.now()
-                                      .difference(random.createdAt)
-                                      .compareTo(Duration(days: 1)) >
-                                  0) {
-                                Provider.of<UserGolangService>(context,
-                                        listen: false)
-                                    .leaveRandomChatRoom();
-                                Navigator.of(context).pop(true);
-                              } else {
-                                // show that time hasn't exceed
-                                Navigator.of(context).pop(true);
-                                // Scaffold.of(context).showSnackBar(
-                                //   SnackBar(
-                                //     content: Text("連接時間未超過12小時..."),
-                                //     duration: Duration(milliseconds: 2000),
-                                //   ),
-                                // );
-
-                                showDialog(
-                                    context: context,
-                                    builder: (ctx) {
-                                      return AlertDialog(
-                                        title: Text("未能離開"),
-                                        content: Text(
-                                            "未超過12小時, 未能關閉此聊天室, 若您需要協助可使用舉報系統"),
-                                        actions: <Widget>[
-                                          FlatButton(
-                                            child: Text("確認"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop(true);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              }
+                              Navigator.of(context).pop(true);
                             },
                           ),
                         ],
                       );
                     });
-              },
-              icon: Icon(
-                Icons.input,
-                textDirection: TextDirection.rtl,
-                size: 30,
-              ),
-            )
-          ],
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () => idxUpdateFunc(0),
+              }
+
+              // jump to report page
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    final dialog = ReportAddingFullScreenDialog(
+                      reportId: random.id,
+                      target: ReportTarget.Chat,
+                    );
+                    return dialog;
+                  },
+                  fullscreenDialog: true,
+                ),
+              );
+            },
+            icon: Icon(Icons.report),
           ),
+          IconButton(
+            onPressed: () {
+              // Show alert dialog
+
+              ChatRoom random =
+                  Provider.of<UserGolangService>(context).randomChatRoom;
+
+              showDialog(
+                  context: context,
+                  builder: (ctx) {
+                    Duration timePass =
+                        DateTime.now().difference(random.createdAt);
+
+                    return AlertDialog(
+                      title: Text("離開聊天"),
+                      content: Text(
+                          "是否離開此聊天室?\n(必須連接12小時以上才可離開)\n目前連線時間為:\n${timePass.inHours}小時: ${timePass.inMinutes % 60}分"),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("否"),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                        FlatButton(
+                          child: Text("是"),
+                          onPressed: () {
+                            if (DateTime.now()
+                                    .difference(random.createdAt)
+                                    .compareTo(Duration(days: 1)) >
+                                0) {
+                              Provider.of<UserGolangService>(context,
+                                      listen: false)
+                                  .leaveRandomChatRoom();
+                              Navigator.of(context).pop(true);
+                            } else {
+                              // show that time hasn't exceed
+                              Navigator.of(context).pop(true);
+                              // Scaffold.of(context).showSnackBar(
+                              //   SnackBar(
+                              //     content: Text("連接時間未超過12小時..."),
+                              //     duration: Duration(milliseconds: 2000),
+                              //   ),
+                              // );
+
+                              showDialog(
+                                  context: context,
+                                  builder: (ctx) {
+                                    return AlertDialog(
+                                      title: Text("未能離開"),
+                                      content: Text(
+                                          "未超過12小時, 未能關閉此聊天室, 若您需要協助可使用舉報系統"),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text("確認"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  });
+            },
+            icon: Icon(
+              Icons.input,
+              textDirection: TextDirection.rtl,
+              size: 30,
+            ),
+          )
+        ],
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => idxUpdateFunc(0),
         ),
-      ];
-    }
+      ),
+    ];
 
     floatActionButton = [
       FloatingActionButton(
@@ -284,8 +290,6 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
     ];
-
-    super.didChangeDependencies();
   }
 
   void orderByUpdater(OrderByOption o) {
@@ -293,7 +297,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       orderBy = o;
     });
-    loadMore();
+    initFunction();
   }
 
   void idxUpdateFunc(int idx) {
@@ -307,12 +311,12 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       category = cat;
     });
-    loadMore();
+    initFunction();
   }
 
   void refresh() {
     setToNull();
-    loadMore();
+    initFunction();
     // loadCategories();
   }
 
@@ -332,17 +336,19 @@ class _MainScreenState extends State<MainScreen> {
       skip: retrievedPosts?.length ?? 0,
     );
 
-    setState(() {
-      if (retrievedPosts == null) {
+    if (retrievedPosts == null) {
+      setState(() {
         retrievedPosts = newPostAndSnapshot;
         isInit = true;
-      } else {
-        if (newPostAndSnapshot != null) {
+      });
+    } else {
+      if (newPostAndSnapshot != null) {
+        setState(() {
           retrievedPosts.addAll(newPostAndSnapshot);
           isInit = true;
-        }
+        });
       }
-    });
+    }
   }
 
   Widget getMainScrenAppBar(idx) {
