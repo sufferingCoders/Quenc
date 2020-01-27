@@ -54,7 +54,7 @@ class Report {
         break;
       case 2:
         return ReportTarget.Chat;
-
+  
       default:
         return null;
     }

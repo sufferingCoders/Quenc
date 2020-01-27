@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:quenc/models/Report.dart';
 import 'package:quenc/widgets/report/ReportShowingColumn.dart';
 

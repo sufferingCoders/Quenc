@@ -11,6 +11,7 @@ class CommentGolangService with ChangeNotifier {
   static const String baseUrl = "192.168.1.135:8080";
   static const String apiUrl = "http://" + baseUrl;
 
+  /// Showing Top-Liked Comments
   Future<List<Comment>> getTopLikedCommentsForPost(
       String postId, int top) async {
     List<Comment> retrivedComments = await getCommentForPost(
@@ -18,6 +19,7 @@ class CommentGolangService with ChangeNotifier {
     return retrivedComments;
   }
 
+  /// Get certain comment by its ID
   Future<Comment> getCommentById(String id) async {
     Comment comment;
 
@@ -48,6 +50,7 @@ class CommentGolangService with ChangeNotifier {
     return comment;
   }
 
+  // get comments for post
   Future<List<Comment>> getCommentForPost({
     String pid,
     OrderByOption orderBy = OrderByOption.CreatedAt,
@@ -70,17 +73,6 @@ class CommentGolangService with ChangeNotifier {
       if (orderBy == OrderByOption.LikeCount) {
         url += "&sort=likeCount";
       }
-
-      // switch (orderBy) {
-      //   case OrderByOption.CreatedAt:
-      //     url += "&sort=createdAt_-1";
-      //     break;
-      //   case :
-      //     url += "&sort=likeCount_-1";
-      //     break;
-      //   default:
-      //     break;
-      // }
 
       final res = await http.get(
         url,
