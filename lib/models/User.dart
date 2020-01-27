@@ -8,6 +8,7 @@ class User {
   String major;
   String dob;
   String name;
+  String randomChatRoom;
   int role;
   int gender;
   bool emailVerified;
@@ -39,6 +40,7 @@ class User {
     this.likePosts,
     this.likeComments,
     this.name,
+    this.randomChatRoom,
   });
 
   factory User.fromMap(dynamic data) {
@@ -64,11 +66,16 @@ class User {
       likePosts: data["likePosts"]?.cast<String>(),
       likeComments: data["likeComments"]?.cast<String>(),
       name: data["name"],
+      randomChatRoom: data["randomChatRoom"],
     );
   }
 
   bool get isAdmin {
     return role == 0;
+  }
+
+  bool get hasRandomChatRoom {
+    return randomChatRoom != null;
   }
 
   bool haveAttributesSet() {
@@ -99,6 +106,7 @@ class User {
       "likePosts": likePosts,
       "likeComments": likeComments,
       "name": name,
+      "randomChatRoom": randomChatRoom,
     };
   }
 }

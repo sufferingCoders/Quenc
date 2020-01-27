@@ -2,9 +2,8 @@ import 'package:quenc/models/PostCategory.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/utils/index.dart';
 
+/// Schema for saving the Post in backend
 class Post {
-  // Schema for saving the Post in Firestore
-
   String id;
   User author;
   String title;
@@ -91,6 +90,10 @@ class Post {
     };
   }
 }
+
+/**
+ * Post for FireStore
+ */
 
 // class Post {
 //   // Schema for saving the Post in Firestore

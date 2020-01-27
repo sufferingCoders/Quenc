@@ -4,11 +4,11 @@ import 'package:quenc/utils/index.dart';
 enum ReportTarget {
   Comment,
   Post,
+  Chat,
 }
 
+/// Report Schema for saving in the Firestore
 class Report {
-  // Report Schema for saving in the Firestore
-
   String id;
   String content;
   User author;
@@ -18,6 +18,7 @@ class Report {
   DateTime createdAt;
   String reportId;
   bool solve;
+  Map<String, dynamic> reportObject;
 
   Report({
     this.content,
@@ -29,6 +30,7 @@ class Report {
     this.reportTarget,
     this.reportId,
     this.solve,
+    this.reportObject,
   });
 
   // Report Code
@@ -50,6 +52,9 @@ class Report {
       case 1:
         return ReportTarget.Comment;
         break;
+      case 2:
+        return ReportTarget.Chat;
+
       default:
         return null;
     }
@@ -64,6 +69,9 @@ class Report {
       case ReportTarget.Comment:
         return 1;
         break;
+      case ReportTarget.Chat:
+        return 2;
+
       default:
         return null;
     }
@@ -87,6 +95,7 @@ class Report {
       reportTarget: data["reportTarget"],
       reportId: data["reportId"],
       solve: data["solve"],
+      reportObject: data["reportObject"],
     );
   }
 
@@ -112,6 +121,7 @@ class Report {
       "reportTarget": reportTarget,
       "reportId": reportId,
       "solve": solve,
+      "reportObject": reportObject,
     };
   }
 }

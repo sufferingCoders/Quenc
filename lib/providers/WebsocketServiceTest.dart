@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/io.dart';
 
+/// Testing the WebSocket Connection
 class WebScoketService with ChangeNotifier {
   // MacOS // static const String apiUrl = "http://192.168.1.112:8080/";
 
@@ -23,7 +24,7 @@ class WebScoketService with ChangeNotifier {
     String url =
         "http://192.168.1.135:8080/ws"; // ipconfig can check should be IPv4 Address
 
-    print("sending url is ${url}");
+    print("sending url is $url");
 
     final res = await http.get(
       url,
@@ -129,31 +130,16 @@ class WebScoketService with ChangeNotifier {
 
     print("resData is ${resData.toString()}");
 
-    // Have to return ID here;
-
-    // insertedID =
-
     notifyListeners();
     return resData;
   }
 
   Future<void> sendingPing() async {
     channel.sink.add("ping");
-
-    // channel.sink.close();
   }
 
   Future<void> closeWS() async {
     channel.sink.close();
-    // channel.sink.close();
     notifyListeners();
   }
-
-
-
-
-
-
-
-
 }

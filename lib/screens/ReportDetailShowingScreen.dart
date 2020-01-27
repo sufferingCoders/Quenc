@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quenc/models/ChatRoom.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/Report.dart';
+import 'package:quenc/providers/ChatRoomGolangService.dart';
 import 'package:quenc/providers/CommentGolangService.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/widgets/comment/CommentShowingColumn.dart';
 import 'package:quenc/widgets/common/CommentDivider.dart';
 import 'package:quenc/widgets/post/PostShowingListTile.dart';
@@ -36,6 +39,8 @@ class _ReportDetailShowingScreenState extends State<ReportDetailShowingScreen> {
   Post post;
 
   ReportTarget target;
+
+  ChatRoom chatRoom;
 
   void setReportAndReportedItem() {
     if (widget.report == null) {
@@ -69,6 +74,9 @@ class _ReportDetailShowingScreenState extends State<ReportDetailShowingScreen> {
             isInit = true;
           });
         });
+        break;
+      case ReportTarget.Chat:
+        break;
     }
   }
 

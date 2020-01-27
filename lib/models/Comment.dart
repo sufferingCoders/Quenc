@@ -1,9 +1,8 @@
 import 'package:quenc/models/User.dart';
 import 'package:quenc/utils/index.dart';
 
+/// Schema for saving the comments in Backend
 class Comment {
-  // Schema for saving the comment in Firestore
-
   String id;
   User author;
   String belongPost;
@@ -24,14 +23,17 @@ class Comment {
     this.likeCount,
   });
 
+  /// Get Number of Likes for this Comment
   int get likeCountFromLikers {
     return likers?.length;
   }
 
+  /// Get the domain of the author
   String get authorDomain {
     return author.domain;
   }
 
+  /// Get the Gender of the author
   int get authorGender {
     return author.gender;
   }
@@ -49,6 +51,7 @@ class Comment {
     );
   }
 
+  /// To add the map only need belongPost and content fields
   Map<String, dynamic> toAddingMap() {
     return {
       "belongPost": belongPost,

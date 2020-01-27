@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quenc/models/ChatRoom.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
+import 'package:quenc/models/Report.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
-import 'package:quenc/screens/ChatScreen.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/widgets/AppDrawer.dart';
 import 'package:quenc/widgets/chat/ChatRoomShowingList.dart';
+import 'package:quenc/widgets/chat/RandomChatRoom.dart';
 import 'package:quenc/widgets/common/AppBottomNavigationBar.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
 import 'package:quenc/widgets/post/PostShowingContainer.dart';
+import 'package:quenc/widgets/report/ReportAddingFullScreenDialog.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -26,6 +30,13 @@ class _MainScreenState extends State<MainScreen> {
   List<Post> retrievedPosts;
   int currentIdx = 0;
 
+  TextEditingController sendingController = TextEditingController();
+
+  List<Widget> mainScreenBody;
+  List<Widget> mainScreenAppBar;
+  List<Widget> floatActionButton;
+  List<Widget> bottomNavigationBar;
+
   @override
   void didChangeDependencies() async {
     // TODO: implement didChangeDependencies
@@ -36,7 +47,271 @@ class _MainScreenState extends State<MainScreen> {
       await loadMore();
       isInit = true;
       // await loadCategories();
+      mainScreenBody = [
+        RefreshIndicator(
+          onRefresh: () async {
+            // PostGolangService.initialisePosts();
+            refresh();
+          },
+          child: PostShowingContainer(
+            isInit: isInit,
+            posts: retrievedPosts,
+            infiniteScrollUpdater: loadMore,
+            refresh: refresh,
+            orderBy: orderBy,
+            orderByUpdater: orderByUpdater,
+          ),
+        ),
+        RandomChatRoom(), // changing this to random chat
+        // ProfileScreen(),
+      ];
+
+      mainScreenAppBar = [
+        AppBar(
+          // automaticallyImplyLeading: true,
+          centerTitle: true,
+          title: Text(category == null ? "QuenC" : category.categoryName),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(ProfileScreen.routeName);
+              },
+              icon: Icon(
+                Icons.account_circle,
+                size: 30,
+              ),
+            )
+          ],
+        ),
+        AppBar(
+          // automaticallyImplyLeading: true,
+          centerTitle: true,
+          title: Text("半日聊天"),
+          actions: <Widget>[
+            // RaisedButton(
+            //   child: Text(
+            //     "送出測試",
+            //   ),
+            //   onPressed: () {
+            //     Provider.of<UserGolangService>(context)
+            //         .test_addMessageToRandomChatRoom();
+            //   },
+            // ),
+            IconButton(
+              onPressed: () {
+                ChatRoom random =
+                    Provider.of<UserGolangService>(context).randomChatRoom;
+                if (random.id == null) {
+                  // Scaffold.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text("未能找到相對應的聊天"),
+                  //     duration: Duration(milliseconds: 2000),
+                  //   ),
+                  // );
+
+                  showDialog(
+                      context: context,
+                      builder: (ctx) {
+                        return AlertDialog(
+                          title: Text("錯誤"),
+                          content: Text("未能找到相對應的聊天"),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text("確認"),
+                              onPressed: () {
+                                Navigator.of(context).pop(true);
+                              },
+                            ),
+                          ],
+                        );
+                      });
+                }
+
+                // jump to report page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      final dialog = ReportAddingFullScreenDialog(
+                        reportId: random.id,
+                        target: ReportTarget.Chat,
+                      );
+                      return dialog;
+                    },
+                    fullscreenDialog: true,
+                  ),
+                );
+              },
+              icon: Icon(Icons.report),
+            ),
+            IconButton(
+              onPressed: () {
+                // Show alert dialog
+
+                ChatRoom random =
+                    Provider.of<UserGolangService>(context).randomChatRoom;
+
+                showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      Duration timePass =
+                          DateTime.now().difference(random.createdAt);
+
+                      return AlertDialog(
+                        title: Text("離開聊天"),
+                        content: Text(
+                            "是否離開此聊天室?\n(必須連接12小時以上才可離開)\n目前連線時間為:\n${timePass.inHours}小時: ${timePass.inMinutes % 60}分"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("否"),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("是"),
+                            onPressed: () {
+                              if (DateTime.now()
+                                      .difference(random.createdAt)
+                                      .compareTo(Duration(days: 1)) >
+                                  0) {
+                                Provider.of<UserGolangService>(context,
+                                        listen: false)
+                                    .leaveRandomChatRoom();
+                                Navigator.of(context).pop(true);
+                              } else {
+                                // show that time hasn't exceed
+                                Navigator.of(context).pop(true);
+                                // Scaffold.of(context).showSnackBar(
+                                //   SnackBar(
+                                //     content: Text("連接時間未超過12小時..."),
+                                //     duration: Duration(milliseconds: 2000),
+                                //   ),
+                                // );
+
+                                showDialog(
+                                    context: context,
+                                    builder: (ctx) {
+                                      return AlertDialog(
+                                        title: Text("未能離開"),
+                                        content: Text(
+                                            "未超過12小時, 未能關閉此聊天室, 若您需要協助可使用舉報系統"),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: Text("確認"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop(true);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              },
+              icon: Icon(
+                Icons.input,
+                textDirection: TextDirection.rtl,
+                size: 30,
+              ),
+            )
+          ],
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () => idxUpdateFunc(0),
+          ),
+        ),
+      ];
     }
+
+    floatActionButton = [
+      FloatingActionButton(
+        child: Icon(Icons.edit),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                final dialog = PostAddingFullScreenDialog();
+                return dialog;
+              },
+              fullscreenDialog: true,
+            ),
+          );
+        },
+      ),
+      // FloatingActionButton(
+      //   child: Icon(Icons.add),
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(
+      //         builder: (context) {
+      //           final dialog = ChatAddingFullScreenDialog();
+      //           return dialog;
+      //         },
+      //         fullscreenDialog: true,
+      //       ),
+      //     );
+      //   },
+      // ),
+      Container(),
+    ];
+
+    bottomNavigationBar = [
+      AppBottomNavigationBar(
+        idx: currentIdx,
+        idxUpdateFunc: idxUpdateFunc,
+      ),
+      Transform.translate(
+        offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
+        child: BottomAppBar(
+          child: Row(
+            // or using wrap
+            children: <Widget>[
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 15, right: 8, top: 8, bottom: 8),
+                  child: TextField(
+                    controller: sendingController,
+                    maxLines: 3,
+                    minLines: 1,
+                    decoration: const InputDecoration(
+                      // labelText: "標題",
+                      // border: InputBorder.none,
+                      border: const OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 3.0, right: 13),
+                child: IconButton(
+                  color: Theme.of(context).primaryColor,
+                  icon: Icon(Icons.send),
+                  onPressed: () {
+                    Provider.of<UserGolangService>(context)
+                        .addMessageToRandomChatRoom(
+                      Message(
+                        content: sendingController.text,
+                        messageType: 1,
+                      ),
+                    );
+                    sendingController.text = "";
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ];
+
     super.didChangeDependencies();
   }
 
@@ -166,30 +441,25 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     // var PostGolangService = Provider.of<PostGolangService>(context);
     return Scaffold(
-      appBar: getMainScrenAppBar(currentIdx),
+      appBar: mainScreenAppBar == null
+          ? AppBar(
+              title: Text("QuenC"),
+              centerTitle: true,
+            )
+          : mainScreenAppBar[currentIdx],
       drawer: AppDrawer(
         changeCategory: changeCategory,
       ),
-      body: getMainScreenBody(currentIdx),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.edit),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) {
-                final dialog = PostAddingFullScreenDialog();
-                return dialog;
-              },
-              fullscreenDialog: true,
-            ),
-          );
-        },
-      ),
-      bottomNavigationBar: AppBottomNavigationBar(
-        idx: currentIdx,
-        idxUpdateFunc: idxUpdateFunc,
-      ),
+      body: mainScreenBody == null ? Container() : mainScreenBody[currentIdx],
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: floatActionButton == null
+          ? FloatingActionButton(
+              onPressed: () {},
+            )
+          : floatActionButton[currentIdx],
+      bottomNavigationBar: bottomNavigationBar == null
+          ? Container()
+          : bottomNavigationBar[currentIdx],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -24,9 +25,20 @@ class UserGolangService with ChangeNotifier {
   static String _token;
   static const String baseUrl = "192.168.1.135:8080";
   static const String apiUrl = "http://" + baseUrl;
+  ChatRoom _currentRandomChatRoom;
 
   User get user {
     return _user;
+  }
+
+  bool get isRandomChatRoomReady {
+    return _currentRandomChatRoom?.id != null &&
+        _currentRandomChatRoom?.id?.isNotEmpty == true &&
+        randomChatRoomChannel != null;
+  }
+
+  ChatRoom get randomChatRoom {
+    return _currentRandomChatRoom;
   }
 
   static String get token {
@@ -316,11 +328,50 @@ class UserGolangService with ChangeNotifier {
     return _userChatRooms.values.toList();
   }
 
+  Future<ChatRoom> addChatRoom(ChatRoom inputChatRoom) async {
+    try {
+      final url = apiUrl + "/chat-room";
+      final res = await http.post(
+        url,
+        headers: {
+          "Authorization": UserGolangService.token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+        body: json.encode(inputChatRoom.toAddingMap()),
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      // 拿到回傳資料後 Update ID
+
+      ChatRoom newChatRoom = ChatRoom.fromMap(resData["chatRoom"]);
+
+      // 不做當下更新
+
+      subscribeUserChatRoom(); // 重新Subscribe一次
+
+      notifyListeners();
+
+      // return chatRooms;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   Future<Message> addMessageToChatRoom(String rid, Message inputMessage) async {
     try {
       // 先在本地進行加上, 再更改
 
       _userChatRooms[rid].messages.add(inputMessage);
+      inputMessage.author = _user;
       notifyListeners();
 
       final url = apiUrl + "/chat-room/message/$rid";
@@ -393,6 +444,8 @@ class UserGolangService with ChangeNotifier {
       }
 
       List<dynamic> chatRoomsRaw = resData["chatRooms"];
+
+      _userChatRooms = {};
       if (chatRoomsRaw != null) {
         for (var c in chatRoomsRaw) {
           ChatRoom cr = ChatRoom.fromMap(c);
@@ -467,8 +520,18 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
+  Future<void> tryInitUserChatStream() async {
+    if (chatRoomChannel != null) {
+      return;
+    }
+
+    await subscribeUserChatRoom();
+  }
+
+  IOWebSocketChannel randomChatRoomChannel;
+
   Future<void> subscribeUserChatRoom() async {
-    String url = "ws://" + apiUrl + "/chat-room/user/subsrible";
+    String url = "ws://" + baseUrl + "/chat-room/user/subsrible";
 
     if (chatRoomChannel != null) {
       await chatRoomChannel.sink.close();
@@ -489,5 +552,336 @@ class UserGolangService with ChangeNotifier {
       // _user = User.fromMap(json.decode(u));
       notifyListeners();
     });
+  }
+
+  /**
+   * Random Chat Room
+   * 
+   */
+
+  // 由User決定是否連接
+  Future<bool> tryInitialiseRandomChatRoom() async {
+    // 2種 fields 決定 狀態 1. user.randomChatRoom 2. _currentRandomChatRoom
+
+    if (randomChatRoom != null) {
+      return true;
+    }
+    _currentRandomChatRoom = ChatRoom();
+    bool joinSuccess = await initialiseRandomChatRoom();
+    if (joinSuccess == true) {
+      await tryInitRandomChatStream();
+    }
+
+    return joinSuccess;
+  }
+
+  Future<bool> initialiseRandomChatRoom() async {
+    bool joinSuccess;
+    if (user.randomChatRoom != null) {
+      joinSuccess = true;
+    } else {
+      joinSuccess = await joinRandomChatRoom();
+    }
+
+    if (joinSuccess == true) {
+      await getRandomChatRoomDetail(); // this will set the random chat in local
+    }
+
+    return joinSuccess;
+  }
+
+  Future<bool> joinRandomChatRoom() async {
+    try {
+      final url = apiUrl + "/chat-room/random/connect";
+      final res = await http.post(
+        url,
+        headers: {
+          "Authorization": UserGolangService.token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return false;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        if (res.statusCode == 404) {
+          return null;
+        }
+        throw HttpException(resData["err"]);
+      }
+
+      // 拿到回傳資料後 Update ID
+
+      // String roomID = resData["roomID"];
+      return true;
+
+      // return chatRooms;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<Message> addMessageToRandomChatRoom(Message inputMessage) async {
+    try {
+      // 先在本地進行加上, 再更改
+      _currentRandomChatRoom.messages.add(inputMessage);
+      inputMessage.author = _user;
+      notifyListeners();
+
+      final url = apiUrl + "/chat-room/message/${_currentRandomChatRoom.id}";
+      final res = await http.post(
+        url,
+        headers: {
+          "Authorization": UserGolangService.token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+        body: json.encode(inputMessage.toAddingMap()),
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      // 拿到回傳資料後 Update ID
+
+      Message newMessage = Message.fromMap(resData["message"]);
+      newMessage.author = _user;
+
+      inputMessage.replaceByAnother(newMessage); // 看看指針會不會變
+
+      notifyListeners();
+
+      // return chatRooms;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<Message> test_addMessageToRandomChatRoom() async {
+    try {
+      // 先在本地進行加上, 再更改
+
+      final url = apiUrl + "/chat-room/test/message";
+      final res = await http.post(
+        url,
+        headers: {
+          "Authorization": UserGolangService.token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      // return chatRooms;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> getRandomChatRoomDetail() async {
+    try {
+      final url = apiUrl + "/chat-room/random/room";
+      final res = await http.get(
+        url,
+        headers: {
+          "Authorization": UserGolangService.token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      if (resData["randomChatRoom"] != null) {
+        _currentRandomChatRoom = ChatRoom.fromMap(resData["randomChatRoom"]);
+        notifyListeners();
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<List<Message>> getMessagesForRandomChatRoom(
+    String startID,
+    int number,
+  ) async {
+    try {
+      List<Message> messages = [];
+
+      String url = apiUrl + "/chat-room/random/message?";
+
+      if (startID != null && startID.isNotEmpty) {
+        url += "&sid=$startID";
+      }
+
+      if (number != null) {
+        url += "&num=$number";
+      }
+
+      final res = await http.get(
+        url,
+        headers: {
+          "Authorization": UserGolangService.token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      List<dynamic> messagesRaw = resData["messages"];
+      if (messagesRaw != null) {
+        for (var c in messagesRaw) {
+          Message cr = Message.fromMapAndRoom(c, _currentRandomChatRoom);
+          messages.add(cr);
+        }
+      }
+
+      List<String> currentMessageIds =
+          _currentRandomChatRoom.messages.map((m) => m.id).toList();
+
+      for (Message m in messages.reversed.toList()) {
+        bool alreadyHave = currentMessageIds.contains(m.id);
+        print(alreadyHave);
+        if (!alreadyHave) {
+          _currentRandomChatRoom.messages.insert(0, m);
+        }
+      }
+
+      notifyListeners();
+
+      return messages;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  Future<void> tryInitRandomChatStream() async {
+    if (randomChatRoomChannel != null) {
+      return;
+    }
+
+    await subscribeRandomChatRoom();
+  }
+
+  Future<void> subscribeRandomChatRoom() async {
+    String url = "ws://" + baseUrl + "/chat-room/random/subscribe";
+
+    if (randomChatRoomChannel != null) {
+      await randomChatRoomChannel.sink.close();
+    }
+
+    randomChatRoomChannel = IOWebSocketChannel.connect(
+      url,
+      headers: {
+        "Authorization": UserGolangService.token,
+      },
+    );
+
+    randomChatRoomChannel.stream.listen((updateDetails) {
+      // if the message is from the same user, then don't need to update it
+      // Updating local info
+      print(updateDetails); // check how this will print
+      // put a switch here for handling incomming?
+      // _user = User.fromMap(json.decode(u));
+      // 1. 先Check更新的類型
+
+      var updateDetailsMap = json.decode(updateDetails);
+
+//  要先Decode以後才能當map用不然是String
+      print(updateDetailsMap["operationType"]);
+
+      bool isUpdate = updateDetailsMap["operationType"] == "update";
+      print(isUpdate);
+      if (isUpdate) {
+        // 到updateDescription裡面拿取updateFields
+        Map<String, dynamic> updatedMessages =
+            updateDetailsMap["updateDescription"]["updatedFields"];
+
+        updatedMessages.forEach((k, v) {
+          
+
+
+          Message newMessage =
+              Message.fromMapAndRoom(v, _currentRandomChatRoom);
+
+          if (newMessage?.author != _user?.id) {
+            _currentRandomChatRoom.messages.add(newMessage);
+          }
+        });
+
+        // 再從updateFields裡面的Key-Value Pair取出index跟Value ((或是只有Value
+
+        // 若author是本地的User則不進行更新, 若非則
+
+        // 用此更新本地的Message
+
+      }
+
+      notifyListeners();
+    });
+  }
+
+  Future<void> leaveRandomChatRoom() async {
+    try {
+      final url = apiUrl + "/chat-room/random";
+      final res = await http.delete(
+        url,
+        headers: {
+          "Authorization": UserGolangService.token,
+          HttpHeaders.contentTypeHeader: "application/json",
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      _currentRandomChatRoom = null;
+
+      // user 則會經由WebSocket的方式更新
+
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
   }
 }

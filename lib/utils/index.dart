@@ -109,6 +109,10 @@ class Utils {
   }
 
   static bool isSameDate(DateTime a, DateTime b) {
+    if (a == null || b == null) {
+      return null;
+    }
+
     if (a.year != b.year) {
       return false;
     }
