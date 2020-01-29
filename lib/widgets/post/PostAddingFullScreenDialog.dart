@@ -5,13 +5,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
-import 'package:quenc/widgets/common/ScrollHideSliverAppBar.dart';
 import 'package:quenc/widgets/post/PostEditingForm.dart';
 import 'package:quenc/widgets/post/PostPreviewFullScreenDialog.dart';
+import 'package:quenc/widgets/post/ScrollHideSliverAppBar.dart';
 
 enum PostMode {
   Adding,
@@ -110,8 +110,7 @@ class _PostAddingFullScreenDialogState
   }
 
   void addingImageMarkdownToContent() {
-    String addingImageMd =
-        "\n" + "![圖片載入中...](" + currentUploadURL + ")" + "\n";
+    String addingImageMd = "\n" + "![圖片載入中...]($currentUploadURL)" + "\n";
 
     var cursorPosition = contentController.selection;
     var idx = cursorPosition.start;
@@ -147,7 +146,18 @@ class _PostAddingFullScreenDialogState
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    File selected = await ImagePicker.pickImage(source: source);
+    currentInsertImage = null;
+    currentUploadURL = null;
+    _uploadTask = null;
+    currentFilePath = null;
+
+    File selected = await ImagePicker.pickImage(
+      source: source,
+      maxWidth: 1936,
+      maxHeight: 1936,
+      imageQuality: 40,
+    );
+    print("File Size is ${selected?.lengthSync()}");
 
     setState(() {
       currentInsertImage = selected;
@@ -170,14 +180,11 @@ class _PostAddingFullScreenDialogState
   }
 
   void postCompleteFields({initCreatedAt = true}) {
-    var u = Provider.of<User>(context, listen: false);
-    post.author = u.uid;
-    post.authorGender = u.gender;
-    post.authorDomain = u.domain;
+    var u = Provider.of<UserGolangService>(context, listen: false).user;
+    post.author = u;
     post.previewPhoto = Utils.getFirstImageURLFromMarkdown(post.content);
     post.updatedAt = DateTime.now();
     post.previewText = Utils.getPreviewTextFromContent(post.content);
-    post.likeCount = 0;
     if (initCreatedAt) {
       post.createdAt = DateTime.now();
     }
@@ -185,15 +192,15 @@ class _PostAddingFullScreenDialogState
 
   void addPost(BuildContext ctx) async {
     postCompleteFields();
-    await Provider.of<PostService>(ctx, listen: false).addPost(post);
+    await Provider.of<PostGolangService>(ctx, listen: false).addPost(post);
     Navigator.of(ctx).pop();
   }
 
   void updatePost(BuildContext ctx) async {
     postCompleteFields(initCreatedAt: false);
-    await Provider.of<PostService>(ctx, listen: false).updatePost(
+    await Provider.of<PostGolangService>(ctx, listen: false).updatePost(
       post.id,
-      post.toMap(),
+      post.toAddingMap(),
     );
     Navigator.of(ctx).pop();
   }

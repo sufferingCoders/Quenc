@@ -6,8 +6,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Report.dart';
-import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/ReportService.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
 import 'package:quenc/widgets/report/ReportPreviewFullScreenDialog.dart';
@@ -63,7 +63,18 @@ class _ReportAddingFullScreenDialogState
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    File selected = await ImagePicker.pickImage(source: source);
+    currentInsertImage = null;
+    currentUploadURL = null;
+    _uploadTask = null;
+    currentFilePath = null;
+    File selected = await ImagePicker.pickImage(
+      source: source,
+      maxWidth: 1936,
+      maxHeight: 1936,
+      imageQuality: 40,
+    );
+
+    print("File Size is ${selected?.lengthSync()}");
 
     setState(() {
       currentInsertImage = selected;
@@ -71,16 +82,12 @@ class _ReportAddingFullScreenDialogState
   }
 
   void reportCompleteFields() {
-    var u = Provider.of<User>(context, listen: false);
-    report.authorDomain = u.domain;
+    var u = Provider.of<UserGolangService>(context, listen: false).user;
     report.reportId = widget.reportId;
-    report.authorGender = u.gender;
-    report.solve = false;
+    report.createdAt = DateTime.now();
     report.reportTarget = Report.reportTargetEnumToInt(widget.target);
     report.previewPhoto = Utils.getFirstImageURLFromMarkdown(report.content);
     report.previewText = Utils.getPreviewTextFromContent(report.content);
-    report.author = u.uid;
-    report.createdAt = DateTime.now();
   }
 
   Future<void> _cropImage() async {
@@ -100,7 +107,7 @@ class _ReportAddingFullScreenDialogState
 
   void addReport() async {
     reportCompleteFields();
-    await Provider.of<ReportService>(context).addReport(report);
+    await Provider.of<ReportGolangService>(context).addReport(report);
     Navigator.of(context).pop();
   }
 
@@ -198,6 +205,7 @@ class _ReportAddingFullScreenDialogState
     return Scaffold(
       appBar: AppBar(
         title: Text("舉報"),
+        centerTitle: true,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.send),
@@ -223,41 +231,41 @@ class _ReportAddingFullScreenDialogState
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Flexible(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("分類:"),
-                    ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DropdownButton<int>(
-                        value: report.reportType,
-                        onChanged: (v) {
-                          setState(() {
-                            report.reportType = v;
-                          });
-                        },
-                        items: reportTypesItems(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: <Widget>[
+              //     Flexible(
+              //       flex: 1,
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: Text("分類:"),
+              //       ),
+              //     ),
+              //     Flexible(
+              //       flex: 2,
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(8.0),
+              //         child: DropdownButton<int>(
+              //           value: report.reportType,
+              //           onChanged: (v) {
+              //             setState(() {
+              //               report.reportType = v;
+              //             });
+              //           },
+              //           items: reportTypesItems(),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(20.0),
                 child: TextFormField(
                   minLines: 40,
                   controller: contentController,
                   maxLines: null,
                   decoration: const InputDecoration(
-                    hintText: "請簡單描述檢舉此文章/評論的原因後再附上螢幕截圖",
+                    hintText: "點擊此開始編輯\n\n請簡單描述檢舉此文章/評論的原因\n\n再附上螢幕截圖",
                     border: InputBorder.none,
                   ),
                   onSaved: (v) {

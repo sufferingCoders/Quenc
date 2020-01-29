@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/widgets/common/ContentShowingContainer.dart';
-import 'package:quenc/widgets/common/ScrollHideSliverAppBar.dart';
 import 'package:quenc/widgets/post/PostDetailShowingColumn.dart';
+import 'package:quenc/widgets/post/ScrollHideSliverAppBar.dart';
 
 class PostPreviewFullScreenDialog extends StatelessWidget {
   final Post post;

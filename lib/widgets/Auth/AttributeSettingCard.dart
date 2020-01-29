@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
+import 'package:quenc/utils/index.dart';
 
 class AttributeSettingCard extends StatefulWidget {
   final User user;
@@ -16,12 +18,14 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
   int _gender = 0;
   DateTime pickedDOB;
   TextEditingController majorController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   @override
   void initState() {
+    nameController.text = widget.user?.name ?? "";
     majorController.text = widget.user?.major ?? "";
     _gender = widget.user.gender;
-    pickedDOB = widget.user.dob;
+    pickedDOB = Utils.getDateTime(widget?.user?.dob) ?? DateTime.now();
     // TODO: implement initState
     super.initState();
   }
@@ -30,6 +34,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
   void dispose() {
     // TODO: implement dispose
     majorController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
@@ -42,10 +47,20 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              // initialValue: widget.user?.major ?? "",
+              decoration: const InputDecoration(
+                labelText: "姓名",
+              ),
+              controller: nameController,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: InkWell(
               onTap: () async {
                 var picked = await showDatePicker(
-                  initialDate: widget.user?.dob ?? pickedDOB,
+                  initialDate: pickedDOB,
                   context: context,
                   firstDate: DateTime(1900, 1),
                   lastDate: DateTime.now(),
@@ -74,7 +89,7 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
             child: TextFormField(
               // initialValue: widget.user?.major ?? "",
               decoration: const InputDecoration(
-                labelText: "Major",
+                labelText: "主修",
               ),
               controller: majorController,
             ),
@@ -118,16 +133,17 @@ class _AttributeSettingCardState extends State<AttributeSettingCard> {
                 duration: Duration(seconds: 3),
               ));
 
-              UserService().updateCollectionUserData(
-                widget.user.uid,
+              Provider.of<UserGolangService>(context, listen: false).updateUser(
+                widget.user.id,
                 {
-                  "dob": pickedDOB,
+                  "dob": pickedDOB.toUtc().toString(),
                   "gender": _gender,
                   "major": majorController.text,
+                  "name": nameController.text,
                 },
               );
-
-              Navigator.of(context).pop(true);
+              Navigator.popUntil(context, ModalRoute.withName("/"));
+              // Navigator.of(context).pop(true);
             },
             child: Text("確認"),
           )

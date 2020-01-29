@@ -3,8 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 
 class CommentDetailShowingContainer extends StatelessWidget {
@@ -14,8 +13,6 @@ class CommentDetailShowingContainer extends StatelessWidget {
     this.post,
   }) : super(key: key);
   final Post post;
-
-  final UserService userService = UserService();
 
   final Comment comment;
 
@@ -49,18 +46,24 @@ class CommentDetailShowingContainer extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
-              trailing: Consumer<User>(
-                builder: (ctx, user, ch) {
+              trailing: Consumer<UserGolangService>(
+                builder: (ctx, userService, ch) {
                   return IconButton(
-                    color: user.likeComments.contains(comment.id)
-                        ? Colors.pink
-                        : Colors.grey,
+                    color:
+                        userService?.user?.likeComments?.contains(comment.id) ==
+                                true
+                            ? Colors.pink
+                            : Colors.grey,
                     icon: Icon(Icons.favorite),
                     onPressed: () {
                       if (comment.id != null) {
-                        userService.toggleCommentLike(
-                          comment.id,
-                          user,
+                        Provider.of<UserGolangService>(context, listen: false)
+                            .toggoleFunction(
+                          id: comment.id,
+                          toggle: ToggleOptions.LikeComments,
+                          condition: !(userService?.user?.likeComments
+                                  ?.contains(comment.id) ==
+                              true),
                         );
                       }
                     },

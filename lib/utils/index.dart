@@ -55,8 +55,19 @@ class Utils {
     return uni;
   }
 
+  static dynamic jsonEncodable(dynamic data) {
+    if (data is DateTime) {
+      return data.toIso8601String();
+    }
+    return "";
+  }
+
   static String getFirstImageURLFromMarkdown(String content) {
     var match = imageReg.firstMatch(content);
+    if (match == null) {
+      return null;
+    }
+
     String firstImageUrl = content.substring(match.start, match.end);
     // print(firstImageUrl);
     int idxStart = firstImageUrl.indexOf("(");
@@ -77,5 +88,43 @@ class Utils {
     }
 
     return preview;
+  }
+
+  static DateTime getDateTime(dynamic time) {
+    if (time is DateTime) {
+      return time;
+    } else if (time is String) {
+      if (time?.isNotEmpty == true) {
+        if (time.length > 23) {
+          String tempTime = time.substring(0, 23) + "Z";
+          return DateTime.tryParse(tempTime);
+        }
+        return DateTime.tryParse(time);
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  static bool isSameDate(DateTime a, DateTime b) {
+    if (a == null || b == null) {
+      return null;
+    }
+
+    if (a.year != b.year) {
+      return false;
+    }
+
+    if (a.month != b.month) {
+      return false;
+    }
+
+    if (a.day != b.day) {
+      return false;
+    }
+
+    return true;
   }
 }

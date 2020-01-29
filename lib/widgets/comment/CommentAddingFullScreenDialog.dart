@@ -6,9 +6,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
-import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/CommentService.dart';
-import 'package:quenc/utils/index.dart';
+import 'package:quenc/providers/CommentGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/widgets/comment/CommentPreviewFullScreenDialog.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
 
@@ -63,7 +62,17 @@ class _CommentAddingFullScreenDialogState
   }
 
   Future<void> _pickImage(ImageSource source) async {
-    File selected = await ImagePicker.pickImage(source: source);
+    currentInsertImage = null;
+    currentUploadURL = null;
+    _uploadTask = null;
+    currentFilePath = null;
+    File selected = await ImagePicker.pickImage(
+      source: source,
+      maxWidth: 1936,
+      maxHeight: 1936,
+      imageQuality: 40,
+    );
+    print("File Size is ${selected?.lengthSync()}");
 
     setState(() {
       currentInsertImage = selected;
@@ -89,19 +98,16 @@ class _CommentAddingFullScreenDialogState
 
   void addComment(BuildContext ctx) async {
     commentFieldComplete();
-    await Provider.of<CommentService>(context).addComment(comment);
+    await Provider.of<CommentGolangService>(context, listen: false).addComment(comment);
     Navigator.of(context).pop();
   }
 
   void commentFieldComplete() {
-    var u = Provider.of<User>(context, listen: false);
-    comment.author = u.uid;
-    comment.authorDomain = u.domain;
-    comment.authorGender = u.gender;
+    var u = Provider.of<UserGolangService>(context, listen: false).user;
+    comment.author = u;
     comment.createdAt = DateTime.now();
     comment.updatedAt = DateTime.now();
     comment.belongPost = widget.belongPost;
-    comment.likeCount = 0;
   }
 
   bool prepairCommentForPreview() {
@@ -208,6 +214,10 @@ class _CommentAddingFullScreenDialogState
               validator: (v) {
                 if (v == null || v.isEmpty) {
                   return "請輸入內容";
+                }
+
+                if (v.length > 3000) {
+                  return "字元數不可超過3000";
                 }
                 return null;
               },

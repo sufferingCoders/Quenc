@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/UserService.dart';
-import 'package:quenc/screens/ArchivePostsScreen.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/OwningPostsScreen.dart';
 import 'package:quenc/screens/ReportManagementScreen.dart';
+import 'package:quenc/screens/SavedPostsScreen.dart';
 import 'package:quenc/screens/UserAttributeSettingScreen.dart';
+import 'package:quenc/screens/WebSocketTestingScreen.dart';
 
 class ProfileScreen extends StatelessWidget {
   static const routeName = "/profile";
-
-  final userService = UserService();
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +18,11 @@ class ProfileScreen extends StatelessWidget {
           title: Text("個人資訊"),
           centerTitle: true,
         ),
-        body: Consumer<User>(
-          builder: (ctx, user, ch) {
+        body: Consumer<UserGolangService>(
+          builder: (ctx, userService, ch) {
             return ListView(
               children: <Widget>[
-                if (user.isAdmin) ...[
+                if (userService?.user?.isAdmin == true) ...[
                   Container(
                     margin: EdgeInsets.all(10),
                     height: 60,
@@ -70,6 +68,21 @@ class ProfileScreen extends StatelessWidget {
                     },
                   ),
                   const Divider(),
+                  ListTile(
+                    leading: Icon(
+                      Icons.text_fields,
+                    ),
+                    title: const Text("WebSocket Test"),
+                    onTap: () {
+                      // Need a category management page
+                      // push
+                      Navigator.pushNamed(
+                        context,
+                        WebSocketTestingScreen.routeName,
+                      );
+                    },
+                  ),
+                  const Divider(),
                   Container(
                     margin: EdgeInsets.all(10),
                     height: 60,
@@ -95,7 +108,7 @@ class ProfileScreen extends StatelessWidget {
                     Navigator.pushNamed(
                       context,
                       UserAttributeSettingScreen.routeName,
-                      arguments: user,
+                      arguments: userService.user,
                     );
                   },
                 ),
@@ -116,7 +129,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   title: const Text("我的收藏"),
                   onTap: () {
-                    Navigator.pushNamed(context, ArchivePostScreen.routeName);
+                    Navigator.pushNamed(context, SavedPostscreen.routeName);
                   },
                 ),
                 const Divider(),
@@ -128,7 +141,8 @@ class ProfileScreen extends StatelessWidget {
                   title: const Text("登出"),
                   onTap: () {
                     Navigator.popUntil(context, ModalRoute.withName("/"));
-                    userService.signOut();
+                    Provider.of<UserGolangService>(context, listen: false)
+                        .signOut();
                   },
                 ),
                 const Divider(),

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/widgets/comment/CommentShowingColumn.dart';
 
 class CommentShowingFutureBuilder extends StatelessWidget {
   final Post post;
   final Future future;
-  final userService = UserService();
   CommentShowingFutureBuilder(
     this.future, {
     this.post,

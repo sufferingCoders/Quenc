@@ -4,7 +4,8 @@ import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/Report.dart';
 import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/CommentService.dart';
+import 'package:quenc/providers/CommentGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/comment/CommentDetailShowingContainer.dart';
 import 'package:quenc/widgets/common/ContentShowingContainer.dart';
@@ -25,7 +26,7 @@ class CommentShowingColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressStart: (detail) async {
-        User user = Provider.of<User>(context);
+        User user = Provider.of<UserGolangService>(context).user;
         final value = await showMenu(
           position: RelativeRect.fromLTRB(
             detail.globalPosition.dx,
@@ -82,7 +83,8 @@ class CommentShowingColumn extends StatelessWidget {
                         FlatButton(
                           child: Text("是"),
                           onPressed: () {
-                            Provider.of<CommentService>(context, listen: false)
+                            Provider.of<CommentGolangService>(context,
+                                    listen: false)
                                 .deleteComment(comment.id);
 
                             Navigator.of(context).pop(true);

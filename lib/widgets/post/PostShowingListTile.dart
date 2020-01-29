@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/utils/index.dart';
 
@@ -15,7 +15,8 @@ class PostShowingListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Function idToName = Provider.of<PostService>(context).getCategoryNameByID;
+    Function idToName =
+        Provider.of<PostGolangService>(context).getCategoryNameByID;
     return ListTile(
       onTap: () {
         Navigator.of(context).pushNamed(
@@ -70,7 +71,7 @@ class PostShowingListTile extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(left: 3.0, right: 8.0, top: 8.0),
               child: Text(
-                "${idToName(post.category) ?? ""}  -  ${post.anonymous ? "匿名" : Utils.getDisplayNameFromDomain(post.authorDomain)}",
+                "${post?.category?.categoryName ?? ""}  -  ${post.anonymous == true ? "匿名" : Utils.getDisplayNameFromDomain(post.authorDomain)}",
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 13,
@@ -84,8 +85,11 @@ class PostShowingListTile extends StatelessWidget {
       trailing: Builder(builder: (context) {
         String photo = post?.previewPhoto;
 
-        if (photo == null) {
-          return Container();
+        if (photo == null || photo.isEmpty) {
+          return Container(
+            height: 1,
+            width: 1,
+          );
         }
 
         return Image.network(

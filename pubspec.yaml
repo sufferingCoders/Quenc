@@ -11,6 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# flutter build appbundle --build-name=1.0.0 --build-number=1
 version: 1.0.0+1
 
 environment:
@@ -34,6 +35,8 @@ dependencies:
   flutter_widget_from_html_core: ^0.2.4+4
   markdown: ^2.1.3
   url_launcher: ^5.2.0
+  http: ^0.12.0+2
+  web_socket_channel: ^1.1.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -41,6 +44,13 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  flutter_launcher_icons: "^0.7.3"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "./assets/icon/QuenC_Icon.jpg"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

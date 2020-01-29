@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/providers/CommentService.dart';
-import 'package:quenc/providers/PostService.dart';
-import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/providers/CommentGolangService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/widgets/comment/CommentShowingFutureBuilder.dart';
 import 'package:quenc/widgets/common/CommentDivider.dart';
 import 'package:quenc/widgets/common/ContentShowingContainer.dart';
-import 'package:quenc/widgets/common/ScrollHideSliverAppBar.dart';
 import 'package:quenc/widgets/post/PostDetailScreenButtonNavigationBar.dart';
 import 'package:quenc/widgets/post/PostDetailShowingColumn.dart';
+import 'package:quenc/widgets/post/ScrollHideSliverAppBar.dart';
 
-class PostDetailScreen extends StatelessWidget {
+class PostDetailScreen extends StatefulWidget {
   static const routeName = "/post/detail";
   final String postId;
-  Post post;
-  final userService = UserService();
-
-  // Also have to show the comments
 
   PostDetailScreen({this.postId});
 
   @override
+  _PostDetailScreenState createState() => _PostDetailScreenState();
+}
+
+class _PostDetailScreenState extends State<PostDetailScreen> {
+  Post post;
+
+  @override
   Widget build(BuildContext context) {
-    var postService = Provider.of<PostService>(context);
+    var postService = Provider.of<PostGolangService>(context);
     return FutureBuilder<Object>(
-      future: postService.getPostByID(postId),
+      future: postService.getPostByID(widget.postId),
       builder: (context, retrievedPostSnapshot) {
         if (retrievedPostSnapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -57,16 +60,17 @@ class PostDetailScreen extends StatelessWidget {
                         ContentShowingContainer(content: post?.content),
                         CommentDivider(text: "熱門回文"),
                         CommentShowingFutureBuilder(
-                          Provider.of<CommentService>(context, listen: false)
+                          Provider.of<CommentGolangService>(context,
+                                  listen: false)
                               .getTopLikedCommentsForPost(post.id, 3),
                           post: post,
                         ),
                         CommentDivider(text: "全部回文"),
                         CommentShowingFutureBuilder(
-                          Provider.of<CommentService>(context)
+                          Provider.of<CommentGolangService>(context)
                               .getCommentForPost(
-                            post.id,
-                            orderBy: CommentOrderByOptions.ByCreatedAt,
+                            pid: post.id,
+                            orderBy: OrderByOption.CreatedAt,
                           ),
                           post: post,
                         ),

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/Report.dart';
-import 'package:quenc/models/User.dart';
-import 'package:quenc/providers/PostService.dart';
-import 'package:quenc/providers/UserService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/widgets/report/ReportAddingFullScreenDialog.dart';
 
 enum MenuOptions {
@@ -19,12 +18,11 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
   }) : super(key: key);
 
   final Post post;
-  final UserService userService = UserService();
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<User>(
-      builder: (context, user, ch) => Row(
+    return Consumer<UserGolangService>(
+      builder: (context, userService, ch) => Row(
         // mainAxisAlignment: MainAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -32,10 +30,18 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.favorite),
-              color:
-                  user.likePosts.contains(post?.id) ? Colors.pink : Colors.grey,
+              color: userService?.user?.likePosts?.contains(post?.id) == true
+                  ? Colors.pink
+                  : Colors.grey,
               onPressed: () {
-                userService.togglePostLike(post?.id, user);
+                Provider.of<UserGolangService>(context, listen: false)
+                    .toggoleFunction(
+                  id: post?.id,
+                  toggle: ToggleOptions.LikePosts,
+                  condition:
+                      !(userService?.user?.likePosts?.contains(post?.id) ==
+                          true),
+                );
               },
             ),
           ),
@@ -43,11 +49,15 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
             flex: 1,
             child: IconButton(
               icon: Icon(Icons.bookmark),
-              color: user.archivePosts.contains(post?.id)
+              color: userService?.user?.savedPosts?.contains(post?.id) == true
                   ? Colors.blue
                   : Colors.grey,
               onPressed: () {
-                userService.togglePostArchive(post?.id, user);
+                Provider.of<UserGolangService>(context, listen: false)
+                    .toggoleFunction(
+                  id: post?.id,
+                  toggle: ToggleOptions.SavedPosts,
+                );
               },
             ),
           ),
@@ -58,7 +68,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                 Icons.more_vert,
                 color: Theme.of(context).primaryColorDark,
               ),
-              // color: user.archivePosts.contains(post.id)
+              // color: userService.user.archivePosts.contains(post.id)
               //     ? Colors.blue
               //     : Colors.grey,
               onTapDown: (detail) async {
@@ -83,7 +93,8 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                       ),
                       value: MenuOptions.Report,
                     ),
-                    if (user?.isAdmin || user?.uid == post?.author)
+                    if (userService.user?.isAdmin ||
+                        userService.user?.id == post?.author)
                       PopupMenuItem(
                         child: ListTile(
                           leading: Icon(Icons.delete_outline),
@@ -117,7 +128,7 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                                 FlatButton(
                                   child: Text("是"),
                                   onPressed: () {
-                                    Provider.of<PostService>(context,
+                                    Provider.of<PostGolangService>(context,
                                             listen: false)
                                         .deletePost(post?.id);
 

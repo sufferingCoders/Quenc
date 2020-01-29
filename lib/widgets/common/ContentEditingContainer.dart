@@ -16,11 +16,11 @@ class ContentEditingContainer extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(15.0),
       child: TextFormField(
-        minLines: 40,
+        minLines: 4,
         controller: contentController,
         maxLines: null,
         decoration: const InputDecoration(
-          hintText: "內容",
+          hintText: "內容 (內容必須多餘20個字元)",
           border: InputBorder.none,
         ),
         onSaved: (v) {

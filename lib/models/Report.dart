@@ -1,37 +1,37 @@
+import 'package:quenc/models/User.dart';
+import 'package:quenc/utils/index.dart';
+
+/// Three different types of targets
 enum ReportTarget {
   Comment,
   Post,
+  Chat,
 }
 
+/// Report Schema for saving in the Firestore
 class Report {
-  // Report Schema for saving in the Firestore
-
-  String content;
   String id;
-  String author;
-  String authorDomain;
-  int authorGender;
+  String content;
+  User author;
   String previewText;
   String previewPhoto;
   int reportTarget;
-  int reportType;
   DateTime createdAt;
   String reportId;
   bool solve;
+  Map<String, dynamic> reportObject;
 
   Report({
     this.content,
     this.id,
     this.author,
-    this.reportType,
     this.createdAt,
-    this.authorDomain,
-    this.authorGender,
     this.previewPhoto,
     this.previewText,
     this.reportTarget,
     this.reportId,
     this.solve,
+    this.reportObject,
   });
 
   // Report Code
@@ -53,12 +53,15 @@ class Report {
       case 1:
         return ReportTarget.Comment;
         break;
+      case 2:
+        return ReportTarget.Chat;
+
       default:
         return null;
     }
   }
 
-  // From ReportTarget to int 
+  // From ReportTarget to int
   static int reportTargetEnumToInt(ReportTarget target) {
     switch (target) {
       case ReportTarget.Post:
@@ -67,11 +70,15 @@ class Report {
       case ReportTarget.Comment:
         return 1;
         break;
+      case ReportTarget.Chat:
+        return 2;
+
       default:
         return null;
     }
   }
 
+  /// Get the report Type String from the code
   static String reportTypeCodeToString(int code) {
     if (code > reportTypeCodeList.length) {
       return null;
@@ -79,37 +86,45 @@ class Report {
     return reportTypeCodeList[code];
   }
 
-  factory Report.fromMap(Map data) {
+  factory Report.fromMap(dynamic data) {
     return Report(
-      author: data["author"],
-      id: data["id"],
+      author: User.fromMap(data["author"]),
+      id: data["_id"],
       content: data["content"],
-      reportType: data["reportType"],
-      createdAt: data["createdAt"].toDate(),
-      authorDomain: data["authorDomain"],
-      authorGender: data["authorGender"],
+      createdAt: Utils.getDateTime(data["createdAt"]),
       previewPhoto: data["previewPhoto"],
       previewText: data["previewText"],
       reportTarget: data["reportTarget"],
       reportId: data["reportId"],
       solve: data["solve"],
+      reportObject: data["reportObject"],
     );
   }
 
-  Map<String, dynamic> toMap() {
+  ///  the map will be sent to backend for adding a new report
+  Map<String, dynamic> toAddingMap() {
     return {
-      "author": author,
-      "id": id,
       "content": content,
-      "reportType": reportType,
-      "createdAt": createdAt,
-      "authorDomain": authorDomain,
-      "authorGender": authorGender,
       "previewPhoto": previewPhoto,
       "previewText": previewText,
       "reportTarget": reportTarget,
       "reportId": reportId,
       "solve": solve,
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "author": author?.toMap(),
+      "_id": id,
+      "content": content,
+      "createdAt": createdAt,
+      "previewPhoto": previewPhoto,
+      "previewText": previewText,
+      "reportTarget": reportTarget,
+      "reportId": reportId,
+      "solve": solve,
+      "reportObject": reportObject,
     };
   }
 }

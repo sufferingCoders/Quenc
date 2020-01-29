@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/PostCategory.dart';
-import 'package:quenc/providers/PostService.dart';
+import 'package:quenc/providers/PostGolangService.dart';
 
 class CategoryManagementScreen extends StatefulWidget {
   static const routeName = "/category-management";
@@ -33,7 +33,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
   }
 
   void setCategories() {
-    Provider.of<PostService>(context).getAllPostCategories().then((cat) {
+    Provider.of<PostGolangService>(context).getAllPostCategories().then((cat) {
       setState(() {
         categories = cat;
         isInit = true;
@@ -79,7 +79,37 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                       icon: Icon(Icons.delete_outline),
                       onPressed: () {
                         //Deleteing Category here
-                        Provider.of<PostService>(context, listen: false)
+
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                                  title: Text("刪除分類"),
+                                  content: Text(
+                                      "是否要刪除分類: ${show[idx].categoryName} ?"),
+                                  actions: <Widget>[
+                                    FlatButton(
+                                      child: Text("否"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop(false);
+                                      },
+                                    ),
+                                    FlatButton(
+                                      child: Text("是"),
+                                      onPressed: () {
+                                        Provider.of<PostGolangService>(context,
+                                                listen: false)
+                                            .deletePostCategoriesById(
+                                                show[idx].id)
+                                            .then((v) {
+                                          refresh();
+                                        });
+                                        Navigator.of(context).pop(true);
+                                      },
+                                    ),
+                                  ],
+                                ));
+
+                        Provider.of<PostGolangService>(context, listen: false)
                             .deletePostCategoriesById(show[idx].id);
                       },
                     ),
@@ -132,22 +162,26 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                   context: context,
                   builder: (ctx) => AlertDialog(
                         title: Text("加入分類"),
-                        content: Text("是否要加入分類: ${searchingStr} ?"),
+                        content: Text("是否要加入分類: $searchingStr ?"),
                         actions: <Widget>[
-                          FlatButton(
-                            child: Text("是"),
-                            onPressed: () {
-                              Provider.of<PostService>(context, listen: false)
-                                  .addPostCategory(PostCategory(
-                                categoryName: searchingStr,
-                              ));
-                              Navigator.of(context).pop(true);
-                            },
-                          ),
                           FlatButton(
                             child: Text("否"),
                             onPressed: () {
                               Navigator.of(context).pop(false);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("是"),
+                            onPressed: () {
+                              Provider.of<PostGolangService>(context,
+                                      listen: false)
+                                  .addPostCategory(PostCategory(
+                                categoryName: searchingStr,
+                              ))
+                                  .then((v) {
+                                refresh();
+                              });
+                              Navigator.of(context).pop(true);
                             },
                           ),
                         ],

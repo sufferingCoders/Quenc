@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Report.dart';
-import 'package:quenc/providers/ReportService.dart';
-import 'package:quenc/screens/ReportDetailShowingScreen.dart';
+import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/widgets/report/ReportShowingListTile.dart';
 
 enum ReportShowingOption {
@@ -27,7 +25,7 @@ class _ReportManagementScreenState extends State<ReportManagementScreen> {
   ReportShowingOption showingOption = ReportShowingOption.All;
 
   void setReports() {
-    Provider.of<ReportService>(context).getAllReports().then((r) {
+    Provider.of<ReportGolangService>(context).getAllReports().then((r) {
       setState(() {
         reports = r;
         isInit = true;
