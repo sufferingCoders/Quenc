@@ -162,7 +162,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                   context: context,
                   builder: (ctx) => AlertDialog(
                         title: Text("加入分類"),
-                        content: Text("是否要加入分類: ${searchingStr} ?"),
+                        content: Text("是否要加入分類: $searchingStr ?"),
                         actions: <Widget>[
                           FlatButton(
                             child: Text("否"),

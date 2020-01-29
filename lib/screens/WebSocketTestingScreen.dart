@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:clipboard_manager/clipboard_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/providers/WebsocketServiceTest.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -46,14 +46,11 @@ class _WebSocketTestingScreenState extends State<WebSocketTestingScreen> {
   IOWebSocketChannel channel;
 
   void settingWebsocket(String id) {
-    String url =
-        "ws://192.168.1.135:8080/test/subscribe/$id"; // ipconfig can check should be IPv4 Address
+    String url = "ws://" +
+        UserGolangService.baseUrl +
+        "/test/subscribe/$id"; // ipconfig can check should be IPv4 Address
 
-    // if (channel != null) {
-    //   channel.sink.close();
-    // }
     channel = IOWebSocketChannel.connect(url);
-    // channel.sink.add("ping");
     channel.stream.listen(
       (m) {
         Map newObj = json.decode(m);

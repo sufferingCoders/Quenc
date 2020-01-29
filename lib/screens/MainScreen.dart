@@ -9,7 +9,6 @@ import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/screens/ProfileScreen.dart';
 import 'package:quenc/widgets/AppDrawer.dart';
-import 'package:quenc/widgets/chat/ChatRoomShowingList.dart';
 import 'package:quenc/widgets/chat/RandomChatRoom.dart';
 import 'package:quenc/widgets/common/AppBottomNavigationBar.dart';
 import 'package:quenc/widgets/post/PostAddingFullScreenDialog.dart';
@@ -90,15 +89,6 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
         title: Text("半日聊天"),
         actions: <Widget>[
-          // RaisedButton(
-          //   child: Text(
-          //     "送出測試",
-          //   ),
-          //   onPressed: () {
-          //     Provider.of<UserGolangService>(context)
-          //         .test_addMessageToRandomChatRoom();
-          //   },
-          // ),
           IconButton(
             onPressed: () {
               ChatRoom random =
@@ -175,15 +165,7 @@ class _MainScreenState extends State<MainScreen> {
                                   .leaveRandomChatRoom();
                               Navigator.of(context).pop(true);
                             } else {
-                              // show that time hasn't exceed
                               Navigator.of(context).pop(true);
-                              // Scaffold.of(context).showSnackBar(
-                              //   SnackBar(
-                              //     content: Text("連接時間未超過12小時..."),
-                              //     duration: Duration(milliseconds: 2000),
-                              //   ),
-                              // );
-
                               showDialog(
                                   context: context,
                                   builder: (ctx) {
@@ -246,49 +228,7 @@ class _MainScreenState extends State<MainScreen> {
         idx: currentIdx,
         idxUpdateFunc: idxUpdateFunc,
       ),
-      Transform.translate(
-        offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
-        child: BottomAppBar(
-          child: Row(
-            // or using wrap
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      left: 15, right: 8, top: 8, bottom: 8),
-                  child: TextField(
-                    controller: sendingController,
-                    maxLines: 3,
-                    minLines: 1,
-                    decoration: const InputDecoration(
-                      // labelText: "標題",
-                      // border: InputBorder.none,
-                      border: const OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 3.0, right: 13),
-                child: IconButton(
-                  color: Theme.of(context).primaryColor,
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    Provider.of<UserGolangService>(context)
-                        .addMessageToRandomChatRoom(
-                      Message(
-                        content: sendingController.text,
-                        messageType: 1,
-                      ),
-                    );
-                    sendingController.text = "";
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      ChatBottomNavigationBar(sendingController: sendingController),
     ];
   }
 
@@ -351,62 +291,6 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
-  Widget getMainScrenAppBar(idx) {
-    return [
-      AppBar(
-        // automaticallyImplyLeading: true,
-        centerTitle: true,
-        title: Text(category == null ? "QuenC" : category.categoryName),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(ProfileScreen.routeName);
-            },
-            icon: Icon(
-              Icons.account_circle,
-              size: 30,
-            ),
-          )
-        ],
-      ),
-      AppBar(
-        // automaticallyImplyLeading: true,
-        centerTitle: true,
-        title: Text("聊天"),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(ProfileScreen.routeName);
-            },
-            icon: Icon(
-              Icons.account_circle,
-              size: 30,
-            ),
-          )
-        ],
-      ),
-    ][idx];
-  }
-
-  Widget getMainScreenBody(idx) {
-    return [
-      RefreshIndicator(
-        onRefresh: () async {
-          refresh();
-        },
-        child: PostShowingContainer(
-          isInit: isInit,
-          posts: retrievedPosts,
-          infiniteScrollUpdater: loadMore,
-          refresh: refresh,
-          orderBy: orderBy,
-          orderByUpdater: orderByUpdater,
-        ),
-      ),
-      ChatRoomShowingList(),
-    ][idx];
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -429,6 +313,64 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: bottomNavigationBar == null
           ? Container()
           : bottomNavigationBar[currentIdx],
+    );
+  }
+}
+
+class ChatBottomNavigationBar extends StatelessWidget {
+  const ChatBottomNavigationBar({
+    Key key,
+    @required this.sendingController,
+  }) : super(key: key);
+
+  final TextEditingController sendingController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: Offset(0.0, -1 * MediaQuery.of(context).viewInsets.bottom),
+      child: BottomAppBar(
+        child: Row(
+          // or using wrap
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 8, top: 8, bottom: 8),
+                child: TextField(
+                  controller: sendingController,
+                  maxLines: 3,
+                  minLines: 1,
+                  decoration: const InputDecoration(
+                    // labelText: "標題",
+                    // border: InputBorder.none,
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 3.0, right: 13),
+              child: IconButton(
+                color: Theme.of(context).primaryColor,
+                icon: Icon(Icons.send),
+                onPressed: () {
+                  if (sendingController.text != null &&
+                      sendingController.text.isNotEmpty)
+                    Provider.of<UserGolangService>(context)
+                        .addMessageToRandomChatRoom(
+                      Message(
+                        content: sendingController.text,
+                        messageType: 1,
+                      ),
+                    );
+                  sendingController.text = "";
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

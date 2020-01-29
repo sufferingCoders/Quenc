@@ -5,7 +5,6 @@ import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/Report.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentGolangService.dart';
-import 'package:quenc/providers/CommentService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/comment/CommentDetailShowingContainer.dart';
@@ -84,7 +83,8 @@ class CommentShowingColumn extends StatelessWidget {
                         FlatButton(
                           child: Text("是"),
                           onPressed: () {
-                            Provider.of<CommentGolangService>(context, listen: false)
+                            Provider.of<CommentGolangService>(context,
+                                    listen: false)
                                 .deleteComment(comment.id);
 
                             Navigator.of(context).pop(true);

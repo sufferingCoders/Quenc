@@ -20,6 +20,7 @@ class WebScoketService with ChangeNotifier {
     return insertedID;
   }
 
+  /// Sending the websocket connection request to backend
   Future<void> sendingTestTo(String u) async {
     String url =
         "http://192.168.1.135:8080/ws"; // ipconfig can check should be IPv4 Address
@@ -41,17 +42,17 @@ class WebScoketService with ChangeNotifier {
     print(resData);
   }
 
+  /// Sending the message to backend through websocket
   Future<void> sendingWebSocketTest() async {
     String url =
         "ws://192.168.1.135:8080/ws"; // ipconfig can check should be IPv4 Address
     channel = IOWebSocketChannel.connect(url);
-    // channel.sink.add("ping");
     channel.stream.listen((m) {
       print(m);
     });
-    // channel.sink.close();
   }
 
+  /// Get the stream that reading the message from backend
   Future<void> setTestDocumentStream() async {
     String url =
         "ws://192.168.1.135:8080/test/subscribe/$insertedID"; // ipconfig can check should be IPv4 Address
@@ -134,10 +135,12 @@ class WebScoketService with ChangeNotifier {
     return resData;
   }
 
+  /// sendning "ping" meesage to backend through current websocket channel
   Future<void> sendingPing() async {
     channel.sink.add("ping");
   }
 
+  /// close current websocket channel
   Future<void> closeWS() async {
     channel.sink.close();
     notifyListeners();

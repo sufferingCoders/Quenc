@@ -8,11 +8,110 @@ import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 
 class CommentGolangService with ChangeNotifier {
-  // static const String baseUrl = "192.168.1.135:8080";
-  static const String baseUrl = "192.168.1.112:8080";
+  static const String baseUrl = UserGolangService.baseUrl;
 
-  
   static const String apiUrl = "http://" + baseUrl;
+
+  /**
+   * Create 
+   */
+
+  /// Add the Comment to backend
+  Future<void> addComment(Comment comment) async {
+    try {
+      final url = apiUrl + "/comment/";
+      final res = await http.post(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+        body: json.encode(
+          comment.toAddingMap(),
+        ),
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+
+      notifyListeners();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * Update
+   */
+
+  /// Update a comment by its ID and updateFields
+  Future<void> updateComment(
+      String commentId, Map<String, dynamic> updateFields) async {
+    try {
+      final url = apiUrl + "/comment/detail/$commentId";
+      final res = await http.patch(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+        body: json.encode(updateFields),
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * Delete
+   */
+
+  ///  Delete a comment by its ID
+  Future<void> deleteComment(String commentId) async {
+    try {
+      final url = apiUrl + "/comment/$commentId";
+      final res = await http.delete(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  /**
+   * Retrieve
+   */
 
   /// Showing Top-Liked Comments
   Future<List<Comment>> getTopLikedCommentsForPost(
@@ -25,7 +124,6 @@ class CommentGolangService with ChangeNotifier {
   /// Get certain comment by its ID
   Future<Comment> getCommentById(String id) async {
     Comment comment;
-
     try {
       final url = apiUrl + "/comment/detail/$id";
       final res = await http.get(
@@ -53,7 +151,7 @@ class CommentGolangService with ChangeNotifier {
     return comment;
   }
 
-  // get comments for post
+  /// Get comments for post
   Future<List<Comment>> getCommentForPost({
     String pid,
     OrderByOption orderBy = OrderByOption.CreatedAt,
@@ -108,90 +206,9 @@ class CommentGolangService with ChangeNotifier {
       throw e;
     }
   }
-
-  Future<void> addComment(Comment comment) async {
-    try {
-      final url = apiUrl + "/comment/";
-      final res = await http.post(
-        url,
-        headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-          "Authorization": UserGolangService.token,
-        },
-        body: json.encode(
-          comment.toAddingMap(),
-        ),
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-
-      notifyListeners();
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<void> deleteComment(String commentId) async {
-    try {
-      final url = apiUrl + "/comment/$commentId";
-      final res = await http.delete(
-        url,
-        headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-          "Authorization": UserGolangService.token,
-        },
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<void> updateComment(
-      String commentId, Map<String, dynamic> updateFields) async {
-    try {
-      final url = apiUrl + "/comment/detail/$commentId";
-      final res = await http.patch(
-        url,
-        headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-          "Authorization": UserGolangService.token,
-        },
-        body: json.encode(updateFields),
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-    } catch (e) {
-      throw e;
-    }
-  }
 }
 
+/// The Option for sorting the comment
 enum CommentOrderByOption {
   LikeCount,
   CreatedAt,

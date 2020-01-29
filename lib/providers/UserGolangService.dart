@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -10,6 +9,7 @@ import 'package:quenc/utils/index.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web_socket_channel/io.dart';
 
+/// Toggle the fields in the backend
 enum ToggleOptions {
   ChatRooms,
   Friends,
@@ -19,42 +19,51 @@ enum ToggleOptions {
 }
 
 class UserGolangService with ChangeNotifier {
-  // No storing val in this calss since its instance will not be kept
+  static String _token;
+
+  IOWebSocketChannel randomChatRoomChannel;
   IOWebSocketChannel channel;
   User _user;
-  static String _token;
-  static const String baseUrl = "192.168.1.112:8080";
-
-  // static const String baseUrl = "192.168.1.135:8080";
-  static const String apiUrl = "http://" + baseUrl;
   ChatRoom _currentRandomChatRoom;
 
+  static const String baseUrl = "quenc-hlc.appspot.com";
+  // static const String baseUrl = "192.168.1.112:8080"; // mac
+  // static const String baseUrl = "192.168.1.135:8080";// windows
+  static const String apiUrl = "http://" + baseUrl;
+
+  /// get the current user
   User get user {
     return _user;
   }
 
+  /// check if the random chat room is ready
   bool get isRandomChatRoomReady {
     return _currentRandomChatRoom?.id != null &&
         _currentRandomChatRoom?.id?.isNotEmpty == true &&
         randomChatRoomChannel != null;
   }
 
+  /// get current random chat room
   ChatRoom get randomChatRoom {
     return _currentRandomChatRoom;
   }
 
+  /// get the authorization backend
   static String get token {
     return _token;
   }
 
+  /// check if the user is logged in
   bool get isLogin {
     return (token != null && user != null);
   }
 
+  /// authenticate process, sending to backend
   Future<void> _authenticate(
-      String email, String password, String urlSeg) async {
-    // The urlSeg can be "login" or "signup"
-
+    String email,
+    String password,
+    String urlSeg, // urlSeg can be "signup" or "login"
+  ) async {
     final url = apiUrl + "/user/$urlSeg";
 
     try {
@@ -80,10 +89,9 @@ class UserGolangService with ChangeNotifier {
 
       notifyListeners();
 
-      // Saving both user and token
       final prefs = await SharedPreferences.getInstance();
-      // prefs.setString("user", json.encode(_user.toMap()));
-      // Saving user but nogt token
+
+      // Saving user but not token
       prefs.setString("email", email);
       prefs.setString("password", password);
 
@@ -93,27 +101,30 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
+  /// signup user
   Future<void> signupUser(String email, String password) async {
     return _authenticate(email, password, "signup");
   }
 
+  /// login user
   Future<void> loginUser(String email, String password) async {
     return _authenticate(email, password, "login");
   }
 
+  /// logout user
   Future<void> logout() async {
     _token = null;
     _user = null;
 
     final prefs = await SharedPreferences.getInstance();
 
+    // delete the data stored in the sharedPref
     prefs.remove("email");
     prefs.remove("password");
     notifyListeners();
-
-    // delete the data stored in the sharedPref
   }
 
+  /// try login if the user is not logged in
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey("email") || !prefs.containsKey("password")) {
@@ -156,34 +167,11 @@ class UserGolangService with ChangeNotifier {
     });
   }
 
-  Stream<User> getUserStream() {
-    if (token == null) {
-      return null;
-    }
-
-    String url = "ws://" +
-        baseUrl +
-        "/user/subsrible"; // ipconfig can check should be IPv4 Address
-
-    if (channel != null) {
-      channel.sink.close();
-    }
-
-    channel = IOWebSocketChannel.connect(
-      url,
-      headers: {
-        "Authorization": token,
-      },
-    );
-
-    // We can get user stream from this
-    return channel.stream.map((u) => User.fromMap(json.decode(u)));
-  }
-
   /*******************************
    *             UPDATE
    *******************************/
 
+  /// toggle the fields in the backend
   Future<void> toggoleFunction({
     String id,
     ToggleOptions toggle,
@@ -214,7 +202,7 @@ class UserGolangService with ChangeNotifier {
           break;
         case ToggleOptions.SavedPosts:
           fullApi = apiUrl +
-              "/saved-posts/" +
+              "/user/saved-posts/$id/" +
               (user.savedPosts.contains(id) ? "0" : "1");
           break;
         default:
@@ -242,7 +230,8 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
-  Future<void> sendEnaukVerufucation() async {
+  /// Send verification email to the user
+  Future<void> sendingEmailVerification() async {
     try {
       final url = apiUrl + "/user/send-verification-email";
       final res = await http.get(
@@ -267,6 +256,7 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
+  /// update the user by its id and updateFields
   Future<void> updateUser(String id, Map<String, dynamic> updateFields) async {
     try {
       final url = apiUrl + "/user/detail/$id";
@@ -309,259 +299,11 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
-  /*
-   *  ChatRoom
-   * 
-   */
-
-  IOWebSocketChannel chatRoomChannel;
-
-  Map<String, ChatRoom> _userChatRooms;
-
-  bool get isInit {
-    return _userChatRooms != null;
-  }
-
-  Map<String, ChatRoom> get chatRooms {
-    return _userChatRooms;
-  }
-
-  List<ChatRoom> get chatRoomList {
-    return _userChatRooms.values.toList();
-  }
-
-  Future<ChatRoom> addChatRoom(ChatRoom inputChatRoom) async {
-    try {
-      final url = apiUrl + "/chat-room";
-      final res = await http.post(
-        url,
-        headers: {
-          "Authorization": UserGolangService.token,
-          HttpHeaders.contentTypeHeader: "application/json",
-        },
-        body: json.encode(inputChatRoom.toAddingMap()),
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return null;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-
-      // 拿到回傳資料後 Update ID
-
-      ChatRoom newChatRoom = ChatRoom.fromMap(resData["chatRoom"]);
-
-      // 不做當下更新
-
-      subscribeUserChatRoom(); // 重新Subscribe一次
-
-      notifyListeners();
-
-      // return chatRooms;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<Message> addMessageToChatRoom(String rid, Message inputMessage) async {
-    try {
-      // 先在本地進行加上, 再更改
-
-      _userChatRooms[rid].messages.add(inputMessage);
-      inputMessage.author = _user;
-      notifyListeners();
-
-      final url = apiUrl + "/chat-room/message/$rid";
-      final res = await http.post(
-        url,
-        headers: {
-          "Authorization": UserGolangService.token,
-          HttpHeaders.contentTypeHeader: "application/json",
-        },
-        body: json.encode(inputMessage.toAddingMap()),
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return null;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-
-      // 拿到回傳資料後 Update ID
-
-      Message newMessage = Message.fromMap(resData["message"]);
-      newMessage.author = _user;
-
-      inputMessage.replaceByAnother(newMessage); // 看看指針會不會變
-
-      notifyListeners();
-
-      // return chatRooms;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  // User ChatRoom的資料會存在Local, 這樣Subscribe之後才會在這更改
-  // setting the chatRoom Detail but not the messages, we will be adding the last message into this
-
-  Future<void> tryInitChatRooms() async {
-    if (isInit) {
-      return;
-    }
-
-    await getAllUserChatRooms();
-  }
-
-  Future<List<ChatRoom>> getAllUserChatRooms() async {
-    try {
-      List<ChatRoom> chatRooms = [];
-
-      final url = apiUrl + "/chat-room/rooms";
-      final res = await http.get(
-        url,
-        headers: {
-          "Authorization": UserGolangService.token,
-          HttpHeaders.contentTypeHeader: "application/json",
-        },
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return null;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-
-      List<dynamic> chatRoomsRaw = resData["chatRooms"];
-
-      _userChatRooms = {};
-      if (chatRoomsRaw != null) {
-        for (var c in chatRoomsRaw) {
-          ChatRoom cr = ChatRoom.fromMap(c);
-          _userChatRooms[cr.id] = cr;
-        }
-      }
-
-      notifyListeners();
-
-      return chatRooms;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<List<Message>> getMessagesForARoom(
-    String roomID,
-    String startID,
-    int number,
-  ) async {
-    try {
-      List<Message> messages = [];
-
-      String url = apiUrl + "/message/$roomID?";
-
-      if (startID != null && startID.isNotEmpty) {
-        url += "&sid=$startID";
-      }
-
-      if (number != null) {
-        url += "&num=$number";
-      }
-
-      final res = await http.get(
-        url,
-        headers: {
-          "Authorization": UserGolangService.token,
-          HttpHeaders.contentTypeHeader: "application/json",
-        },
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return null;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-
-      List<dynamic> messagesRaw = resData["chatRooms"];
-      if (messagesRaw != null) {
-        for (var c in messagesRaw) {
-          Message cr = Message.fromMap(c);
-          messages.add(cr);
-        }
-      }
-
-      ChatRoom retrievedRoom = _userChatRooms[roomID];
-      List<String> currentMessageIds =
-          retrievedRoom.messages.map((m) => m.id).toList();
-      for (Message m in messages.reversed.toList()) {
-        if (!currentMessageIds.contains(m.id)) {
-          retrievedRoom.messages.insert(0, m);
-        }
-      }
-
-      return messages;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  Future<void> tryInitUserChatStream() async {
-    if (chatRoomChannel != null) {
-      return;
-    }
-
-    await subscribeUserChatRoom();
-  }
-
-  IOWebSocketChannel randomChatRoomChannel;
-
-  Future<void> subscribeUserChatRoom() async {
-    String url = "ws://" + baseUrl + "/chat-room/user/subsrible";
-
-    if (chatRoomChannel != null) {
-      await chatRoomChannel.sink.close();
-    }
-
-    chatRoomChannel = IOWebSocketChannel.connect(
-      url,
-      headers: {
-        "Authorization": UserGolangService.token,
-      },
-    );
-
-    chatRoomChannel.stream.listen((updateDetails) {
-      // if the message is from the same user, then don't need to update it
-      // Updating local info
-      print(updateDetails); // check how this will print
-      // put a switch here for handling incomming?
-      // _user = User.fromMap(json.decode(u));
-      notifyListeners();
-    });
-  }
-
   /**
    * Random Chat Room
-   * 
    */
 
-  // 由User決定是否連接
+  /// try initialise random chatromm for the user
   Future<bool> tryInitialiseRandomChatRoom() async {
     // 2種 fields 決定 狀態 1. user.randomChatRoom 2. _currentRandomChatRoom
 
@@ -577,6 +319,7 @@ class UserGolangService with ChangeNotifier {
     return joinSuccess;
   }
 
+  /// force initialise the chatRoom
   Future<bool> initialiseRandomChatRoom() async {
     bool joinSuccess;
     if (user.randomChatRoom != null) {
@@ -592,6 +335,7 @@ class UserGolangService with ChangeNotifier {
     return joinSuccess;
   }
 
+  /// join a random chatroom, sending a request to backend and it will assign the user to a chat room
   Future<bool> joinRandomChatRoom() async {
     try {
       final url = apiUrl + "/chat-room/random/connect";
@@ -627,7 +371,8 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
-  Future<Message> addMessageToRandomChatRoom(Message inputMessage) async {
+  /// Add the message to current random chat room
+  Future<void> addMessageToRandomChatRoom(Message inputMessage) async {
     try {
       // 先在本地進行加上, 再更改
       _currentRandomChatRoom.messages.add(inputMessage);
@@ -669,7 +414,8 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
-  Future<Message> test_addMessageToRandomChatRoom() async {
+  /// sending message to random chat room
+  Future<void> test_addMessageToRandomChatRoom() async {
     try {
       // 先在本地進行加上, 再更改
 
@@ -698,6 +444,7 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
+  /// get the user's random chat room detail
   Future<void> getRandomChatRoomDetail() async {
     try {
       final url = apiUrl + "/chat-room/random/room";
@@ -728,6 +475,7 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
+  /// get number of the meesaages from current random chat room
   Future<List<Message>> getMessagesForRandomChatRoom(
     String startID,
     int number,
@@ -790,6 +538,7 @@ class UserGolangService with ChangeNotifier {
     }
   }
 
+  /// try to initialise the websocket stream
   Future<void> tryInitRandomChatStream() async {
     if (randomChatRoomChannel != null) {
       return;
@@ -798,6 +547,7 @@ class UserGolangService with ChangeNotifier {
     await subscribeRandomChatRoom();
   }
 
+  /// set the random chat room stream
   Future<void> subscribeRandomChatRoom() async {
     String url = "ws://" + baseUrl + "/chat-room/random/subscribe";
 
@@ -822,25 +572,24 @@ class UserGolangService with ChangeNotifier {
 
       var updateDetailsMap = json.decode(updateDetails);
 
-//  要先Decode以後才能當map用不然是String
-      print(updateDetailsMap["operationType"]);
+      //  要先Decode以後才能當map用不然是String
+      // print(updateDetailsMap["operationType"]);
 
       bool isUpdate = updateDetailsMap["operationType"] == "update";
-      print(isUpdate);
+      // print(isUpdate);
       if (isUpdate) {
         // 到updateDescription裡面拿取updateFields
         Map<String, dynamic> updatedMessages =
             updateDetailsMap["updateDescription"]["updatedFields"];
 
         updatedMessages.forEach((k, v) {
-          
+          if (k.contains("messages")) {
+            Message newMessage =
+                Message.fromMapAndRoom(v, _currentRandomChatRoom);
 
-
-          Message newMessage =
-              Message.fromMapAndRoom(v, _currentRandomChatRoom);
-
-          if (newMessage?.author != _user?.id) {
-            _currentRandomChatRoom.messages.add(newMessage);
+            if (newMessage?.author?.id != _user?.id) {
+              _currentRandomChatRoom.messages.add(newMessage);
+            }
           }
         });
 
@@ -851,11 +600,11 @@ class UserGolangService with ChangeNotifier {
         // 用此更新本地的Message
 
       }
-
       notifyListeners();
     });
   }
 
+  /// Leave current random chat room
   Future<void> leaveRandomChatRoom() async {
     try {
       final url = apiUrl + "/chat-room/random";

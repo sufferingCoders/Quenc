@@ -99,10 +99,10 @@ class _AppDrawerState extends State<AppDrawer> {
                 title: Text("QuenC"),
                 automaticallyImplyLeading: false,
               ),
-              ListTile(
-                leading: Icon(Icons.search),
-                title: Text("搜尋"),
-              ),
+              // ListTile(
+              //   leading: Icon(Icons.search),
+              //   title: Text("搜尋"),
+              // ), // need to add the corresponded api in the backend for searching
               const Divider(),
               Padding(
                 padding: const EdgeInsets.all(8.0),

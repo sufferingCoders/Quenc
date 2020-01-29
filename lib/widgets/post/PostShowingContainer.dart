@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/widgets/post/PostShowingListTile.dart';
 

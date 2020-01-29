@@ -1,6 +1,7 @@
 import 'package:quenc/models/User.dart';
 import 'package:quenc/utils/index.dart';
 
+/// Three different types of targets
 enum ReportTarget {
   Comment,
   Post,
@@ -54,7 +55,7 @@ class Report {
         break;
       case 2:
         return ReportTarget.Chat;
-  
+
       default:
         return null;
     }
@@ -77,6 +78,7 @@ class Report {
     }
   }
 
+  /// Get the report Type String from the code
   static String reportTypeCodeToString(int code) {
     if (code > reportTypeCodeList.length) {
       return null;
@@ -99,6 +101,7 @@ class Report {
     );
   }
 
+  ///  the map will be sent to backend for adding a new report
   Map<String, dynamic> toAddingMap() {
     return {
       "content": content,

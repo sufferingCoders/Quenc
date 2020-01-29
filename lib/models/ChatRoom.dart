@@ -137,6 +137,7 @@ class Message {
     );
   }
 
+  // Adding map will be sent to backend to add a new chat room
   Map<String, dynamic> toAddingMap() {
     return {
       "id": id,

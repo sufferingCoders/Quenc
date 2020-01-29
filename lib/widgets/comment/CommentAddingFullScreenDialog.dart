@@ -6,10 +6,8 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
-import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/CommentGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
-import 'package:quenc/utils/index.dart';
 import 'package:quenc/widgets/comment/CommentPreviewFullScreenDialog.dart';
 import 'package:quenc/widgets/common/PostAddingBottomNavigationBar.dart';
 

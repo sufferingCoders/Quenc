@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:quenc/screens/ChatScreen.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   int idx;
@@ -26,30 +25,5 @@ class AppBottomNavigationBar extends StatelessWidget {
         ),
       ],
     );
-    // return BottomAppBar(
-    //   child: Row(
-    //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //     children: <Widget>[
-    //       IconButton(
-    //         icon: Icon(Icons.home),
-    //         onPressed: () {
-    //           Navigator.pushNamed(
-    //             context,
-    //             "/",
-    //           );
-    //         },
-    //       ),
-    //       IconButton(
-    //         icon: Icon(Icons.chat_bubble),
-    //         onPressed: () {
-    //           Navigator.pushReplacementNamed(
-    //             context,
-    //             ChatScreen.routeName,
-    //           );
-    //         },
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }

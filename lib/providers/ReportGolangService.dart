@@ -8,10 +8,15 @@ import 'package:quenc/providers/UserGolangService.dart';
 
 class ReportGolangService with ChangeNotifier {
   // static const String baseUrl = "192.168.1.135:8080";
-  static const String baseUrl = "192.168.1.112:8080";
+  static const String baseUrl = UserGolangService.baseUrl;
 
   static const String apiUrl = "http://" + baseUrl;
 
+  /**
+   * Create
+   */
+
+  /// Create report to backend
   Future<void> addReport(Report report) async {
     try {
       final url = apiUrl + "/report/";
@@ -38,6 +43,47 @@ class ReportGolangService with ChangeNotifier {
     }
   }
 
+  /**
+   * Update
+   */
+
+  /// Update the report by its id and updateField
+  Future<bool> updateReport(
+      String id, Map<String, dynamic> updateFields) async {
+    try {
+      final url = apiUrl + "/report/$id";
+      final res = await http.patch(
+        url,
+        headers: {
+          HttpHeaders.contentTypeHeader: "application/json",
+          "Authorization": UserGolangService.token,
+        },
+        body: json.encode(updateFields),
+      );
+
+      if (res.body == null || res.body.isEmpty) {
+        return null;
+      }
+
+      final resData = json.decode(res.body);
+
+      if (res.statusCode >= 400) {
+        throw HttpException(resData["err"]);
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+  /**
+   * Delete
+   */
+
+  /**
+   * Retrieve
+   */
+
+  /// Get all reports by skip, limit and order options
   Future<List<Report>> getAllReports({
     OrderByOption orderBy = OrderByOption.CreatedAt,
     int skip = 0,
@@ -95,10 +141,9 @@ class ReportGolangService with ChangeNotifier {
     } catch (e) {
       throw e;
     }
-
-    return retrivedReports;
   }
 
+  /// Get report by its ID
   Future<Report> getReportById(String id) async {
     Report report;
 
@@ -130,36 +175,9 @@ class ReportGolangService with ChangeNotifier {
 
     return report;
   }
-
-  Future<bool> updateReport(
-      String id, Map<String, dynamic> updateFields) async {
-    try {
-      final url = apiUrl + "/report/$id";
-      final res = await http.patch(
-        url,
-        headers: {
-          HttpHeaders.contentTypeHeader: "application/json",
-          "Authorization": UserGolangService.token,
-        },
-        body: json.encode(updateFields),
-      );
-
-      if (res.body == null || res.body.isEmpty) {
-        return null;
-      }
-
-      final resData = json.decode(res.body);
-
-      if (res.statusCode >= 400) {
-        throw HttpException(resData["err"]);
-      }
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
 }
 
+/// Order Options
 enum OrderByOption {
   CreatedAt,
   LikeCount,

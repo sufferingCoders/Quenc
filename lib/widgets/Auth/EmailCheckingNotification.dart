@@ -1,11 +1,9 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserGolangService.dart';
-import 'package:quenc/providers/UserService.dart';
 
 class EmailCheckingNotification extends StatefulWidget {
   final User user;
@@ -73,7 +71,7 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
                             ),
                           );
                           Provider.of<UserGolangService>(context)
-                              .sendEnaukVerufucation();
+                              .sendingEmailVerification();
                         }
                       : null,
                 ),

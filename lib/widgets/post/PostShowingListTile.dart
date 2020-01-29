@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/providers/PostGolangService.dart';
-import 'package:quenc/providers/PostService.dart';
 import 'package:quenc/screens/PostDetailScreen.dart';
 import 'package:quenc/utils/index.dart';
 

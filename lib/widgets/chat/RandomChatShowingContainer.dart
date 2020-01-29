@@ -69,11 +69,6 @@ class _RandomChatShowingContainerState
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-
-    // if (_scrollController.hasClients) {
-    //   _scrollController.jumpTo(
-    //       _scrollController.position.maxScrollExtent); // ir using animate to
-    // }
   }
 
   void loadMoreMessageForThisRoom() {
@@ -94,8 +89,14 @@ class _RandomChatShowingContainerState
           // the random chatroom exist
           Widget listview = ListView.builder(
             controller: _scrollController,
-            itemCount: random.messages.length,
+            itemCount: random.messages.length + 1,
             itemBuilder: (ctx, idx) {
+              if (idx == random.messages.length) {
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                );
+              }
+
               bool authorIsUser =
                   random.messages[idx].author.id == userService.user.id;
 

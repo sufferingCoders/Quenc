@@ -7,9 +7,9 @@ import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/widgets/comment/CommentShowingFutureBuilder.dart';
 import 'package:quenc/widgets/common/CommentDivider.dart';
 import 'package:quenc/widgets/common/ContentShowingContainer.dart';
-import 'package:quenc/widgets/common/ScrollHideSliverAppBar.dart';
 import 'package:quenc/widgets/post/PostDetailScreenButtonNavigationBar.dart';
 import 'package:quenc/widgets/post/PostDetailShowingColumn.dart';
+import 'package:quenc/widgets/post/ScrollHideSliverAppBar.dart';
 
 class PostDetailScreen extends StatefulWidget {
   static const routeName = "/post/detail";
@@ -23,32 +23,6 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   Post post;
-
-  // bool initStart = false;
-  // bool initEnd = false;
-
-  // @override
-  // void didChangeDependencies() {
-  //   // TODO: implement didChangeDependencies
-  //   if (!initStart) {
-  //     initStart = true;
-  //     retrievingFunc();
-  //   }
-
-  //   super.didChangeDependencies();
-  // }
-
-  // void retrievingFunc() {
-  //   initStart = true;
-  //   Provider.of<PostGolangService>(context, listen: false)
-  //       .getPostByID(widget.postId)
-  //       .then((v) {
-  //     setState(() {
-  //       post = v;
-  //       initEnd = true;
-  //     });
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -107,70 +81,5 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         );
       },
     );
-
-    /**
-     *  Not Using FutureBuilder
-     */
-
-    // if (initStart == true && initEnd == false) {
-    //   return Scaffold(
-    //     body: Center(
-    //       child: CircularProgressIndicator(),
-    //     ),
-    //   );
-    // }
-
-    // return Scaffold(
-    //   bottomNavigationBar: PostDetailScreenBottomNavigationBar(post: post),
-    //   body: NestedScrollView(
-    //     headerSliverBuilder: (ctx, innerBoxIsSrolled) {
-    //       return <Widget>[
-    //         ScrollHideSliverAppBar(titleText: post?.title ?? "貼文不存在"),
-    //       ];
-    //     },
-    //     body: post == null
-    //         ? Center(
-    //             child: Text("此篇貼文已經不存在"),
-    //           )
-    //         : SingleChildScrollView(
-    //             child: Column(
-    //               crossAxisAlignment: CrossAxisAlignment.stretch,
-    //               children: <Widget>[
-    //                 PostDetailShowingColumn(post: post),
-    //                 ContentShowingContainer(content: post?.content),
-    //                 CommentDivider(text: "熱門回文"),
-    //                 // CommentShowingWithRetrieivingFunc(
-    //                 //   () => Provider.of<CommentGolangService>(context)
-    //                 //       .getTopLikedCommentsForPost(post.id, 3),
-    //                 //   post: post,
-    //                 // ),
-
-    //                 CommentShowingFutureBuilder(
-    //                   Provider.of<CommentGolangService>(context)
-    //                       .getTopLikedCommentsForPost(post.id, 3),
-    //                   post: post,
-    //                 ),
-    //                 CommentDivider(text: "全部回文"),
-    //                 // CommentShowingWithRetrieivingFunc(
-    //                 //   () => Provider.of<CommentGolangService>(context)
-    //                 //       .getCommentForPost(
-    //                 //     pid: post.id,
-    //                 //     orderBy: OrderByOption.CreatedAt,
-    //                 //   ),
-    //                 //   post: post,
-    //                 // ),
-    //                 CommentShowingFutureBuilder(
-    //                   Provider.of<CommentGolangService>(context)
-    //                       .getCommentForPost(
-    //                     pid: post.id,
-    //                     orderBy: OrderByOption.CreatedAt,
-    //                   ),
-    //                   post: post,
-    //                 ),
-    //               ],
-    //             ),
-    //           ),
-    //   ),
-    // );
   }
 }

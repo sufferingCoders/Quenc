@@ -3,9 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
-import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserGolangService.dart';
-import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/utils/index.dart';
 
 class CommentDetailShowingContainer extends StatelessWidget {

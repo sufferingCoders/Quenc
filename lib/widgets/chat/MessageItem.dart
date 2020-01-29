@@ -103,30 +103,11 @@ class MessageItem extends StatelessWidget {
                       color: Colors.white,
                     ),
                   )
-
-                // Container(
-                //     color: message?.author?.gender == 0
-                //         ? Colors.pink
-                //         : Colors.blue,
-                //   )
                 : CircleAvatar(
                     backgroundImage: NetworkImage(message?.author?.photoURL),
                   ),
           ),
-        // Container(
-        //   decoration: BoxDecoration(
-        //     borderRadius: BorderRadius.all(Radius.circular(20.0)),
-        //     color: Theme.of(context).primaryColorLight,
-        //   ),
-        //   padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
-        //   margin: EdgeInsets.all(10), // 5e247f4a1c9d4400007e5c21
-        //   constraints:
-        //       BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.7),
-        //   child: getShowingContent(context),
-        // ),
-
         getShowingContent(context),
-
         if (!authorIsUser &&
             message.createdAt != null &&
             message.messageType != 0)

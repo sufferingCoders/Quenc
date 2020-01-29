@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserGolangService.dart';
-import 'package:quenc/providers/UserService.dart';
 import 'package:quenc/screens/CategoryManagemnetScreen.dart';
 import 'package:quenc/screens/OwningPostsScreen.dart';
 import 'package:quenc/screens/ReportManagementScreen.dart';

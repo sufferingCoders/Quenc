@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/widgets/AppDrawer.dart';
 import 'package:quenc/widgets/Auth/EmailCheckingNotification.dart';
