@@ -9,6 +9,8 @@ import 'package:quenc/widgets/report/ReportAddingFullScreenDialog.dart';
 enum MenuOptions {
   Report,
   Delete,
+  BlockUser,
+  BlockPost,
 }
 
 class PostLikeAndSaveIconsRow extends StatelessWidget {
@@ -107,6 +109,30 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                         ),
                         value: MenuOptions.Delete,
                       ),
+                    PopupMenuItem(
+                      child: ListTile(
+                        leading: Icon(Icons.block),
+                        title: const Text(
+                          "屏蔽此文章",
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      value: MenuOptions.BlockPost,
+                    ),
+                    PopupMenuItem(
+                      child: ListTile(
+                        leading: Icon(Icons.gavel),
+                        title: const Text(
+                          "屏蔽此使用者",
+                          style: const TextStyle(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      value: MenuOptions.BlockUser,
+                    ),
                   ],
                 );
 
@@ -158,8 +184,112 @@ class PostLikeAndSaveIconsRow extends StatelessWidget {
                         fullscreenDialog: true,
                       ),
                     );
+                    break;
+
+                  case MenuOptions.BlockPost:
+                    if (userService.user.id == post.author.id) {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text("錯誤"),
+                                content: Text("無法屏蔽自己的文章"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("Okay"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                  ),
+                                ],
+                              ));
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text("屏蔽"),
+                                content: Text(
+                                    "是否屏蔽: \n${post?.title}? 屏蔽後您將無法再看到這篇文章"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("否"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text("是"),
+                                    onPressed: () {
+                                      Provider.of<UserGolangService>(context,
+                                              listen: false)
+                                          .toggoleFunction(
+                                        id: post?.id,
+                                        toggle: ToggleOptions.BlockPost,
+                                        condition: true,
+                                      );
+
+                                      var count = 0;
+                                      Navigator.popUntil(context, (route) {
+                                        return count++ == 2;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ));
+                    }
 
                     break;
+                  case MenuOptions.BlockUser:
+                    if (userService.user.id == post.author.id) {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text("錯誤"),
+                                content: Text("無法屏蔽自己"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("Okay"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                  ),
+                                ],
+                              ));
+                    } else {
+                      showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                                title: Text("屏蔽"),
+                                content:
+                                    Text("是否屏蔽此使用者？\n 屏蔽後您將無法看見該使用者的文章以及評論"),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("否"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text("是"),
+                                    onPressed: () {
+                                      Provider.of<UserGolangService>(context,
+                                              listen: false)
+                                          .toggoleFunction(
+                                        id: post?.id,
+                                        toggle: ToggleOptions.BlockUser,
+                                        condition: true,
+                                      );
+
+                                      var count = 0;
+                                      Navigator.popUntil(context, (route) {
+                                        return count++ == 2;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ));
+                    }
+                    break;
+
                   default:
                     break;
                 }

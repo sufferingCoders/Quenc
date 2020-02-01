@@ -6,7 +6,7 @@ import 'package:quenc/widgets/post/PostLikeAndSaveIconsRow.dart';
 class PostDetailScreenBottomNavigationBar extends StatelessWidget {
   const PostDetailScreenBottomNavigationBar({
     Key key,
-    @required this.post,
+    @required this.post,x
   }) : super(key: key);
 
   final Post post;

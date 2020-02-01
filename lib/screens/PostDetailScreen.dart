@@ -57,7 +57,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         PostDetailShowingColumn(post: post),
-                        ContentShowingContainer(content: post?.content),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal:
+                                  MediaQuery.of(context).size.width * 0.02),
+                          child:
+                              ContentShowingContainer(content: post?.content),
+                        ),
                         CommentDivider(text: "熱門回文"),
                         CommentShowingFutureBuilder(
                           Provider.of<CommentGolangService>(context,

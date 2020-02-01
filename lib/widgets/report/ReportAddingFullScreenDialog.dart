@@ -265,7 +265,7 @@ class _ReportAddingFullScreenDialogState
                   controller: contentController,
                   maxLines: null,
                   decoration: const InputDecoration(
-                    hintText: "點擊此開始編輯\n\n請簡單描述檢舉此文章/評論的原因\n\n再附上螢幕截圖",
+                    hintText: "點擊此開始編輯\n\n請簡單描述檢舉此文章/評論的原因\n\n再附上螢幕截圖\n\nQuenc將於24小時內處理您的舉報",
                     border: InputBorder.none,
                   ),
                   onSaved: (v) {

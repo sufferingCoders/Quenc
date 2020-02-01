@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quenc/providers/UserGolangService.dart';
+import 'package:quenc/widgets/comment/QuenCAgreement.dart';
 
 class AuthCard extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class _AuthCardState extends State<AuthCard> {
   String email = "";
   String password = "";
   String passwordAgain = "";
+  bool agree = false;
 
   void _showErrorDialog(String message) {
     /*
@@ -155,9 +157,70 @@ class _AuthCardState extends State<AuthCard> {
                 SizedBox(
                   height: 10,
                 ),
+                if (registerMode)
+                  Row(
+                    children: <Widget>[
+                      Checkbox(
+                        value: agree,
+                        onChanged: (v) {
+                          setState(() {
+                            agree = v;
+                          });
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("我同意遵守"),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          child: Text(
+                            "\"QuenC使用協定\"",
+                            style: TextStyle(
+                              color: Colors.blue[200],
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: Text('QuenC 使用協議'),
+                                content: SingleChildScrollView(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(
+                                        "1. 請勿張貼任何暴力、色情或其他令人感到不適之內容。\n2. 請勿發表任和種族、民族和政黨之對立的仇恨文字。\n3. 此為討論和互助平台，請勿發佈任何商業消息。\n\n",
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text('Okay'),
+                                    onPressed: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
                 RaisedButton(
                   child: Text(registerMode ? "註冊" : "登入"),
-                  onPressed: () => _submit(context),
+                  disabledColor: Colors.grey,
+                  onPressed:
+                      registerMode && !agree ? null : () => _submit(context),
                 ),
                 FlatButton(
                   child: Text("我要${registerMode ? "登入" : "註冊"}"),

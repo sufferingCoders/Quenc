@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:quenc/models/Comment.dart';
 import 'package:quenc/models/Post.dart';
+import 'package:quenc/models/User.dart';
+import 'package:quenc/providers/UserGolangService.dart';
 import 'package:quenc/widgets/comment/CommentShowingColumn.dart';
 
 class CommentShowingFutureBuilder extends StatelessWidget {
@@ -49,12 +52,15 @@ class CommentShowingFutureBuilder extends StatelessWidget {
           );
         }
 
+        User currentUser = Provider.of<UserGolangService>(context).user;
         List<Widget> allComments = [];
         List<Comment> retrievedComments = snapshot.data;
         for (var c in retrievedComments) {
-          allComments.add(Container(
-            child: CommentShowingColumn(comment: c, post: post),
-          ));
+          if (!currentUser.blockedUsers.contains(c.author.id)) {
+            allComments.add(Container(
+              child: CommentShowingColumn(comment: c, post: post),
+            ));
+          }
         }
 
         return Column(

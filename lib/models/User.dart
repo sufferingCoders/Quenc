@@ -20,6 +20,8 @@ class User {
   List<String> likeComments;
   List<String> friends;
   List<String> savedPosts;
+  List<String> blockedPosts;
+  List<String> blockedUsers;
 
   // Role: 0 -> Admin, 1 -> NormalUser
   User({
@@ -41,6 +43,8 @@ class User {
     this.likeComments,
     this.name,
     this.randomChatRoom,
+    this.blockedPosts,
+    this.blockedUsers,
   });
 
   factory User.fromMap(dynamic data) {
@@ -67,6 +71,8 @@ class User {
       likeComments: data["likeComments"]?.cast<String>(),
       name: data["name"],
       randomChatRoom: data["randomChatRoom"],
+      blockedPosts: data["blockedPosts"]?.cast<String>(),
+      blockedUsers: data["blockedUsers"]?.cast<String>(),
     );
   }
 
@@ -110,6 +116,8 @@ class User {
       "likeComments": likeComments,
       "name": name,
       "randomChatRoom": randomChatRoom,
+      "blockedPosts": blockedPosts,
+      "blockedUsers": blockedUsers,
     };
   }
 }

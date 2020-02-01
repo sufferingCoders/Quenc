@@ -21,7 +21,7 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -81,7 +81,7 @@ class _EmailCheckingNotificationState extends State<EmailCheckingNotification> {
                 child: RaisedButton(
                   child: Text("重新登入"),
                   onPressed: () {
-                    Provider.of<UserGolangService>(context, listen: false)
+                    Provider.of<UserGolangService>(context)
                         .signOut();
                   },
                 ),

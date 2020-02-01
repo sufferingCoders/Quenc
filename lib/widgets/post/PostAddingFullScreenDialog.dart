@@ -110,6 +110,33 @@ class _PostAddingFullScreenDialogState
   }
 
   void addingImageMarkdownToContent() {
+    if (currentUploadURL == null ||
+        currentUploadURL.isEmpty ||
+        Uri?.parse(currentUploadURL)?.isAbsolute != true) {
+      setState(() {
+        _uploadTask = null;
+        currentFilePath = null;
+        currentUploadURL = null;
+        currentInsertImage = null;
+      });
+
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('錯誤'),
+          content: Text("圖片網址錯誤，請重試一次。Ｆ"),
+          actions: <Widget>[  
+            FlatButton(
+              child: Text('Okay'),
+              onPressed: () {
+                Navigator.of(ctx).pop();
+              },
+            )
+          ],
+        ),
+      );
+      return;
+    }
     String addingImageMd = "\n" + "![圖片載入中...]($currentUploadURL)" + "\n";
 
     var cursorPosition = contentController.selection;

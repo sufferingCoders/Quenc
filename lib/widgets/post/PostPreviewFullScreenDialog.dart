@@ -26,7 +26,11 @@ class PostPreviewFullScreenDialog extends StatelessWidget {
         body: ListView(
           children: <Widget>[
             PostDetailShowingColumn(post: post),
-            ContentShowingContainer(content: post.content),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.02),
+              child: ContentShowingContainer(content: post.content),
+            ),
           ],
         ),
       ),

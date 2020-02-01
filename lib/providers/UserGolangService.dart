@@ -16,6 +16,8 @@ enum ToggleOptions {
   LikePosts,
   LikeComments,
   SavedPosts,
+  BlockPost,
+  BlockUser,
 }
 
 class UserGolangService with ChangeNotifier {
@@ -205,6 +207,14 @@ class UserGolangService with ChangeNotifier {
               "/user/saved-posts/$id/" +
               (user.savedPosts.contains(id) ? "0" : "1");
           break;
+        case ToggleOptions.BlockPost:
+          fullApi = apiUrl + "/user/block-post/$id/1";
+          break;
+
+        case ToggleOptions.BlockUser:
+          fullApi = apiUrl + "/user/block-user/$id/1";
+          break;
+          
         default:
           fullApi = null;
           break;
@@ -292,6 +302,7 @@ class UserGolangService with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       prefs.remove("email");
       prefs.remove("password");
+      notifyListeners();
 
       return 'SignOut';
     } catch (e) {
@@ -595,7 +606,7 @@ class UserGolangService with ChangeNotifier {
 
         // 再從updateFields裡面的Key-Value Pair取出index跟Value ((或是只有Value
 
-        // 若author是本地的User則不進行更新, 若非則
+        // ��author是本地的User則不進行更新, 若非則
 
         // 用此更新本地的Message
 

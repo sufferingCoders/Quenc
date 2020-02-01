@@ -4,6 +4,7 @@ import 'package:quenc/models/ChatRoom.dart';
 import 'package:quenc/models/Post.dart';
 import 'package:quenc/models/PostCategory.dart';
 import 'package:quenc/models/Report.dart';
+import 'package:quenc/models/User.dart';
 import 'package:quenc/providers/PostGolangService.dart';
 import 'package:quenc/providers/ReportGolangService.dart';
 import 'package:quenc/providers/UserGolangService.dart';
@@ -48,8 +49,14 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void initFunction() async {
+    User currentUser = Provider.of<UserGolangService>(context).user;
+
     await loadMore();
     isInit = true;
+
+    List<Post> filteredPost = retrievedPosts.where((p) =>
+        !(currentUser.blockedPosts.contains(p.id) ||
+            currentUser.blockedUsers.contains(p.author.id))).toList();
 
     mainScreenBody = [
       RefreshIndicator(
@@ -58,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         child: PostShowingContainer(
           isInit: isInit,
-          posts: retrievedPosts,
+          posts: filteredPost,
           infiniteScrollUpdater: loadMore,
           refresh: refresh,
           orderBy: orderBy,

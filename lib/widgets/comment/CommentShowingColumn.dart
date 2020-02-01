@@ -61,6 +61,18 @@ class CommentShowingColumn extends StatelessWidget {
                 ),
                 value: MenuOptions.Delete,
               ),
+            PopupMenuItem(
+              child: ListTile(
+                leading: Icon(Icons.gavel),
+                title: const Text(
+                  "屏蔽此使用者",
+                  style: const TextStyle(
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+              value: MenuOptions.BlockUser,
+            ),
           ],
         );
 
@@ -110,6 +122,57 @@ class CommentShowingColumn extends StatelessWidget {
             );
 
             break;
+
+          case MenuOptions.BlockUser:
+            if (user.id == post.author.id) {
+              showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                        title: Text("錯誤"),
+                        content: Text("無法屏蔽自己"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("Okay"),
+                            onPressed: () {
+                              Navigator.of(context).pop(true);
+                            },
+                          ),
+                        ],
+                      ));
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                        title: Text("屏蔽"),
+                        content: Text("是否屏蔽此使用者？\n 屏蔽後您將無法看見該使用者的文章以及評論"),
+                        actions: <Widget>[
+                          FlatButton(
+                            child: Text("否"),
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                          ),
+                          FlatButton(
+                            child: Text("是"),
+                            onPressed: () {
+                              Provider.of<UserGolangService>(context,
+                                      listen: false)
+                                  .toggoleFunction(
+                                id: post?.id,
+                                toggle: ToggleOptions.BlockUser,
+                                condition: true,
+                              );
+
+                              var count = 0;
+                              Navigator.popUntil(context, (route) {
+                                return count++ == 2;
+                              });
+                            },
+                          ),
+                        ],
+                      ));
+            }
+            break;
           default:
             break;
         }
@@ -121,8 +184,12 @@ class CommentShowingColumn extends StatelessWidget {
             post: post,
             comment: comment,
           ),
-          ContentShowingContainer(
-            content: comment.content,
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.05),
+            child: ContentShowingContainer(
+              content: comment.content,
+            ),
           ),
           const Divider(
             color: Colors.black,
