@@ -86,8 +86,11 @@ class _AuthCardState extends State<AuthCard> {
       // height: registerMode ? 295 : 235,
       // duration: Duration(milliseconds: 300),
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15),
+          padding: EdgeInsets.symmetric(horizontal: 20),
           child: Form(
             key: _formKey,
             child: Column(
@@ -190,14 +193,19 @@ class _AuthCardState extends State<AuthCard> {
                                 content: SingleChildScrollView(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
-                                        "1. 請勿張貼任何暴力、色情或其他令人感到不適之內容。\n2. 請勿發表任和種族、民族和政黨之對立的仇恨文字。\n3. 此為討論和互助平台，請勿發佈任何商業消息。\n\n",
+                                        "1. 若您是Apple用戶，則您必須遵守Apple的《Apple 標準終端使用者許可協議》(EULA)\n2. 請勿張貼任何暴力、色情或其他令人感到不適之內容。\n3. 請勿發表任和種族、民族和政黨之對立的仇恨文字。\n4. 此為討論和互助平台，請勿發佈任何商業消息。\n5.QuenC禁止任和令人感到反感的內容，和濫用此App的用戶。",
                                         style: TextStyle(
                                           fontSize: 13,
                                         ),
                                       ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text("我們不會姑息任何違反以上條例的使用者, 並保留法律追訴權。")
                                     ],
                                   ),
                                 ),
