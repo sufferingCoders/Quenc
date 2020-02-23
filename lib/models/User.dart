@@ -112,4 +112,23 @@ class User {
       "randomChatRoom": randomChatRoom,
     };
   }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
