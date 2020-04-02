@@ -28,6 +28,6 @@ class HomeScreen extends StatelessWidget {
                         : AuthScreen(), //AuthScreen
               );
       },
-    );
+    ); 
   }
 }
